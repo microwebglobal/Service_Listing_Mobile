@@ -1,12 +1,12 @@
 import {
   Dimensions,
-  Image,
   Keyboard,
   KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useState} from 'react';
@@ -14,6 +14,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {useNavigation} from '@react-navigation/native';
 import {Controller, useForm} from 'react-hook-form';
 import {Button} from '../../components/rneui';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
 import {API_BASE} from '@env';
 
@@ -68,36 +69,27 @@ export const SignInScreen = () => {
           marginHorizontal: RPW(8),
           marginTop: RPH(10),
         }}>
-        {/* Image */}
-        <View className="items-center ">
-          <Image
-            source={require('../../assets/app-images/logo.png')}
-            style={styles.imageStyle}
-          />
-        </View>
-
         <View className="my-8 items-center">
-          <Text className="text-3xl font-semibold text-black">
+          <Text className="text-2xl font-medium text-black">
             {'Welcome back'}!
           </Text>
-          <Text className="mt-3 text-xl font-normal text-dark">
-            {'Please login to your account.'}
+          <Text className="mt-3 text-lg font-normal text-dark">
+            {'Enter Your Contact Number To '}
+          </Text>
+          <Text className="mt-3 text-lg font-normal text-dark">
+            {'Sign In'}
           </Text>
         </View>
 
         <View className="gap-5 mb-3">
           {/* phone input */}
           <View>
-            <Text className="mb-2 text-lg font-normal text-black">
-              Mobile Number
-            </Text>
             <Controller
               name="phone"
               control={control}
               render={({field: {onChange, onBlur, value}}) => (
                 <TextInput
-                  placeholder="Enter your mobile number"
-                  secureTextEntry={true}
+                  placeholder="Contact number"
                   style={styles.input}
                   value={value}
                   inputMode="numeric"
@@ -116,13 +108,39 @@ export const SignInScreen = () => {
         </View>
 
         {/* Button */}
-        <View className="mb-10">
+        <View className="my-5">
           <Button
             loading={loading}
-            title={'Request OTP'}
+            title={'Send OTP'}
             onPress={(Keyboard.dismiss(), handleSubmit(submit))}
             primary
           />
+        </View>
+
+        <View className="flex-row justify-center">
+          <Text className="mb-2 text-base font-normal text-dark">
+            Don't have an account?{'  '}
+          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('SignUp');
+            }}>
+            <Text className="mb-2 text-base font-medium text-primary underline">
+              Sign Up
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View className="mt-12 justify-center items-center">
+          <Text className="mb-5"> ─────────── Or continue with ───────────</Text>
+          <TouchableOpacity onPress={() => {}}>
+            {/* Google Icon */}
+            <Icon
+              name="google"
+              color={Colors.Black}
+              onPress={() => {}}
+            />
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -138,10 +156,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     fontSize: 16,
     color: Colors.Dark,
-  },
-  imageStyle: {
-    height: RPH(20),
-    width: RPW(60),
-    resizeMode: 'contain',
   },
 });

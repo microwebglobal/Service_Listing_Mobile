@@ -34,10 +34,11 @@ const theme = createTheme({
       },
       themeColor,
     ) => ({
+      uppercase: true,
       titleStyle: {
         paddingHorizontal: 5,
         fontFamily: FONT_FAMILY,
-        fontWeight: '500',
+        fontWeight: 'bold',
         lineHeight: 30,
         color: props.primary
           ? themeColor.colors.white
@@ -50,7 +51,7 @@ const theme = createTheme({
         marginTop: Platform.OS === 'ios' ? 3 : 0,
       },
       buttonStyle: {
-        borderRadius: 5,
+        borderRadius: 10,
         borderWidth: props.primary ? 0 : 1,
         borderColor: themeColor.colors.primary,
         backgroundColor: props.primary
