@@ -79,6 +79,7 @@ android {
 
     namespace "com.service_listing_mobile"
     defaultConfig {
+        vectorDrawables.useSupportLibrary = true
         applicationId "com.service_listing_mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
