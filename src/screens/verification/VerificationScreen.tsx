@@ -14,7 +14,8 @@ import {Screen, useNav} from '../../navigation/RootNavigation';
 import {Controller, useForm} from 'react-hook-form';
 import {Button} from '../../components/rneui';
 import {Colors} from '../../utils/Colors';
-// import CountDown from 'react-native-countdown-component';
+import CountDown from 'react-native-countdown-component';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
 import {API_BASE} from '@env';
 
@@ -34,12 +35,11 @@ const RPH = (percentage: number) => {
   return (percentage / 100) * screenHeight;
 };
 
-const VerificationScreen: Screen<'Verification'> = ({route}) => {
+export const VerificationScreen: Screen<'Verification'> = ({route}) => {
   const {phone} = route.params;
   const navigation = useNav();
   const [loading, setLoading] = useState<boolean>(false);
   const [count, setCount] = useState<number>(60);
-  const [alertVisible, setAlertVisible] = useState<boolean>(true);
   const {
     control,
     handleSubmit,
@@ -65,6 +65,19 @@ const VerificationScreen: Screen<'Verification'> = ({route}) => {
       });
   };
 
+  const resendOTP = () => {
+    axios
+      .post(`${API_BASE}/auth/customer/login/send-otp`, {
+        mobile: phone,
+      })
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
   return (
     <KeyboardAvoidingView className="flex-1 bg-white">
       <ScrollView
@@ -74,22 +87,16 @@ const VerificationScreen: Screen<'Verification'> = ({route}) => {
           marginTop: RPH(10),
         }}>
         <View className="items-center mb-5">
-          <Text className="text-2xl text-black font-bold">
-            OTP Verification
+          <Text className="text-2xl text-black font-medium">Enter OTP</Text>
+          <Text className="mt-3 text-lg font-normal text-dark">
+            Enter the 6 Digit Code Sent To
           </Text>
-        </View>
-        <View className="mb-5">
-          <Text className="text-base font-normal text-black">
-            OTP Code has been already sent to {phone}
-          </Text>
+          <Text className="mt-3 text-lg font-normal text-dark">Your Phone</Text>
         </View>
 
-        <View className="gap-5 mb-3">
+        <View className="gap-5">
           {/* phone input */}
           <View>
-            <Text className="mb-2 text-base font-normal text-black">
-              {'Enter OTP number'}
-            </Text>
             <Controller
               name="otp"
               control={control}
@@ -114,33 +121,14 @@ const VerificationScreen: Screen<'Verification'> = ({route}) => {
           </View>
         </View>
 
-        {/* Resend verification code */}
-        <View className="mt-3 flex-row justify-between">
-          <Text className="text-base font-medium text-dark">
-            Didn't receive OTP Code?
+        <View className="flex-row items-center">
+          <Text className="text-base font-normal text-dark">
+            OTP will expire in
           </Text>
-          <TouchableOpacity>
-            <Text className="text-base font-medium text-primary">
-              Resend Code
-            </Text>
-          </TouchableOpacity>
-          {/* <CountDown
+          <CountDown
             until={count}
             size={15}
             style={{width: RPW(8), height: 40}}
-            onFinish={() =>
-              alertVisible &&
-              Alert.alert('OTP has expired', 'Request new OTP', [
-                {
-                  text: 'Request',
-                  onPress: () => {
-                    setCount(count + count * 0.0001);
-                    // resendCode();
-                  },
-                  style: 'cancel',
-                },
-              ])
-            }
             digitStyle={{backgroundColor: Colors.White}}
             digitTxtStyle={{
               color: Colors.Primary,
@@ -148,24 +136,46 @@ const VerificationScreen: Screen<'Verification'> = ({route}) => {
             timeToShow={['S']}
             timeLabels={{s: undefined}}
             running={true}
-          /> */}
-          {/* <Text className="text-base font-normal text-primary">seconds</Text> */}
+          />
+          <Text className="text-base font-normal text-dark">seconds</Text>
+        </View>
+
+        {/* Button */}
+        <View className="my-5">
+          <Button
+            loading={loading}
+            title={'Login'}
+            onPress={(Keyboard.dismiss(), handleSubmit(submit))}
+            primary
+          />
+        </View>
+
+        <View className="flex-row justify-center">
+          <Text className="mb-2 text-base font-normal text-dark">
+            Didn't receive the SMS?{'  '}
+          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              setCount(count + count * 0.0001);
+              resendOTP();
+            }}>
+            <Text className="mb-2 text-base font-medium text-primary underline">
+              Resend it
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View className="mt-12 justify-center items-center">
+          <Text className="mb-5">
+            {' '}
+            ─────────── Or continue with ───────────
+          </Text>
+          <TouchableOpacity onPress={() => {}}>
+            {/* Google Icon */}
+            <Icon name="google" color={Colors.Black} onPress={() => {}} />
+          </TouchableOpacity>
         </View>
       </ScrollView>
-
-      {/* Button */}
-      <View
-        className="fixed bottom-10"
-        style={{
-          marginHorizontal: RPW(8),
-        }}>
-        <Button
-          loading={loading}
-          title={'Verify & Proceed'}
-          onPress={(Keyboard.dismiss(), handleSubmit(submit))}
-          primary
-        />
-      </View>
     </KeyboardAvoidingView>
   );
 };
@@ -181,5 +191,3 @@ const styles = StyleSheet.create({
     color: Colors.Dark,
   },
 });
-
-export default VerificationScreen;
