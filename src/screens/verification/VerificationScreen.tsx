@@ -15,9 +15,10 @@ import {Controller, useForm} from 'react-hook-form';
 import {Button} from '../../components/rneui';
 import {Colors} from '../../utils/Colors';
 import CountDown from 'react-native-countdown-component';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import {API_BASE} from '@env';
+import GoogleIcon from '../../assets/svgs/GoogleIcon';
 
 interface SignInData {
   otp: string;
@@ -86,6 +87,16 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
           marginHorizontal: RPW(8),
           marginTop: RPH(10),
         }}>
+        <View>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <MaterialIcons
+              name="arrow-back-ios-new"
+              size={24}
+              color={Colors.Dark}
+            />
+          </TouchableOpacity>
+        </View>
+
         <View className="items-center mb-5">
           <Text className="text-2xl text-black font-medium">Enter OTP</Text>
           <Text className="mt-3 text-lg font-normal text-dark">
@@ -170,9 +181,10 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
             {' '}
             ─────────── Or continue with ───────────
           </Text>
-          <TouchableOpacity onPress={() => {}}>
-            {/* Google Icon */}
-            <Icon name="google" color={Colors.Black} onPress={() => {}} />
+          <TouchableOpacity
+            className="p-1 bg-lightGrey rounded-full"
+            onPress={() => {}}>
+            <GoogleIcon />
           </TouchableOpacity>
         </View>
       </ScrollView>

@@ -14,9 +14,11 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {useNavigation} from '@react-navigation/native';
 import {Controller, useForm} from 'react-hook-form';
 import {Button} from '../../components/rneui';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
 import {API_BASE} from '@env';
+import GoogleIcon from '../../assets/svgs/GoogleIcon';
+// import auth from '@react-native-firebase/auth';
+// import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 interface SignInData {
   phone: string;
@@ -60,6 +62,32 @@ export const SignInScreen = () => {
         setLoading(false);
       });
   };
+
+  // useEffect(() => {
+  //   GoogleSignin.configure({
+  //     webClientId: '',
+  //   });
+  // }, []);
+
+  // async function onGoogleButtonPress() {
+  //   try {
+  //     // Check if your device supports Google Play
+  //     await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+  //     // Get the users ID token
+  //     const idToken = await GoogleSignin.signIn();
+
+  //     console.log(idToken);
+  //     Alert.alert('Success Login');
+
+  //     // Create a Google credential with the token
+  //     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+  //     // Sign-in the user with the credential
+  //     return auth().signInWithCredential(googleCredential);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   return (
     <KeyboardAvoidingView className="flex-1 bg-white">
@@ -132,14 +160,12 @@ export const SignInScreen = () => {
         </View>
 
         <View className="mt-12 justify-center items-center">
-          <Text className="mb-5"> ─────────── Or continue with ───────────</Text>
-          <TouchableOpacity onPress={() => {}}>
-            {/* Google Icon */}
-            <Icon
-              name="google"
-              color={Colors.Black}
-              onPress={() => {}}
-            />
+          <Text className="mb-5">
+            {' '}
+            ─────────── Or continue with ───────────
+          </Text>
+          <TouchableOpacity className="p-1 bg-lightGrey rounded-full" onPress={() => {}}>
+            <GoogleIcon />
           </TouchableOpacity>
         </View>
       </ScrollView>
