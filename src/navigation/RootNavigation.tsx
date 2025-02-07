@@ -8,6 +8,8 @@ export type RootStackParamList = {
   SignUp: undefined;
   Verification: {phone: string};
   LoginSuccess: undefined;
+  SelectLocation: undefined;
+  Home: undefined;
 };
 
 export type NavigationHookType = NativeStackNavigationProp<RootStackParamList>;
