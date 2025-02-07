@@ -2,26 +2,33 @@ import {Screen, useNav} from '../../navigation/RootNavigation';
 import {Dimensions, KeyboardAvoidingView, ScrollView, View} from 'react-native';
 import React, {useEffect} from 'react';
 import LottieView from 'lottie-react-native';
-// import {useSelector} from 'react-redux';
-// import {RootState} from '../../utils/state/store';
+import {refreshToken} from '../../redux/user/user.action';
 
 export const SplashScreen: Screen<'Splash'> = () => {
   const navigation = useNav();
-  // const user = useSelector((state: RootState) => state.user.user);
 
   useEffect(() => {
-    if (false) {
-      navigation.navigate('SignIn');
-    } else {
-      navigation.navigate('Onboarding');
-    }
+    const handleToken = async () => {
+      const result = await refreshToken();
+
+      if (result?.success) {
+        setTimeout(() => {
+          navigation.navigate('Home');
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          navigation.navigate('Onboarding');
+        }, 1000);
+      }
+    };
+
+    handleToken();
   }, [navigation]);
 
   // Get screen dimension
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
 
-  // RPH and RPW are functions to set responsive width and height
   const RPW = (percentage: number) => {
     return (percentage / 100) * screenWidth;
   };

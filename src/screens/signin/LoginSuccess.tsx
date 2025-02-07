@@ -8,7 +8,7 @@ export const LoginSuccessScreen = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate('SignIn');
+      navigation.navigate('Home');
     }, 3000);
   }, [navigation]);
 
@@ -31,5 +31,3 @@ export const LoginSuccessScreen = () => {
     </View>
   );
 };
-
-export default LoginSuccessScreen;

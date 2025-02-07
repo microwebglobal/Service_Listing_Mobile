@@ -19,6 +19,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import {API_BASE} from '@env';
 import GoogleIcon from '../../assets/svgs/GoogleIcon';
+import {userLogin} from '../../redux/user/user.action';
 
 interface SignInData {
   otp: string;
@@ -41,29 +42,21 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
   const navigation = useNav();
   const [loading, setLoading] = useState<boolean>(false);
   const [count, setCount] = useState<number>(60);
+  const [isValid, setIsValid] = useState<boolean>(false);
   const {
     control,
     handleSubmit,
     formState: {errors},
   } = useForm<SignInData>();
 
-  const submit = (data: SignInData) => {
+  const submit = async (data: SignInData) => {
     setLoading(true);
-    axios
-      .post(`${API_BASE}/auth/customer/login/verify-otp`, {
-        mobile: phone,
-        otp: data.otp,
-      })
-      .then(function (response) {
-        console.log(response);
-        navigation.navigate('LoginSuccess');
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-      .finally(function () {
-        setLoading(false);
-      });
+    const result = await userLogin({mobile: phone, otp: data.otp});
+    setLoading(false);
+    if (result?.success) {
+      navigation.navigate('LoginSuccess');
+    }
+    setIsValid(true);
   };
 
   const resendOTP = () => {
@@ -127,6 +120,11 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
             {errors.otp && (
               <Text className="text-error">
                 {'Verification code is only 6 digit number'}
+              </Text>
+            )}
+            {isValid && (
+              <Text className="text-error">
+                {'Invalid OTP'}
               </Text>
             )}
           </View>
