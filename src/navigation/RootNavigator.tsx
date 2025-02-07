@@ -10,7 +10,7 @@ import {VerificationScreen} from '../screens/verification/VerificationScreen';
 import {LoginSuccessScreen} from '../screens/signin/LoginSuccess';
 import {SignUpScreen} from '../screens/signup/SignUpScreen';
 import {SelectLocation} from '../screens/location/SelectLocation';
-import {HomeScreen} from '../screens/home/HomeScreen';
+import {TabNavigator} from './TabNavigator';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -18,7 +18,7 @@ export const RootNavigator: React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="SelectLocation"
+        initialRouteName="Splash"
         screenOptions={{
           headerShown: false,
           headerStyle: {
@@ -32,6 +32,13 @@ export const RootNavigator: React.FC = () => {
             color: Colors.Dark,
           },
         }}>
+        <Stack.Screen
+          name="Tab"
+          component={TabNavigator}
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Onboarding" component={OnboardingScreen} />
         <Stack.Screen name="SignIn" component={SignInScreen} />
@@ -39,7 +46,6 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="Verification" component={VerificationScreen} />
         <Stack.Screen name="LoginSuccess" component={LoginSuccessScreen} />
         <Stack.Screen name="SelectLocation" component={SelectLocation} />
-        <Stack.Screen name="Home" component={HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
