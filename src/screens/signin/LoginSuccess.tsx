@@ -8,7 +8,7 @@ export const LoginSuccessScreen = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate('Home');
+      navigation.navigate('Tab');
     }, 3000);
   }, [navigation]);
 

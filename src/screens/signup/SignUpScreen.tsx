@@ -10,7 +10,6 @@ import {
   Keyboard,
   Image,
   BackHandler,
-  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
@@ -21,14 +20,9 @@ import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ImagePicker from 'react-native-image-crop-picker';
 import {useFocusEffect} from '@react-navigation/native';
-
-interface SignUpData {
-  fullName: string;
-  userName: string;
-  email: string;
-  password: string;
-  mobile: string;
-}
+import {useDispatch} from 'react-redux';
+import {signUp} from '../../redux/user/user.slice';
+import {UserDetailEntity} from '../../redux/user/user.entity';
 
 // Get screen dimension
 const screenWidth = Dimensions.get('window').width;
@@ -44,19 +38,18 @@ const RPH = (percentage: number) => {
 
 export const SignUpScreen = () => {
   const navigation = useNav();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [imageURI, setImageURI] = useState<string>('');
+  const dispatch = useDispatch();
+  const [imageURI, setImageURI] = useState<string>();
   const {
     control,
     handleSubmit,
     formState: {errors},
-  } = useForm<SignUpData>();
+  } = useForm<UserDetailEntity>();
 
-  const submit = (data: SignUpData) => {
-    // save form data into storage
-
-    setLoading(false);
-    Alert.alert('Form Data', JSON.stringify(data));
+  const submit = (data: UserDetailEntity) => {
+    imageURI && (data.image = imageURI);
+    // save form data into store
+    dispatch(signUp(data));
     navigation.navigate('SelectLocation');
   };
 
@@ -253,7 +246,7 @@ export const SignUpScreen = () => {
         {/* Button */}
         <View className="my-5">
           <Button
-            loading={loading}
+            loading={false}
             title={'Continue'}
             onPress={(Keyboard.dismiss(), handleSubmit(submit))}
             primary

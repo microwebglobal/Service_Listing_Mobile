@@ -19,7 +19,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import {API_BASE} from '@env';
 import GoogleIcon from '../../assets/svgs/GoogleIcon';
-import {userLogin} from '../../redux/user/user.action';
+import {userLogin, userUpdate} from '../../redux/user/user.action';
+import { useAppSelector } from '../../redux';
 
 interface SignInData {
   otp: string;
@@ -43,19 +44,25 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [count, setCount] = useState<number>(60);
   const [isValid, setIsValid] = useState<boolean>(false);
+  const user = useAppSelector(state => state.user.user);
   const {
     control,
     handleSubmit,
     formState: {errors},
   } = useForm<SignInData>();
+  const routes = navigation.getState()?.routes;
+  const prevRoute = routes[routes.length - 2]; // -2 because -1 is the current route
 
   const submit = async (data: SignInData) => {
     setLoading(true);
     const result = await userLogin({mobile: phone, otp: data.otp});
-    setLoading(false);
     if (result?.success) {
+      if (prevRoute.name === 'SelectLocation') {
+        userUpdate(user?.fullName, user?.email);
+      }
       navigation.navigate('LoginSuccess');
     }
+    setLoading(false);
     setIsValid(true);
   };
 
@@ -113,6 +120,7 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
                   inputMode="numeric"
                   onBlur={onBlur}
                   onChangeText={onChange}
+                  onChange={() => setIsValid(false)}
                 />
               )}
               rules={{required: true, minLength: 6, maxLength: 6}}
@@ -122,10 +130,8 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
                 {'Verification code is only 6 digit number'}
               </Text>
             )}
-            {isValid && (
-              <Text className="text-error">
-                {'Invalid OTP'}
-              </Text>
+            {!errors.otp && isValid && (
+              <Text className="text-error">{'Invalid OTP'}</Text>
             )}
           </View>
         </View>
