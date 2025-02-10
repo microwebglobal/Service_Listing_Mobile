@@ -1,19 +1,34 @@
-import {configureStore} from '@reduxjs/toolkit';
-import {reducer as userReducer} from './user/user.slice';
+import {combineReducers, configureStore} from '@reduxjs/toolkit';
+import userReducer from './user/user.slice';
 import {TypedUseSelectorHook, useSelector} from 'react-redux';
+import addressReducer from './address/address.slice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {persistReducer, persistStore} from 'redux-persist';
 
-const reducers = {
-  user: userReducer,
+const persistConfig = {
+  key: 'root',
+  storage: AsyncStorage,
 };
 
-export const store = configureStore({
-  reducer: reducers,
+const rootReducer = combineReducers({
+  user: userReducer,
+  address: addressReducer,
 });
 
-export type ActionEntity = {
-  type: string;
-  payload?: any;
-};
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+      },
+    }),
+});
+
+export const persistor = persistStore(store);
+
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

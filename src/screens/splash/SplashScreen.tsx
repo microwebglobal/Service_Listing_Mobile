@@ -2,18 +2,18 @@ import {Screen, useNav} from '../../navigation/RootNavigation';
 import {Dimensions, KeyboardAvoidingView, ScrollView, View} from 'react-native';
 import React, {useEffect} from 'react';
 import LottieView from 'lottie-react-native';
-import {refreshToken} from '../../redux/user/user.action';
+import {refreshTokens} from '../../redux/user/user.action';
 
 export const SplashScreen: Screen<'Splash'> = () => {
   const navigation = useNav();
 
   useEffect(() => {
     const handleToken = async () => {
-      const result = await refreshToken();
+      const result = await refreshTokens();
 
       if (result?.success) {
         setTimeout(() => {
-          navigation.navigate('Home');
+          navigation.navigate('Tab');
         }, 1000);
       } else {
         setTimeout(() => {

@@ -1,21 +1,14 @@
 export interface UserDetailEntity {
   id: number;
-  name: string;
+  fullName: string;
+  userName: string;
   email: string;
+  password: string;
   mobile: string;
   role: string;
   image: string;
-  password: string;
   gender: string;
   birthDate: string;
-  address: {
-    type: string;
-    line1: string;
-    line2: string;
-    city: string;
-    state: string;
-    postal_code: string;
-  };
 }
 
 export interface LoginParams {
@@ -26,11 +19,10 @@ export interface LoginParams {
 export interface LoginResponse {
   id: number;
   name: string;
+  mobile: string;
+  role: string;
   email: string;
   photo: string;
-  role: string;
-  accessToken: string;
-  refreshToken: string;
 }
 
 export interface UserState {

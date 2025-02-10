@@ -7,9 +7,10 @@ export const initialState: UserState = {
 };
 
 const userSlice = createSlice({
-  name: 'front-office',
+  name: 'user',
   initialState: initialState,
   reducers: userReducer,
 });
 
-export const {actions, reducer} = userSlice;
+export const {signUp, setId, logOut} = userSlice.actions;
+export default userSlice.reducer;

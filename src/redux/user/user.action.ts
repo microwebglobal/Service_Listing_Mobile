@@ -1,42 +1,36 @@
 import {Dispatch} from '@reduxjs/toolkit';
 import {dispatchable} from '../dispatchable';
-import {LoginParams, LoginResponse, UserDetailEntity} from './user.entity';
-import {actions} from './user.slice';
+import {LoginParams, LoginResponse} from './user.entity';
 import {instance} from '../../api/instance';
 import {AxiosResponse} from 'axios';
-import {
-  getRefreshToken,
-  getToken,
-  removeTokens,
-  saveTokenToStorage,
-} from '../../utils/token-storage';
+import {saveTokenToStorage} from '../../utils/token-storage';
+import {setId} from './user.slice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export function extractToken(cookieString: string, tokenName: string) {
+  const tokenRegex = new RegExp(`${tokenName}=([^;]+)`);
+  const match = cookieString.match(tokenRegex);
+  return match ? match[1] : null;
+}
 
 export const userLogin = dispatchable(({mobile, otp}: LoginParams) => {
   return async (dispatch: Dispatch) => {
     try {
-      const result: AxiosResponse<LoginResponse> = await instance.post(
+      const response: AxiosResponse<LoginResponse> = await instance.post(
         '/auth/customer/login/verify-otp',
         {mobile, otp},
       );
 
-      const {status, data} = result;
+      const cookieString: Array<string> = response.headers['set-cookie'];
+      const accessToken = extractToken(cookieString[0], 'accessToken');
+      const refreshToken = extractToken(cookieString[0], 'refreshToken');
 
-      if (status === 200) {
-        // const getUserDetail: AxiosResponse<UserDetailEntity> =
-        //   await instance.get('/users/addresses', {
-        //     headers: {
-        //       Authorization: `Bearer ${data.accessToken}`,
-        //     },
-        //   });
+      if (accessToken && refreshToken) {
+        await saveTokenToStorage(accessToken, refreshToken);
+      }
 
-        // await saveTokenToStorage(data.accessToken, data.refreshToken);
-        await saveTokenToStorage(
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Nywicm9sZSI6ImN1c3RvbWVyIiwiaWF0IjoxNzM4ODk3Mzc1LCJleHAiOjE3Mzg5ODM3NzV9.J_LI8zn6zHGJ0Ah7gpeEpPd-PDVi0RiMzzuNzIvO6g0',
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidG9rZW5WZXJzaW9uIjowLCJpYXQiOjE3Mzg4OTczNzUsImV4cCI6MTc0NjY3MzM3NX0.4-J0YTRwTGSHOINKWhsr_48N5ciDTM851nJzEX31auc',
-        );
-
-        // dispatch(actions['user/set-user'](getUserDetail.data));
-
+      if (response.status === 200) {
+        dispatch(setId(response.data.id));
         return {
           success: true,
         };
@@ -51,36 +45,21 @@ export const userLogin = dispatchable(({mobile, otp}: LoginParams) => {
 });
 
 // Check if the token is still valid otherwise refresh the token
-export const refreshToken = dispatchable(() => {
+export const refreshTokens = dispatchable(() => {
   return async () => {
     try {
-      const tokenFromKeychain = await getToken();
-      console.log('---------',tokenFromKeychain);
-      // const refreshTokenFromKeychain = await getRefreshToken();
+      const response = await instance.post('/auth/refresh');
 
-      if (!tokenFromKeychain) {
-        return {
-          success: false,
-        };
+      const cookieString: Array<string> = response.headers['set-cookie'];
+      const accessToken = extractToken(cookieString[0], 'accessToken');
+      const refreshToken = extractToken(cookieString[0], 'refreshToken');
+
+      if (accessToken && refreshToken) {
+        await saveTokenToStorage(accessToken, refreshToken);
       }
-
       return {
         success: true,
       };
-
-      // renew tokens
-      // const response = await instance.post('/refresh', {
-      //   refreshToken: refreshTokenFromKeychain,
-      // });
-
-      // const {status, data} = response;
-
-      // if (status === 200) {
-      //   await saveTokenToStorage(data.token, data.refreshToken);
-      //   return {
-      //     success: true,
-      //   };
-      // }
     } catch (error: any) {
       return {
         success: false,
@@ -90,19 +69,41 @@ export const refreshToken = dispatchable(() => {
 });
 
 export const userLogout = dispatchable(() => {
-  return async (dispatch: Dispatch) => {
+  return async () => {
     try {
-      const result = await removeTokens();
+      await AsyncStorage.clear();
+      return {
+        success: true,
+      };
+    } catch (error) {
+      return {
+        success: false,
+      };
+    }
+  };
+});
 
-      if (result.success) {
-        dispatch(actions['user/set-user'](null));
+export const userUpdate = dispatchable((name: any, email: any) => {
+  return async () => {
+    try {
+      const result = await instance.put(`/users/profile/${7}`, {
+        name: name,
+        email: email,
+        gender: null,
+        dob: null,
+      });
+
+      const {status} = result;
+
+      if (status === 200) {
         return {
           success: true,
         };
       }
-    } catch (error) {
+    } catch (error: any) {
       return {
         success: false,
+        error: error.message,
       };
     }
   };

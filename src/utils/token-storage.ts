@@ -1,43 +1,30 @@
-import * as Keychain from 'react-native-keychain';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const getToken = async () => {
-  const credentials = await Keychain.getGenericPassword();
-  if (!credentials) {
+  const accessToken = await AsyncStorage.getItem('token');
+  if (!accessToken) {
     return null;
   }
-  return credentials.password;
+  return accessToken;
 };
 
 export const getRefreshToken = async () => {
-  const credentials = await Keychain.getGenericPassword({
-    service: 'refreshToken',
-  });
-  if (!credentials) {
+  const refreshToken = await AsyncStorage.getItem('refreshToken');
+  if (!refreshToken) {
     return null;
   }
-  return credentials.password;
+  return refreshToken;
 };
 
 export const saveTokenToStorage = async (
   token: string,
   refreshToken: string,
 ) => {
-  await Keychain.setGenericPassword('token', token);
-  await Keychain.setGenericPassword('refreshToken', refreshToken, {
-    service: 'refreshToken',
-  });
-};
-
-export const removeTokens = async () => {
   try {
-    await Keychain.resetGenericPassword();
-    await Keychain.resetGenericPassword({service: 'refreshToken'});
-    return {
-      success: true,
-    };
+    await AsyncStorage.setItem('token', token);
+    await AsyncStorage.setItem('refreshToken', refreshToken);
+    return {success: true};
   } catch (error) {
-    return {
-      success: false,
-    };
+    return {success: false};
   }
 };

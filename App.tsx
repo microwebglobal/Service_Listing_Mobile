@@ -3,6 +3,9 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {RootNavigator} from './src/navigation/RootNavigator';
 import {ButtonProps, createTheme, ThemeProvider} from '@rneui/themed';
 import {Platform} from 'react-native';
+import {Provider} from 'react-redux';
+import {persistor, store} from './src/redux';
+import {PersistGate} from 'redux-persist/integration/react';
 
 export const FONT_FAMILY = 'Poppins';
 
@@ -66,11 +69,15 @@ const theme = createTheme({
 
 function App(): React.JSX.Element {
   return (
-    <ThemeProvider theme={theme}>
-      <SafeAreaProvider>
-        <RootNavigator />
-      </SafeAreaProvider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <ThemeProvider theme={theme}>
+          <SafeAreaProvider>
+            <RootNavigator />
+          </SafeAreaProvider>
+        </ThemeProvider>
+      </PersistGate>
+    </Provider>
   );
 }
 
