@@ -4,8 +4,6 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   ScrollView,
-  TextInput,
-  StyleSheet,
   TouchableOpacity,
   Keyboard,
   Image,
@@ -23,6 +21,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {signUp} from '../../redux/user/user.slice';
 import {UserDetailEntity} from '../../redux/user/user.entity';
+import InputField from '../../components/InputFeild';
 
 // Get screen dimension
 const screenWidth = Dimensions.get('window').width;
@@ -96,12 +95,13 @@ export const SignUpScreen = () => {
         }}>
         {/* Image selection */}
         <View className="mt-3 items-center justify-center">
-          {imageURI?.length > 0 ? (
+          {imageURI && (
             <Image
               source={{uri: imageURI}}
               className="w-28 h-28 rounded-full"
             />
-          ) : (
+          )}
+          {!imageURI && (
             <View className="w-28 h-28 rounded-full bg-primary items-center justify-center">
               <FontAwesome name="user-o" size={40} color={Colors.White} />
             </View>
@@ -129,11 +129,11 @@ export const SignUpScreen = () => {
               name="fullName"
               control={control}
               render={({field: {onChange, onBlur, value}}) => (
-                <TextInput
-                  placeholder="Full Name"
-                  style={styles.input}
+                <InputField
+                  placeHolder={'Full Name'}
                   value={value}
-                  inputMode="text"
+                  secure={false}
+                  inputMode={'text'}
                   onBlur={onBlur}
                   onChangeText={onChange}
                 />
@@ -150,11 +150,11 @@ export const SignUpScreen = () => {
               name="userName"
               control={control}
               render={({field: {onChange, onBlur, value}}) => (
-                <TextInput
-                  placeholder="User Name"
-                  style={styles.input}
+                <InputField
+                  placeHolder={'User Name'}
                   value={value}
-                  inputMode="text"
+                  secure={false}
+                  inputMode={'text'}
                   onBlur={onBlur}
                   onChangeText={onChange}
                 />
@@ -171,11 +171,11 @@ export const SignUpScreen = () => {
               name="email"
               control={control}
               render={({field: {onChange, onBlur, value}}) => (
-                <TextInput
-                  placeholder="Email"
-                  style={styles.input}
+                <InputField
+                  placeHolder={'email'}
                   value={value}
-                  inputMode="email"
+                  secure={false}
+                  inputMode={'email'}
                   onBlur={onBlur}
                   onChangeText={onChange}
                 />
@@ -194,12 +194,11 @@ export const SignUpScreen = () => {
               name="password"
               control={control}
               render={({field: {onChange, onBlur, value}}) => (
-                <TextInput
-                  placeholder="Password"
-                  secureTextEntry={true}
-                  style={styles.input}
+                <InputField
+                  placeHolder={'Password'}
                   value={value}
-                  inputMode="text"
+                  secure={true}
+                  inputMode={'text'}
                   onBlur={onBlur}
                   onChangeText={onChange}
                 />
@@ -218,11 +217,11 @@ export const SignUpScreen = () => {
               name="mobile"
               control={control}
               render={({field: {onChange, onBlur, value}}) => (
-                <TextInput
-                  placeholder="Contact number"
-                  style={styles.input}
+                <InputField
+                  placeHolder={'Contact number'}
                   value={value}
-                  inputMode="numeric"
+                  secure={false}
+                  inputMode={'numeric'}
                   onBlur={onBlur}
                   onChangeText={onChange}
                 />
@@ -270,24 +269,3 @@ export const SignUpScreen = () => {
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    borderWidth: 1,
-    borderColor: Colors.Gray,
-    borderRadius: 5,
-    height: 55,
-    paddingHorizontal: 10,
-    fontSize: 16,
-    color: Colors.Dark,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: 'grey',
-  },
-  contentContainer: {
-    flex: 1,
-    padding: 36,
-    alignItems: 'center',
-  },
-});

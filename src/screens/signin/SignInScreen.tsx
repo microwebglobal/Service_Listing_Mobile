@@ -3,20 +3,18 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   ScrollView,
-  StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {useNavigation} from '@react-navigation/native';
 import {Controller, useForm} from 'react-hook-form';
 import {Button} from '../../components/rneui';
 import axios from 'axios';
 import {API_BASE} from '@env';
 import GoogleIcon from '../../assets/svgs/GoogleIcon';
+import InputField from '../../components/InputFeild';
 // import auth from '@react-native-firebase/auth';
 // import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
@@ -116,11 +114,11 @@ export const SignInScreen = () => {
               name="phone"
               control={control}
               render={({field: {onChange, onBlur, value}}) => (
-                <TextInput
-                  placeholder="Contact number"
-                  style={styles.input}
+                <InputField
+                  placeHolder={'Contact number'}
                   value={value}
-                  inputMode="numeric"
+                  secure={false}
+                  inputMode={'numeric'}
                   onBlur={onBlur}
                   onChangeText={onChange}
                 />
@@ -151,7 +149,7 @@ export const SignInScreen = () => {
           </Text>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('SignUp');
+              navigation.navigate('SignUp' as never);
             }}>
             <Text className="mb-2 text-base font-medium text-primary underline">
               Sign Up
@@ -164,7 +162,9 @@ export const SignInScreen = () => {
             {' '}
             ─────────── Or continue with ───────────
           </Text>
-          <TouchableOpacity className="p-1 bg-lightGrey rounded-full" onPress={() => {}}>
+          <TouchableOpacity
+            className="p-1 bg-lightGrey rounded-full"
+            onPress={() => {}}>
             <GoogleIcon />
           </TouchableOpacity>
         </View>
@@ -172,15 +172,3 @@ export const SignInScreen = () => {
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    borderWidth: 1,
-    borderColor: Colors.Gray,
-    borderRadius: 5,
-    height: 55,
-    paddingHorizontal: 10,
-    fontSize: 16,
-    color: Colors.Dark,
-  },
-});
