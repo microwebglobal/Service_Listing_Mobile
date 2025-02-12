@@ -1,14 +1,14 @@
 export interface UserDetailEntity {
   id: number;
-  fullName: string;
+  name: string;
   userName: string;
   email: string;
   password: string;
   mobile: string;
   role: string;
-  image: string;
+  photo: string;
   gender: string;
-  birthDate: string;
+  dob: string;
 }
 
 export interface LoginParams {

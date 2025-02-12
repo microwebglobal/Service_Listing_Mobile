@@ -19,7 +19,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ImagePicker from 'react-native-image-crop-picker';
 import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
-import {signUp} from '../../redux/user/user.slice';
+import {setUser} from '../../redux/user/user.slice';
 import {UserDetailEntity} from '../../redux/user/user.entity';
 import InputField from '../../components/InputFeild';
 
@@ -46,9 +46,8 @@ export const SignUpScreen = () => {
   } = useForm<UserDetailEntity>();
 
   const submit = (data: UserDetailEntity) => {
-    imageURI && (data.image = imageURI);
-    // save form data into store
-    dispatch(signUp(data));
+    imageURI && (data.photo = imageURI);
+    dispatch(setUser(data));
     navigation.navigate('SelectLocation');
   };
 
@@ -126,7 +125,7 @@ export const SignUpScreen = () => {
         <View className="gap-5 mb-3">
           <View>
             <Controller
-              name="fullName"
+              name="name"
               control={control}
               render={({field: {onChange, onBlur, value}}) => (
                 <InputField
@@ -140,7 +139,7 @@ export const SignUpScreen = () => {
               )}
               rules={{required: true}}
             />
-            {errors.fullName && (
+            {errors.name && (
               <Text className="text-error">{'Full name is required'}</Text>
             )}
           </View>
@@ -161,7 +160,7 @@ export const SignUpScreen = () => {
               )}
               rules={{required: true}}
             />
-            {errors.fullName && (
+            {errors.name && (
               <Text className="text-error">{'User name is required'}</Text>
             )}
           </View>
@@ -182,7 +181,7 @@ export const SignUpScreen = () => {
               )}
               rules={{required: true}}
             />
-            {errors.fullName && (
+            {errors.email && (
               <Text className="text-error">
                 {'Please enter valid email address'}
               </Text>
@@ -228,7 +227,7 @@ export const SignUpScreen = () => {
               )}
               rules={{required: true, minLength: 10, maxLength: 10}}
             />
-            {errors.fullName && (
+            {errors.mobile && (
               <Text className="text-error">
                 {'Please enter valid mobile number'}
               </Text>

@@ -2,7 +2,7 @@ import {PayloadAction} from '@reduxjs/toolkit';
 import {UserDetailEntity, UserState} from './user.entity';
 
 export default {
-  signUp: (
+  setUser: (
     state: UserState,
     action: PayloadAction<UserDetailEntity | null>,
   ) => {
