@@ -6,6 +6,7 @@ import {Platform} from 'react-native';
 import {Provider} from 'react-redux';
 import {persistor, store} from './src/redux';
 import {PersistGate} from 'redux-persist/integration/react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export const FONT_FAMILY = 'Poppins';
 
@@ -71,11 +72,13 @@ function App(): React.JSX.Element {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <ThemeProvider theme={theme}>
-          <SafeAreaProvider>
-            <RootNavigator />
-          </SafeAreaProvider>
-        </ThemeProvider>
+        <GestureHandlerRootView>
+          <ThemeProvider theme={theme}>
+            <SafeAreaProvider>
+              <RootNavigator />
+            </SafeAreaProvider>
+          </ThemeProvider>
+        </GestureHandlerRootView>
       </PersistGate>
     </Provider>
   );
