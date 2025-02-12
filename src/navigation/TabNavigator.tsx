@@ -2,13 +2,12 @@ import React from 'react';
 import {Dimensions, StyleSheet} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Colors} from '../utils/Colors';
 import {CartScreen} from '../screens/cart/CartScreen';
 import {NotificationScreen} from '../screens/notification/NotificationScreen';
 import {TicketScreen} from '../screens/ticket/TicketScreen';
 import {HomeScreen} from '../screens/home/HomeScreen';
-import {CategoryScreen} from '../screens/category/CategoryScreen';
+import {ServiceNavigator} from './RootNavigator';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -27,8 +26,10 @@ export const TabNavigator = () => {
         tabBarLabelStyle: styles.tabBarLabelStyle,
         tabBarHideOnKeyboard: true,
         tabBarActiveTintColor: Colors.Primary,
-        headerShown: true,
+        headerShown: false,
+        headerShadowVisible: false,
         headerTitleAlign: 'center',
+        headerTitleStyle: {fontSize: 20},
         tabBarStyle: styles.tabBarStyle,
         tabBarIconStyle: styles.tabBarIconStyle,
 
@@ -37,18 +38,16 @@ export const TabNavigator = () => {
           let iconName;
 
           if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home';
-            return <AntDesign name={iconName} size={30} color={color} />;
+            iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Ticket') {
-            iconName = focused ? 'ticket-outline' : 'ticket-outline';
-          } else if (route.name === 'Category') {
-            iconName = focused ? 'duplicate-outline' : 'duplicate-outline';
+            iconName = focused ? 'ticket' : 'ticket-outline';
+          } else if (route.name === 'ServiceNavigator') {
+            iconName = focused ? 'duplicate' : 'duplicate-outline';
           } else if (route.name === 'Cart') {
-            iconName = focused ? 'shoppingcart' : 'shoppingcart';
-            return <AntDesign name={iconName} size={30} color={color} />;
+            iconName = focused ? 'cart' : 'cart-outline';
           } else if (route.name === 'Notification') {
             iconName = focused
-              ? 'notifications-outline'
+              ? 'notifications'
               : 'notifications-outline';
           }
 
@@ -61,42 +60,17 @@ export const TabNavigator = () => {
           );
         },
       })}>
+      <Tab.Screen name={'Home'} component={HomeScreen} />
+      <Tab.Screen name={'Ticket'} component={TicketScreen} />
       <Tab.Screen
-        name={'Home'}
-        component={HomeScreen}
-        // options={{
-        //   tabBarLabel: 'Home',
-        // }}
+        name={'ServiceNavigator'}
+        component={ServiceNavigator}
+        options={{
+          headerShown: false,
+        }}
       />
-      <Tab.Screen
-        name={'Ticket'}
-        component={TicketScreen}
-        // options={{
-        //   tabBarLabel: 'Ticket',
-        // }}
-      />
-      <Tab.Screen
-        name={'Category'}
-        component={CategoryScreen}
-        // options={{
-        //   tabBarLabel: 'Category',
-        // }}
-      />
-      <Tab.Screen
-        name={'Cart'}
-        component={CartScreen}
-        // options={{
-        //   tabBarLabel: 'Cart',
-        // }}
-      />
-      <Tab.Screen
-        name={'Notification'}
-        component={NotificationScreen}
-        // options={{
-        //   tabBarLabel: 'Notification',
-        //   headerShown: false,
-        // }}
-      />
+      <Tab.Screen name={'Cart'} component={CartScreen} />
+      <Tab.Screen name={'Notification'} component={NotificationScreen} />
     </Tab.Navigator>
   );
 };

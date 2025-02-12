@@ -11,14 +11,44 @@ import {LoginSuccessScreen} from '../screens/signin/LoginSuccess';
 import {SignUpScreen} from '../screens/signup/SignUpScreen';
 import {SelectLocation} from '../screens/location/SelectLocation';
 import {TabNavigator} from './TabNavigator';
+import {ProfileScreen} from '../screens/profile/ProfileScreen';
+import {SubCategoryScreen} from '../screens/category/SubCategoryScreen';
+import {CategoryScreen} from '../screens/category/CategoryScreen';
+import {ServiceTypeScreen} from '../screens/category/ServiceTypeScreen';
+import {ServiceScreen} from '../screens/category/ServiceScreen';
+import {ServiceDetails} from '../screens/serviceDetails/ServiceDetails';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
+
+export const ServiceNavigator = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: Colors.White,
+        },
+        headerShadowVisible: false,
+        headerTintColor: Colors.Dark,
+        headerTitleAlign: 'center',
+        headerTitleStyle: {
+          fontWeight: '500',
+          color: Colors.Dark,
+        },
+      }}>
+      <Stack.Screen name="Category" component={CategoryScreen} />
+      <Stack.Screen name="SubCategory" component={SubCategoryScreen} />
+      <Stack.Screen name="ServiceType" component={ServiceTypeScreen} />
+      <Stack.Screen name="ServiceList" component={ServiceScreen} />
+    </Stack.Navigator>
+  );
+};
 
 export const RootNavigator: React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Splash"
+        initialRouteName="SelectLocation"
         screenOptions={{
           headerShown: false,
           headerStyle: {
@@ -46,6 +76,8 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="Verification" component={VerificationScreen} />
         <Stack.Screen name="LoginSuccess" component={LoginSuccessScreen} />
         <Stack.Screen name="SelectLocation" component={SelectLocation} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="ServiceDetails" component={ServiceDetails} />
       </Stack.Navigator>
     </NavigationContainer>
   );
