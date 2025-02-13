@@ -6,8 +6,7 @@ import {Colors} from '../utils/Colors';
 import {CartScreen} from '../screens/cart/CartScreen';
 import {NotificationScreen} from '../screens/notification/NotificationScreen';
 import {TicketScreen} from '../screens/ticket/TicketScreen';
-import {HomeScreen} from '../screens/home/HomeScreen';
-import {ServiceNavigator} from './RootNavigator';
+import {CategoryNavigator, HomeNavigator} from './RootNavigator';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -20,7 +19,7 @@ const Tab = createBottomTabNavigator();
 export const TabNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="HomeTab"
       screenOptions={({route}) => ({
         tabBarShowLabel: false,
         tabBarLabelStyle: styles.tabBarLabelStyle,
@@ -37,7 +36,7 @@ export const TabNavigator = () => {
         tabBarIcon: ({focused, color}) => {
           let iconName;
 
-          if (route.name === 'Home') {
+          if (route.name === 'HomeTab') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Ticket') {
             iconName = focused ? 'ticket' : 'ticket-outline';
@@ -46,9 +45,7 @@ export const TabNavigator = () => {
           } else if (route.name === 'Cart') {
             iconName = focused ? 'cart' : 'cart-outline';
           } else if (route.name === 'Notification') {
-            iconName = focused
-              ? 'notifications'
-              : 'notifications-outline';
+            iconName = focused ? 'notifications' : 'notifications-outline';
           }
 
           return (
@@ -60,11 +57,11 @@ export const TabNavigator = () => {
           );
         },
       })}>
-      <Tab.Screen name={'Home'} component={HomeScreen} />
+      <Tab.Screen name={'HomeTab'} component={HomeNavigator} />
       <Tab.Screen name={'Ticket'} component={TicketScreen} />
       <Tab.Screen
         name={'ServiceNavigator'}
-        component={ServiceNavigator}
+        component={CategoryNavigator}
         options={{
           headerShown: false,
         }}

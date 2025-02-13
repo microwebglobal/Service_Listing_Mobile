@@ -13,10 +13,11 @@ export type RootStackParamList = {
   LoginSuccess: undefined;
   SelectLocation: undefined;
   Tab: undefined;
+  Home: undefined;
   Profile: undefined;
   Category: undefined;
-  SubCategory: {subcategoryData: Array<SubCategory>};
-  ServiceType: {subCategoryId: string};
+  SubCategory: {subcategoryData: Array<SubCategory>; category: string};
+  ServiceType: {subCategoryId: string, subCategory: string};
   ServiceList: {serviceData: Array<Service>};
   ServiceDetails: undefined;
 };
