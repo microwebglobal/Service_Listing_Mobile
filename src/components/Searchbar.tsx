@@ -5,45 +5,38 @@ import {Colors} from '../utils/Colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface SearchBarProps {
+  placeholder: string;
+  iconName: string;
   onSearch: (text: string) => void;
 }
 
-export const SearchBarComponent = ({onSearch}: SearchBarProps) => {
-  const [searchText, setSearchText] = useState<string>('');
+export const SearchBarComponent = ({placeholder, iconName, onSearch}: SearchBarProps) => {
+  const [searchText, setSearchText] = useState<string>();
   const updateSearch = (text: string) => {
     setSearchText(text);
-    onSearch(text);
   };
 
-  const locationIcon =
-    searchText.length === 0 ? (
-      <Ionicons name="location-outline" size={20} color={Colors.Black} />
-    ) : (
-      <Ionicons name="location" size={20} color={Colors.Black} />
-    );
-
-  // const cancelIcon = (
-  //   <AntDesign name="close" size={20} color={Colors.SecondaryBlue} />
-  // );
+  const icon = (
+    <Ionicons name={iconName} size={20} color={Colors.Dark} />
+  );
 
   return (
     <View className="flex-row items-center">
-      <View style={{width: 'auto', flex: 1}}>
+      <View className="flex-1 w-auto">
         <SearchBar
-          placeholder="Add location"
+          placeholder={placeholder}
           placeholderTextColor={Colors.Gray}
           value={searchText}
           onChangeText={updateSearch}
           inputMode="text"
-          round={true}
           lightTheme={true}
-          searchIcon={locationIcon}
-          // clearIcon={cancelIcon}
-          containerStyle={styles.SearchBarContainerStyle}
-          inputStyle={styles.SearchInputText}
-          leftIconContainerStyle={styles.SearchIcon}
+          searchIcon={icon}
+          containerStyle={styles.ContainerStyle}
+          inputContainerStyle={styles.inputContainerStyle}
+          inputStyle={styles.InputText}
           onSubmitEditing={() => {
-            setSearchText('');
+            searchText && onSearch(searchText);
+            setSearchText(undefined);
           }}
           returnKeyType="search"
         />
@@ -53,18 +46,23 @@ export const SearchBarComponent = ({onSearch}: SearchBarProps) => {
 };
 
 const styles = StyleSheet.create({
-  SearchBarContainerStyle: {
-    marginLeft: -7,
+  ContainerStyle: {
+    padding: 0,
     backgroundColor: Colors.White,
     borderBottomColor: 'transparent',
     borderTopColor: 'transparent',
   },
-  SearchInputText: {
-    height: 50,
-    color: Colors.Black,
-    fontSize: 18,
+  inputContainerStyle: {
+    backgroundColor: Colors.White,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: Colors.Gray,
+    elevation: 2,
   },
-  SearchIcon: {
-    marginLeft: 15,
+  InputText: {
+    height: 50,
+    color: Colors.Dark,
+    fontSize: 17,
   },
 });

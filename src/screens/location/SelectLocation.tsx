@@ -125,9 +125,16 @@ export const SelectLocation = () => {
                 }}
               />
             </View>
-            <View className="w-12 h-12 p-2 ml-2 items-center justify-center rounded-md bg-lightGrey">
-              <TouchableOpacity onPress={() => {}}>
-                <AntDesign name="search1" size={20} color={Colors.Dark} />
+            <View className="w-12 h-12 p-2 ml-2 items-center justify-center rounded-md bg-primary">
+              <TouchableOpacity
+                onPress={() => {
+                  Keyboard.dismiss();
+                }}>
+                <MaterialIcons
+                  name="my-location"
+                  size={22}
+                  color={Colors.White}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -167,7 +174,7 @@ export const SelectLocation = () => {
                   <AntDesign name="home" size={18} color={Colors.Primary} />
                 </View>
                 {!homeAddress ? (
-                  <Text className="text-base text-dark ml-3">Add home</Text>
+                  <Text className="text-base text-black ml-3">Add home</Text>
                 ) : (
                   <View>
                     <Text className="text-base text-dark ml-3">
@@ -203,7 +210,7 @@ export const SelectLocation = () => {
                   />
                 </View>
                 {!workAddress ? (
-                  <Text className="text-base text-dark ml-3">Add work</Text>
+                  <Text className="text-base text-black ml-3">Add work</Text>
                 ) : (
                   <View>
                     <Text className="text-base text-dark ml-3">
@@ -249,13 +256,13 @@ export const SelectLocation = () => {
         <BottomSheetView style={styles.contentContainer}>
           <View className="items-center p-6">
             <View className="flex-row justify-between w-full items-center">
-              <Text className="text-xl font-medium text-black">
+              <Text className="text-lg font-medium text-black">
                 Add {addressType} Address
               </Text>
               <MaterialIcons
                 name="close"
-                color={Colors.Black}
-                size={24}
+                color={Colors.Dark}
+                size={22}
                 onPress={handleClosePress}
               />
             </View>
@@ -300,45 +307,24 @@ export const SelectLocation = () => {
                   />
                 </View>
 
-                <View>
-                  <Controller
-                    name="city"
-                    control={control}
-                    render={({field: {onChange, onBlur, value}}) => (
-                      <InputField
-                        placeHolder={'City'}
-                        value={value}
-                        secure={false}
-                        inputMode={'text'}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                      />
-                    )}
-                    rules={{required: true}}
-                  />
-                  {errors.city && (
-                    <Text className="text-error">{'* required field'}</Text>
-                  )}
-                </View>
-
                 <View className="flex-row justify-between">
                   <View className="basis-1/2 pr-2">
                     <Controller
-                      name="postal_code"
+                      name="city"
                       control={control}
                       render={({field: {onChange, onBlur, value}}) => (
                         <InputField
-                          placeHolder={'Postal Code'}
+                          placeHolder={'City'}
                           value={value}
                           secure={false}
-                          inputMode={'numeric'}
+                          inputMode={'text'}
                           onBlur={onBlur}
                           onChangeText={onChange}
                         />
                       )}
                       rules={{required: true}}
                     />
-                    {errors.postal_code && (
+                    {errors.city && (
                       <Text className="text-error">{'* required field'}</Text>
                     )}
                   </View>
@@ -364,11 +350,32 @@ export const SelectLocation = () => {
                     )}
                   </View>
                 </View>
+
+                <View>
+                  <Controller
+                    name="postal_code"
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                      <InputField
+                        placeHolder={'Postal Code'}
+                        value={value}
+                        secure={false}
+                        inputMode={'numeric'}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                      />
+                    )}
+                    rules={{required: true}}
+                  />
+                  {errors.postal_code && (
+                    <Text className="text-error">{'* required field'}</Text>
+                  )}
+                </View>
               </View>
 
               <View>
                 <Button
-                  title={'Done'}
+                  title={'Save Address'}
                   onPress={(Keyboard.dismiss(), handleSubmit(submit))}
                   primary
                 />
@@ -386,7 +393,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.White,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    borderColor: Colors.LightGrey,
+    borderColor: Colors.Gray,
     borderWidth: 1,
   },
 });
