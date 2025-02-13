@@ -17,12 +17,14 @@ export interface LoginParams {
 }
 
 export interface LoginResponse {
-  id: number;
-  name: string;
-  mobile: string;
-  role: string;
-  email: string;
-  photo: string;
+  user: {
+    id: number;
+    name: string;
+    mobile: string;
+    role: string;
+    email: string;
+    photo: string;
+  };
 }
 
 export interface UserState {

@@ -3,9 +3,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   ScrollView,
-  StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -15,12 +13,13 @@ import {Controller, useForm} from 'react-hook-form';
 import {Button} from '../../components/rneui';
 import {Colors} from '../../utils/Colors';
 import CountDown from 'react-native-countdown-component';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import {API_BASE} from '@env';
 import GoogleIcon from '../../assets/svgs/GoogleIcon';
 import {userLogin, userUpdate} from '../../redux/user/user.action';
-import { useAppSelector } from '../../redux';
+import {useAppSelector} from '../../redux';
+import AppHeader from '../../components/AppHeader';
+import InputField from '../../components/InputFeild';
 
 interface SignInData {
   otp: string;
@@ -58,7 +57,7 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
     const result = await userLogin({mobile: phone, otp: data.otp});
     if (result?.success) {
       if (prevRoute.name === 'SelectLocation') {
-        userUpdate(user?.fullName, user?.email);
+        userUpdate(user?.name, user?.email, user?.id);
       }
       navigation.navigate('LoginSuccess');
     }
@@ -81,129 +80,114 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
 
   return (
     <KeyboardAvoidingView className="flex-1 bg-white">
+      <AppHeader back={true} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{
           marginHorizontal: RPW(8),
-          marginTop: RPH(10),
+          marginTop: RPH(5),
         }}>
         <View>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <MaterialIcons
-              name="arrow-back-ios-new"
-              size={24}
-              color={Colors.Dark}
-            />
-          </TouchableOpacity>
-        </View>
-
-        <View className="items-center mb-5">
-          <Text className="text-2xl text-black font-medium">Enter OTP</Text>
-          <Text className="mt-3 text-lg font-normal text-dark">
-            Enter the 6 Digit Code Sent To
-          </Text>
-          <Text className="mt-3 text-lg font-normal text-dark">Your Phone</Text>
-        </View>
-
-        <View className="gap-5">
-          {/* phone input */}
-          <View>
-            <Controller
-              name="otp"
-              control={control}
-              render={({field: {onChange, onBlur, value}}) => (
-                <TextInput
-                  placeholder="Enter otp"
-                  secureTextEntry={true}
-                  style={styles.input}
-                  value={value}
-                  inputMode="numeric"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  onChange={() => setIsValid(false)}
-                />
-              )}
-              rules={{required: true, minLength: 6, maxLength: 6}}
-            />
-            {errors.otp && (
-              <Text className="text-error">
-                {'Verification code is only 6 digit number'}
-              </Text>
-            )}
-            {!errors.otp && isValid && (
-              <Text className="text-error">{'Invalid OTP'}</Text>
-            )}
-          </View>
-        </View>
-
-        <View className="flex-row items-center">
-          <Text className="text-base font-normal text-dark">
-            OTP will expire in
-          </Text>
-          <CountDown
-            until={count}
-            size={15}
-            style={{width: RPW(8), height: 40}}
-            digitStyle={{backgroundColor: Colors.White}}
-            digitTxtStyle={{
-              color: Colors.Primary,
-            }}
-            timeToShow={['S']}
-            timeLabels={{s: undefined}}
-            running={true}
-          />
-          <Text className="text-base font-normal text-dark">seconds</Text>
-        </View>
-
-        {/* Button */}
-        <View className="my-5">
-          <Button
-            loading={loading}
-            title={'Login'}
-            onPress={(Keyboard.dismiss(), handleSubmit(submit))}
-            primary
-          />
-        </View>
-
-        <View className="flex-row justify-center">
-          <Text className="mb-2 text-base font-normal text-dark">
-            Didn't receive the SMS?{'  '}
-          </Text>
-          <TouchableOpacity
-            onPress={() => {
-              setCount(count + count * 0.0001);
-              resendOTP();
-            }}>
-            <Text className="mb-2 text-base font-medium text-primary underline">
-              Resend it
+          <View className="items-center mb-5">
+            <Text className="text-2xl text-black font-medium">Enter OTP</Text>
+            <Text className="mt-3 text-lg font-normal text-dark">
+              Enter the 6 Digit Code Sent To
             </Text>
-          </TouchableOpacity>
-        </View>
+            <Text className="mt-3 text-lg font-normal text-dark">
+              Your Phone
+            </Text>
+          </View>
 
-        <View className="mt-12 justify-center items-center">
-          <Text className="mb-5">
-            {' '}
-            ─────────── Or continue with ───────────
-          </Text>
-          <TouchableOpacity
-            className="p-1 bg-lightGrey rounded-full"
-            onPress={() => {}}>
-            <GoogleIcon />
-          </TouchableOpacity>
+          <View className="gap-5">
+            {/* phone input */}
+            <View>
+              <Controller
+                name="otp"
+                control={control}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <InputField
+                    placeHolder={'Enter otp'}
+                    secure={true}
+                    value={value}
+                    inputMode={'text'}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    onChange={() => setIsValid(false)}
+                  />
+                )}
+                rules={{required: true, minLength: 6, maxLength: 6}}
+              />
+              {errors.otp && (
+                <Text className="text-error">
+                  {'Verification code is only 6 digit number'}
+                </Text>
+              )}
+              {!errors.otp && isValid && (
+                <Text className="text-error">{'Invalid OTP'}</Text>
+              )}
+            </View>
+          </View>
+
+          <View className="flex-row items-center">
+            <Text className="text-base font-normal text-dark">
+              OTP will expire in
+            </Text>
+            <CountDown
+              until={count}
+              size={15}
+              style={{width: RPW(8), height: 40}}
+              digitStyle={{backgroundColor: Colors.White}}
+              digitTxtStyle={{
+                color: Colors.Primary,
+              }}
+              timeToShow={['S']}
+              timeLabels={{s: undefined}}
+              running={true}
+            />
+            <Text className="text-base font-normal text-dark">seconds</Text>
+          </View>
+
+          {/* Button */}
+          <View className="my-5">
+            <Button
+              loading={loading}
+              title={'Login'}
+              onPress={(Keyboard.dismiss(), handleSubmit(submit))}
+              primary
+            />
+          </View>
+
+          <View className="flex-row justify-center">
+            <Text className="mb-2 text-base font-normal text-dark">
+              Didn't receive the SMS?{'  '}
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                setCount(count + count * 0.0001);
+                resendOTP();
+              }}>
+              <Text className="mb-2 text-base font-medium text-primary underline">
+                Resend it
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View className="mt-12 justify-center items-center">
+            <View className="flex-row items-baseline">
+              <View className="w-full h-0.5 bg-slate-300" />
+              <View className="mx-3">
+                <Text className="mb-5">Or continue with</Text>
+              </View>
+              <View className="w-full h-0.5 bg-slate-300" />
+            </View>
+            <TouchableOpacity
+              className="p-1 bg-lightGrey rounded-full"
+              onPress={() => {}}>
+              <GoogleIcon />
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    borderWidth: 1,
-    borderColor: Colors.Gray,
-    borderRadius: 5,
-    height: 55,
-    paddingHorizontal: 10,
-    fontSize: 16,
-    color: Colors.Dark,
-  },
-});

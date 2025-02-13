@@ -158,10 +158,13 @@ export const SignInScreen = () => {
         </View>
 
         <View className="mt-12 justify-center items-center">
-          <Text className="mb-5">
-            {' '}
-            ─────────── Or continue with ───────────
-          </Text>
+          <View className="flex-row items-baseline">
+            <View className="w-full h-0.5 bg-slate-300" />
+            <View className="mx-3">
+              <Text className="mb-5">Or continue with</Text>
+            </View>
+            <View className="w-full h-0.5 bg-slate-300" />
+          </View>
           <TouchableOpacity
             className="p-1 bg-lightGrey rounded-full"
             onPress={() => {}}>

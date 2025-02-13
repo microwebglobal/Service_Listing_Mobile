@@ -10,7 +10,7 @@ import {
   Image,
   FlatList,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Colors} from '../../utils/Colors';
@@ -20,8 +20,6 @@ import featuredData from '../../data/featuredData';
 import offerCardData from '../../data/offerList';
 import {FeaturedCard} from '../../components/FeaturedCard';
 import {instance} from '../../api/instance';
-import {useDispatch} from 'react-redux';
-import {setUser} from '../../redux/user/user.slice';
 
 // Get screen dimension
 const screenWidth = Dimensions.get('window').width;
@@ -35,16 +33,16 @@ const RPH = (percentage: number) => {
 
 export const HomeScreen = () => {
   const navigation = useNavigation();
-  const dispatch = useDispatch();
   const tabBarHeight = useBottomTabBarHeight();
   const user = useAppSelector(state => state.user.user);
-  const [hour, setHour] = React.useState<number>(0);
+  const [hour, setHour] = useState<number>(0);
+  const [userName, setUserName] = useState<string>();
 
   useEffect(() => {
     instance.get(`/customer-profiles/user/${user?.id}`).then(response => {
-      dispatch(setUser(response.data));
+      setUserName(response.data.name);
     });
-  }, [dispatch, user?.id]);
+  }, [user?.id]);
 
   const getHour = async () => {
     const date = new Date();
@@ -105,7 +103,7 @@ export const HomeScreen = () => {
             <Text className="text-xl font-medium text-dark">
               {hour < 12 ? 'Good Morning,' : 'Good evening,'}
             </Text>
-            <Text className="text-xl font-medium text-dark">{user?.name.split(' ')[0]}!</Text>
+            <Text className="text-xl font-medium text-dark">{userName?.split(' ')[0]}!</Text>
           </View>
 
           <View className="float-right bg-lightGrey rounded-full w-12 h-12 justify-center items-center">
