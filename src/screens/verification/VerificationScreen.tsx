@@ -176,7 +176,9 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
             <View className="flex-row items-baseline">
               <View className="w-full h-0.5 bg-slate-300" />
               <View className="mx-3">
-                <Text className="mb-5">Or continue with</Text>
+                <Text className="mb-5 text-base font-medium">
+                  Or continue with
+                </Text>
               </View>
               <View className="w-full h-0.5 bg-slate-300" />
             </View>

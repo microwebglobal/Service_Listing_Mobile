@@ -28,7 +28,7 @@ export const LoginSuccessScreen = () => {
         speed={0.6}
       />
       <View className="mx-10">
-        <Text className="text-2xl font-semibold text-center">
+        <Text className="text-2xl text-dark font-semibold text-center">
           Congratulations!
         </Text>
         <Text className="mt-2 text-lg text-center">

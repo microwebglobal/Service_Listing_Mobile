@@ -12,6 +12,7 @@ export const Button: FC<
     secondary?: boolean;
     white?: boolean;
     error?: boolean;
+    black?: boolean;
     textColor?: string;
   }
 > = ({...props}) => {

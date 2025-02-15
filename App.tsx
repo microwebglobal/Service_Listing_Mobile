@@ -6,26 +6,26 @@ import {Platform} from 'react-native';
 import {Provider} from 'react-redux';
 import {persistor, store} from './src/redux';
 import {PersistGate} from 'redux-persist/integration/react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 export const FONT_FAMILY = 'Poppins';
 
 const theme = createTheme({
   lightColors: {
-    primary: '#0070FF',
+    primary: '#5f60b9',
     secondary: '#263446',
     grey0: '#788AA5',
     white: '#FFFFFF',
-    black: '#000',
+    black: '#000000',
     error: '#C62B3B',
   },
   darkColors: {
-    primary: '#001899',
+    primary: '#5f60b9',
     secondary: '#263446',
     grey0: '#788AA5',
-    error: '#C62B3B',
-    black: '#000',
     white: '#FFFFFF',
+    black: '#000000',
+    error: '#C62B3B',
   },
   mode: 'light',
   components: {
@@ -34,6 +34,7 @@ const theme = createTheme({
         primary?: boolean;
         secondary?: boolean;
         error?: boolean;
+        black?: boolean;
         default?: boolean;
       },
       themeColor,
@@ -44,24 +45,29 @@ const theme = createTheme({
         fontFamily: FONT_FAMILY,
         fontWeight: 'bold',
         lineHeight: 30,
-        color: props.primary
-          ? themeColor.colors.white
-          : props.default
-          ? themeColor.colors.primary
-          : props.error
-          ? themeColor.colors.white
-          : themeColor.colors.primary,
+        color:
+          props.primary || props.black
+            ? themeColor.colors.white
+            : props.default
+            ? themeColor.colors.primary
+            : props.error
+            ? themeColor.colors.white
+            : themeColor.colors.primary,
         fontSize: props.size === 'sm' ? 14 : 18,
         marginTop: Platform.OS === 'ios' ? 3 : 0,
       },
       buttonStyle: {
         borderRadius: 10,
         borderWidth: props.primary ? 0 : 1,
-        borderColor: themeColor.colors.primary,
+        borderColor: props.black
+          ? themeColor.colors.black
+          : themeColor.colors.primary,
         backgroundColor: props.primary
           ? themeColor.colors.primary
           : props.error
           ? themeColor.colors.error
+          : props.black
+          ? themeColor.colors.black
           : themeColor.colors.white,
       },
     }),
