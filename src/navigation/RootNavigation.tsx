@@ -1,8 +1,6 @@
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {FC, PropsWithChildren} from 'react';
 import {RouteProp, useNavigation} from '@react-navigation/native';
-import {SubCategory} from '../screens/category/CategoryScreen';
-import {Service} from '../screens/category/ServiceTypeScreen';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -16,9 +14,8 @@ export type RootStackParamList = {
   Home: undefined;
   Profile: undefined;
   Category: undefined;
-  SubCategory: {subcategoryData: Array<SubCategory>; category: string};
+  SubCategory: {categoryId: string; category: string, imageUrl: string};
   ServiceType: {subCategoryId: string, subCategory: string};
-  ServiceList: {serviceData: Array<Service>};
   ServiceDetails: undefined;
 };
 

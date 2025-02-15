@@ -15,9 +15,8 @@ import {ProfileScreen} from '../screens/profile/ProfileScreen';
 import {SubCategoryScreen} from '../screens/category/SubCategoryScreen';
 import {CategoryScreen} from '../screens/category/CategoryScreen';
 import {ServiceTypeScreen} from '../screens/category/ServiceTypeScreen';
-import {ServiceScreen} from '../screens/category/ServiceScreen';
 import {ServiceDetails} from '../screens/serviceDetails/ServiceDetails';
-import { HomeScreen } from '../screens/home/HomeScreen';
+import {HomeScreen} from '../screens/home/HomeScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -40,7 +39,6 @@ export const CategoryNavigator = () => {
       <Stack.Screen name="Category" component={CategoryScreen} />
       <Stack.Screen name="SubCategory" component={SubCategoryScreen} />
       <Stack.Screen name="ServiceType" component={ServiceTypeScreen} />
-      <Stack.Screen name="ServiceList" component={ServiceScreen} />
     </Stack.Navigator>
   );
 };
