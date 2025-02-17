@@ -3,33 +3,27 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   ScrollView,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import React, {useState} from 'react';
 import {Screen, useNav} from '../../navigation/RootNavigation';
-import {Controller, useForm} from 'react-hook-form';
 import {Button} from '../../components/rneui';
 import {Colors} from '../../utils/Colors';
 import CountDown from 'react-native-countdown-component';
 import axios from 'axios';
 import {API_BASE} from '@env';
 import GoogleIcon from '../../assets/svgs/GoogleIcon';
-import {userLogin, userUpdate} from '../../redux/user/user.action';
 import {useAppSelector} from '../../redux';
 import AppHeader from '../../components/AppHeader';
-import InputField from '../../components/InputFeild';
+import {userLogin, userUpdate} from '../../redux/user/user.action';
+import OTPInputView from '@twotalltotems/react-native-otp-input';
 
-interface SignInData {
-  otp: string;
-}
-
-// Get screen dimension
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-// RPW and RPH are functions to set responsive width and height
 const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
@@ -42,27 +36,32 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
   const navigation = useNav();
   const [loading, setLoading] = useState<boolean>(false);
   const [count, setCount] = useState<number>(60);
+  const [otp, setOtp] = useState<string>('');
   const [isValid, setIsValid] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
   const user = useAppSelector(state => state.user.user);
-  const {
-    control,
-    handleSubmit,
-    formState: {errors},
-  } = useForm<SignInData>();
   const routes = navigation.getState()?.routes;
   const prevRoute = routes[routes.length - 2]; // -2 because -1 is the current route
 
-  const submit = async (data: SignInData) => {
-    setLoading(true);
-    const result = await userLogin({mobile: phone, otp: data.otp});
-    if (result?.success) {
-      if (prevRoute.name === 'SelectLocation') {
-        userUpdate(user?.name, user?.email, user?.id);
+  const submit = async () => {
+    otp?.length !== 6 ? setError(true) : setError(false);
+    try {
+      if (!error) {
+        const response = await userLogin({mobile: phone, otp: otp});
+        if (response?.success) {
+          if (prevRoute.name === 'SelectLocation') {
+            userUpdate(user?.name, user?.email, user?.id);
+          }
+          navigation.navigate('LoginSuccess');
+        } else {
+          setIsValid(true);
+        }
       }
-      navigation.navigate('LoginSuccess');
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-    setIsValid(true);
   };
 
   const resendOTP = () => {
@@ -73,8 +72,8 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
       .then(response => {
         console.log(response.data);
       })
-      .catch(error => {
-        console.log(error);
+      .catch(e => {
+        console.log(e);
       });
   };
 
@@ -98,37 +97,34 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
             </Text>
           </View>
 
-          <View className="gap-5">
-            {/* phone input */}
-            <View>
-              <Controller
-                name="otp"
-                control={control}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <InputField
-                    placeHolder={'Enter otp'}
-                    secure={true}
-                    value={value}
-                    inputMode={'text'}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    onChange={() => setIsValid(false)}
-                  />
-                )}
-                rules={{required: true, minLength: 6, maxLength: 6}}
-              />
-              {errors.otp && (
-                <Text className="text-error">
-                  {'Verification code is only 6 digit number'}
-                </Text>
-              )}
-              {!errors.otp && isValid && (
-                <Text className="text-error">{'Invalid OTP'}</Text>
-              )}
-            </View>
+          {/* OTP input */}
+          <View className="flex-1 my-2 items-start">
+            <OTPInputView
+              pinCount={6}
+              autoFocusOnLoad={true}
+              keyboardType="number-pad"
+              editable={true}
+              codeInputFieldStyle={styles.InputStyleBase}
+              codeInputHighlightStyle={styles.InputStyleHighLighted}
+              onCodeChanged={() => {
+                setError(false);
+                setIsValid(false);
+              }}
+              onCodeFilled={code => {
+                setOtp(code);
+              }}
+            />
+            {error && (
+              <Text className="text-error text-start">
+                {'Verification code is only 6 digit number'}
+              </Text>
+            )}
+            {!error && isValid && (
+              <Text className="text-error">{'Invalid or expired OTP'}</Text>
+            )}
           </View>
 
-          <View className="flex-row items-center">
+          <View className="mt-3 flex-row items-center">
             <Text className="text-base font-normal text-dark">
               OTP will expire in
             </Text>
@@ -152,7 +148,7 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
             <Button
               loading={loading}
               title={'Login'}
-              onPress={(Keyboard.dismiss(), handleSubmit(submit))}
+              onPress={(Keyboard.dismiss(), submit)}
               primary
             />
           </View>
@@ -193,3 +189,18 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
     </KeyboardAvoidingView>
   );
 };
+
+const styles = StyleSheet.create({
+  InputStyleBase: {
+    fontSize: 20,
+    width: 45,
+    height: 50,
+    color: Colors.Black,
+    borderWidth: 1.5,
+    borderRadius: 6,
+    borderBlockColor: Colors.Gray,
+  },
+  InputStyleHighLighted: {
+    borderColor: Colors.Black,
+  },
+});
