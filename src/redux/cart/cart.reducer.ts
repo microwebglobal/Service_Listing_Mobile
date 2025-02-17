@@ -1,0 +1,27 @@
+import {PayloadAction} from '@reduxjs/toolkit';
+import {CartState, ItemEntity} from './cart.entity';
+
+export default {
+  addItem: (state: CartState, action: PayloadAction<ItemEntity>) => {
+    if (state.cart === null) {
+      state.cart = [];
+    }
+    const index = state.cart?.findIndex(
+      cartItem => cartItem.itemId === action.payload.itemId,
+    );
+    if (state.cart !== null && index !== -1 && index !== undefined) {
+      state.cart[index].quantity += 1;
+    }
+    if (index === -1 || index === undefined) {
+      state.cart?.push(action.payload);
+    }
+  },
+  removeItem: (state: CartState, action: PayloadAction<string>) => {
+    const index = state.cart?.findIndex(
+      cartItem => cartItem.itemId === action.payload,
+    );
+    if (index !== -1 && index !== undefined) {
+      state.cart?.splice(index, 1);
+    }
+  },
+};
