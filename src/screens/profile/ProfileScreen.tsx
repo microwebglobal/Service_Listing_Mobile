@@ -13,9 +13,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
 import {useAppSelector} from '../../redux';
-import { useDispatch } from 'react-redux';
-import { setId } from '../../redux/user/user.slice';
-import { useNav } from '../../navigation/RootNavigation';
+import {useDispatch} from 'react-redux';
+import {setId} from '../../redux/user/user.slice';
+import {useNav} from '../../navigation/RootNavigation';
 
 interface UserData {
   u_id: number;
@@ -74,7 +74,25 @@ export const ProfileScreen = () => {
               />
               <View>
                 <Text className="text-dark text-base font-medium">{title}</Text>
-                {value && <Text className="text-base text-gray">{value}</Text>}
+                {value && (
+                  <View className="flex-row items-baseline space-x-1">
+                    <Text className="text-base text-gray">{value}</Text>
+                    {/* Check whether email or mobile verified */}
+                    {userData !== undefined ? (
+                      (title === 'Contact Number' &&
+                        userData?.mobile_verified) ||
+                      (title === 'Email' && userData?.email_verified) ? (
+                        <View className="w-3 h-3 rounded-full bg-green-500 items-center">
+                          <MaterialCommunityIcons
+                            name="check"
+                            size={12}
+                            color={Colors.White}
+                          />
+                        </View>
+                      ) : null
+                    ) : null}
+                  </View>
+                )}
               </View>
             </View>
             {edit && (

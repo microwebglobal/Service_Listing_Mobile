@@ -35,7 +35,7 @@ interface City {
   serviceCategories: Array<Category>;
 }
 
-interface Address {
+export interface Address {
   id: number;
   userId: number;
   type: string;
