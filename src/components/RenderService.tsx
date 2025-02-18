@@ -58,6 +58,7 @@ export const RenderService = ({service}: {service: Service}) => {
                       quantity: 1,
                       name: item.name,
                       price: parseInt(item.base_price, 10),
+                      icon_url: item.icon_url,
                     }),
                   );
                 }}

@@ -76,6 +76,7 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
               name: packageItem.name,
               price: parseInt(packageItem.price, 10),
               quantity: 1,
+              icon_url: packageItem.icon_url,
             });
           }
         });

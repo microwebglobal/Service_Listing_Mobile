@@ -4,6 +4,7 @@ export interface ItemEntity {
   name: string;
   price: number;
   quantity: number;
+  icon_url: string;
 }
 
 export interface CartState {

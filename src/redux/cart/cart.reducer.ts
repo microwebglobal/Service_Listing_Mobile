@@ -16,6 +16,14 @@ export default {
       state.cart?.push(action.payload);
     }
   },
+  reduceQuantity: (state: CartState, action: PayloadAction<string>) => {
+    const index = state.cart?.findIndex(
+      cartItem => cartItem.itemId === action.payload,
+    );
+    if (state.cart !== null && index !== -1 && index !== undefined) {
+      state.cart[index].quantity -= 1;
+    }
+  },
   removeItem: (state: CartState, action: PayloadAction<string>) => {
     const index = state.cart?.findIndex(
       cartItem => cartItem.itemId === action.payload,
