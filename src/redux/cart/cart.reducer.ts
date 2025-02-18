@@ -24,4 +24,20 @@ export default {
       state.cart?.splice(index, 1);
     }
   },
+  addMultipleItems: (state: CartState, action: PayloadAction<ItemEntity[]>) => {
+    if (state.cart === null) {
+      state.cart = [];
+    }
+    action.payload.forEach(item => {
+      const index = state.cart?.findIndex(
+        cartItem => cartItem.itemId === item.itemId,
+      );
+      if (state.cart !== null && index !== -1 && index !== undefined) {
+        state.cart[index].quantity += 1;
+      }
+      if (index === -1 || index === undefined) {
+        state.cart?.push(item);
+      }
+    });
+  },
 };

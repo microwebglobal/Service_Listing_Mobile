@@ -6,6 +6,8 @@ import {instance} from '../api/instance';
 import {Button} from './rneui';
 import classNames from 'classnames';
 import {Colors} from '../utils/Colors';
+import {useDispatch} from 'react-redux';
+import {addItem} from '../redux/cart/cart.slice';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -15,6 +17,7 @@ const RPW = (percentage: number) => {
 export const RenderService = ({service}: {service: Service}) => {
   const [serviceItemData, setServiceItemData] = useState<ServiceItem[]>();
   const [isItemClicked, setIsItemClicked] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   const fetchServiceItem = async (serviceId: string) => {
     try {
@@ -26,7 +29,6 @@ export const RenderService = ({service}: {service: Service}) => {
   };
 
   const _renderServiceItem = ({item}: {item: ServiceItem}) => {
-    // console.log('service item ', item);
     return (
       <View className="border-2 border-lightGrey rounded-lg p-2 my-2">
         <View className="flex-row justify-between space-x-2">
@@ -44,7 +46,22 @@ export const RenderService = ({service}: {service: Service}) => {
               {item.base_price}
             </Text>
             <View className="my-2">
-              <Button black title="Add to Cart" size="sm" />
+              <Button
+                black
+                title="Add to Cart"
+                size="sm"
+                onPress={() => {
+                  dispatch(
+                    addItem({
+                      itemId: item.item_id,
+                      itemType: 'service_item',
+                      quantity: 1,
+                      name: item.name,
+                      price: parseInt(item.base_price, 10),
+                    }),
+                  );
+                }}
+              />
             </View>
           </View>
         </View>
