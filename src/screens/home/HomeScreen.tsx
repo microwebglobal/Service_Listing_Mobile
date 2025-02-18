@@ -11,7 +11,7 @@ import {
   FlatList,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
@@ -20,6 +20,7 @@ import featuredData from '../../data/featuredData';
 import offerCardData from '../../data/offerList';
 import {FeaturedCard} from '../../components/FeaturedCard';
 import {instance} from '../../api/instance';
+import { useNav } from '../../navigation/RootNavigation';
 
 // Get screen dimension
 const screenWidth = Dimensions.get('window').width;
@@ -32,7 +33,7 @@ const RPH = (percentage: number) => {
 };
 
 export const HomeScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNav();
   const tabBarHeight = useBottomTabBarHeight();
   const user = useAppSelector(state => state.user.user);
   const [hour, setHour] = useState<number>(0);
@@ -109,7 +110,7 @@ export const HomeScreen = () => {
           <View className="float-right bg-lightGrey rounded-full w-12 h-12 justify-center items-center">
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('Profile' as never);
+                navigation.navigate('Profile');
               }}>
               <FontAwesome name="user-o" size={25} color={Colors.Dark} />
             </TouchableOpacity>

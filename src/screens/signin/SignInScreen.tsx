@@ -8,13 +8,13 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
 import {Controller, useForm} from 'react-hook-form';
 import {Button} from '../../components/rneui';
 import axios from 'axios';
 import {API_BASE} from '@env';
 import GoogleIcon from '../../assets/svgs/GoogleIcon';
 import InputField from '../../components/InputFeild';
+import {useNav} from '../../navigation/RootNavigation';
 // import auth from '@react-native-firebase/auth';
 // import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
@@ -35,7 +35,7 @@ const RPH = (percentage: number) => {
 };
 
 export const SignInScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNav();
   const [loading, setLoading] = useState<boolean>(false);
   const {
     control,
@@ -161,7 +161,9 @@ export const SignInScreen = () => {
           <View className="flex-row items-baseline">
             <View className="w-full h-0.5 bg-slate-300" />
             <View className="mx-3">
-              <Text className="mb-5 text-base font-medium">Or continue with</Text>
+              <Text className="mb-5 text-base font-medium">
+                Or continue with
+              </Text>
             </View>
             <View className="w-full h-0.5 bg-slate-300" />
           </View>

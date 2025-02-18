@@ -179,7 +179,7 @@ export const SignUpScreen = () => {
                   onChangeText={onChange}
                 />
               )}
-              rules={{required: true}}
+              rules={{required: true, pattern: /^\S+@\S+$/i}}
             />
             {errors.email && (
               <Text className="text-error">

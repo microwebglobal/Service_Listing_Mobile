@@ -10,12 +10,12 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import {useNavigation} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {instance} from '../../api/instance';
 import {Colors} from '../../utils/Colors';
 import AppHeader from '../../components/AppHeader';
 import {Image} from '@rneui/themed';
+import { useNav } from '../../navigation/RootNavigation';
 
 interface Category {
   category_id: string;
@@ -53,7 +53,7 @@ const RPW = (percentage: number) => {
 };
 
 export const CategoryScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNav();
   const tabBarHeight = useBottomTabBarHeight();
   const [isLoading, setIsLoading] = useState(true);
   const [categoryData, setCategoryData] = useState<Array<Category>>([]);

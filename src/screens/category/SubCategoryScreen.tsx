@@ -9,9 +9,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Screen} from '../../navigation/RootNavigation';
+import {Screen, useNav} from '../../navigation/RootNavigation';
 import AppHeader from '../../components/AppHeader';
 import {Image} from '@rneui/themed';
 import {Colors} from '../../utils/Colors';
@@ -35,7 +34,7 @@ const RPW = (percentage: number) => {
 
 export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
   const {categoryId, category, imageUrl} = route.params;
-  const navigation = useNavigation();
+  const navigation = useNav();
   const [subCategoryData, setSubCategoryData] = useState<SubCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

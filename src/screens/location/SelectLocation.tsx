@@ -69,7 +69,8 @@ export const SelectLocation = () => {
         mobile: user?.mobile,
       })
       .then(() => {
-        navigation.navigate('Verification', {phone: user?.mobile});
+        user?.mobile &&
+          navigation.navigate('Verification', {phone: user?.mobile});
       })
       .catch(error => {
         console.log(error);
