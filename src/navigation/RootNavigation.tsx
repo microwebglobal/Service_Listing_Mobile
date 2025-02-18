@@ -17,6 +17,8 @@ export type RootStackParamList = {
   SubCategory: {categoryId: string; category: string, imageUrl: string};
   ServiceType: {subCategoryId: string, subCategory: string};
   ServiceDetails: undefined;
+  EditProfile: {itemName: string};
+  EditLocation: undefined;
 };
 
 export type NavigationHookType = NativeStackNavigationProp<RootStackParamList>;

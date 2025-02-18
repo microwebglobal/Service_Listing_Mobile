@@ -17,6 +17,8 @@ import {CategoryScreen} from '../screens/category/CategoryScreen';
 import {ServiceTypeScreen} from '../screens/category/ServiceTypeScreen';
 import {ServiceDetails} from '../screens/serviceDetails/ServiceDetails';
 import {HomeScreen} from '../screens/home/HomeScreen';
+import {EditProfileScreen} from '../screens/profile/EditProfileScreen';
+import {EditLocationScreen} from '../screens/profile/EditLocationScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -98,6 +100,8 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="LoginSuccess" component={LoginSuccessScreen} />
         <Stack.Screen name="SelectLocation" component={SelectLocation} />
         <Stack.Screen name="ServiceDetails" component={ServiceDetails} />
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+        <Stack.Screen name="EditLocation" component={EditLocationScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

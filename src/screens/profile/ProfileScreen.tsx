@@ -8,12 +8,14 @@ import {
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import {useNavigation} from '@react-navigation/native';
 import AppHeader from '../../components/AppHeader';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
 import {useAppSelector} from '../../redux';
+import { useDispatch } from 'react-redux';
+import { setId } from '../../redux/user/user.slice';
+import { useNav } from '../../navigation/RootNavigation';
 
 interface UserData {
   u_id: number;
@@ -35,7 +37,9 @@ const RPW = (percentage: number) => {
 };
 
 export const ProfileScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNav();
+  // const navigation = useNavigation();
+  const dispatch = useDispatch();
   const tabBarHeight = useBottomTabBarHeight();
   const [userData, setUserData] = React.useState<UserData>();
   const user = useAppSelector(state => state.user.user);
@@ -43,8 +47,9 @@ export const ProfileScreen = () => {
   useEffect(() => {
     instance.get(`/customer-profiles/user/${user?.id}`).then(response => {
       setUserData(response.data);
+      dispatch(setId(response.data.u_id));
     });
-  }, [user?.id]);
+  }, [dispatch, user?.id]);
 
   const profileInfoItem = (
     title: string,
@@ -54,28 +59,35 @@ export const ProfileScreen = () => {
   ) => {
     return (
       <View style={{paddingHorizontal: RPW(6)}}>
-        <View className="flex-row items-center justify-between">
-          <View className="my-3 flex-row items-center space-x-3">
-            <MaterialCommunityIcons
-              name={icon_name}
-              size={25}
-              color={Colors.Gray}
-            />
-            <View>
-              <Text className="text-dark text-base font-medium">{title}</Text>
-              {value && <Text className="text-base text-gray">{value}</Text>}
-            </View>
-          </View>
-          {edit && (
-            <TouchableOpacity className="-mr-2" onPress={() => {}}>
+        <TouchableOpacity
+          onPress={() =>
+            title !== 'Locations'
+              ? navigation.navigate('EditProfile', {itemName: title})
+              : navigation.navigate('EditLocation')
+          }>
+          <View className="flex-row items-center justify-between">
+            <View className="my-3 flex-row items-center space-x-3">
               <MaterialCommunityIcons
-                name="chevron-right"
-                size={30}
+                name={icon_name}
+                size={25}
                 color={Colors.Gray}
               />
-            </TouchableOpacity>
-          )}
-        </View>
+              <View>
+                <Text className="text-dark text-base font-medium">{title}</Text>
+                {value && <Text className="text-base text-gray">{value}</Text>}
+              </View>
+            </View>
+            {edit && (
+              <View className="-mr-2">
+                <MaterialCommunityIcons
+                  name="chevron-right"
+                  size={30}
+                  color={Colors.Gray}
+                />
+              </View>
+            )}
+          </View>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -100,7 +112,7 @@ export const ProfileScreen = () => {
             {profileInfoItem(
               'Name',
               userData?.name ?? '',
-              false,
+              true,
               'account-outline',
             )}
             {profileInfoItem(
