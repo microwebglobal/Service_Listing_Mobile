@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
@@ -41,6 +40,7 @@ export const HomeScreen = () => {
   const [hour, setHour] = useState<number>(0);
   const [userName, setUserName] = useState<string>();
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const cart = useAppSelector((state: any) => state.cart.cart);
 
   useFocusEffect(() => {
     instance.get(`/customer-profiles/user/${user?.id}`).then(response => {
@@ -111,7 +111,7 @@ export const HomeScreen = () => {
         }>
         {/* Header bar */}
         <View
-          className="flex-row items-center justify-between pt-8 pb-5 bg-white"
+          className="flex-row items-center justify-between pt-5 pb-4 bg-white"
           style={{paddingHorizontal: RPW(4)}}>
           <View className="flex-0.9">
             <Text className="text-xl font-medium text-dark">
@@ -122,7 +122,18 @@ export const HomeScreen = () => {
             </Text>
           </View>
 
-          <View className="flex-row float-right items-center space-x-3">
+          <View className="flex-row float-right items-center space-x-4">
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Cart');
+              }}>
+              <View className="">
+                <View className="z-10 bg-primary w-5 h-5 rounded-full items-center justify-center absolute -top-2 -right-2">
+                  <Text className="text-sm text-white font-normal">{cart.length}</Text>
+                </View>
+                <Ionicons name={'cart-outline'} size={26} color={Colors.Black} />
+              </View>
+            </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('Notification');
@@ -130,17 +141,9 @@ export const HomeScreen = () => {
               <Ionicons
                 name={'notifications-outline'}
                 size={25}
-                color={Colors.Dark}
+                color={Colors.Black}
               />
             </TouchableOpacity>
-            <View className="float-right bg-lightGrey rounded-full w-12 h-12 justify-center items-center">
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('Profile');
-                }}>
-                <FontAwesome name="user-o" size={25} color={Colors.Dark} />
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
 

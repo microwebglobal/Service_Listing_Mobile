@@ -14,11 +14,14 @@ export type RootStackParamList = {
   Home: undefined;
   Profile: undefined;
   Category: undefined;
-  SubCategory: {categoryId: string; category: string, imageUrl: string};
-  ServiceType: {subCategoryId: string, subCategory: string};
+  SubCategory: {categoryId: string; category: string; imageUrl: string};
+  ServiceType: {subCategoryId: string; subCategory: string};
   ServiceDetails: undefined;
   EditProfile: {itemName: string};
   EditLocation: undefined;
+  Notification: undefined;
+  Cart: undefined;
+  ServiceSchedule: undefined;
 };
 
 export type NavigationHookType = NativeStackNavigationProp<RootStackParamList>;

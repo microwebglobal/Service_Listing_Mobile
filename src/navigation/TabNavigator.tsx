@@ -3,10 +3,14 @@ import {Dimensions, StyleSheet} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Colors} from '../utils/Colors';
-import {CartScreen} from '../screens/cart/CartScreen';
-import {NotificationScreen} from '../screens/notification/NotificationScreen';
 import {TicketScreen} from '../screens/ticket/TicketScreen';
-import {CategoryNavigator, HomeNavigator} from './RootNavigator';
+import {
+  CategoryNavigator,
+  HomeNavigator,
+  ProfileNavigator,
+} from './RootNavigator';
+import {BookingScreen} from '../screens/booking/BookingScreen';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -40,12 +44,16 @@ export const TabNavigator = () => {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Ticket') {
             iconName = focused ? 'ticket' : 'ticket-outline';
-          } else if (route.name === 'ServiceNavigator') {
+          } else if (route.name === 'CategoryTab') {
             iconName = focused ? 'duplicate' : 'duplicate-outline';
-          } else if (route.name === 'Cart') {
-            iconName = focused ? 'cart' : 'cart-outline';
-          } else if (route.name === 'Notification') {
-            iconName = focused ? 'notifications' : 'notifications-outline';
+          } else if (route.name === 'ProfileTab') {
+            return focused ? (
+              <FontAwesome name={'user'} size={30} color={color} />
+            ) : (
+              <FontAwesome name={'user-o'} size={26} color={color} />
+            );
+          } else if (route.name === 'Booking') {
+            iconName = focused ? 'receipt' : 'receipt-outline';
           }
 
           return (
@@ -60,14 +68,14 @@ export const TabNavigator = () => {
       <Tab.Screen name={'HomeTab'} component={HomeNavigator} />
       <Tab.Screen name={'Ticket'} component={TicketScreen} />
       <Tab.Screen
-        name={'ServiceNavigator'}
+        name={'CategoryTab'}
         component={CategoryNavigator}
         options={{
           headerShown: false,
         }}
       />
-      <Tab.Screen name={'Cart'} component={CartScreen} />
-      <Tab.Screen name={'Notification'} component={NotificationScreen} />
+      <Tab.Screen name={'Booking'} component={BookingScreen} />
+      <Tab.Screen name={'ProfileTab'} component={ProfileNavigator} />
     </Tab.Navigator>
   );
 };

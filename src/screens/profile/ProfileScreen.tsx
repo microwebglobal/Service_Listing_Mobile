@@ -113,7 +113,7 @@ export const ProfileScreen = () => {
 
   return (
     <SafeAreaView className="flex-1">
-      <AppHeader title="Your Profile" back={true} />
+      <AppHeader title="Your Profile" back={false} />
       <View className="h-5 bg-white" />
       <ScrollView
         className="flex-grow bg-lightGrey"
