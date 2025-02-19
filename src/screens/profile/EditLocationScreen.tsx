@@ -93,15 +93,21 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
             ) : (
               <AntDesign name="home" size={20} color={Colors.Primary} />
             )}
-            <Text className="text-base text-dark overflow-clip">
-              {address.line1 +
-                ' ' +
-                address.line2 +
-                ', ' +
-                address.city +
-                ', ' +
-                address.state}
-            </Text>
+            {address.line2 ? (
+              <Text className="text-base text-dark overflow-clip">
+                {address.line1 +
+                  ' ' +
+                  address.line2 +
+                  ', ' +
+                  address.city +
+                  ', ' +
+                  address.state}
+              </Text>
+            ) : (
+              <Text className="text-base text-dark overflow-clip">
+                {address.line1 + ', ' + address.city + ', ' + address.state}
+              </Text>
+            )}
           </View>
           <TouchableOpacity
             onPress={() => {
@@ -164,6 +170,14 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
                   renderItem={({item}) => _renderAddress(item)}
                 />
               )}
+
+              {isChecked && addressList.length === 0 ? (
+                <View className="mt-20">
+                  <Text className="text-base text-center text-dark">
+                    No address available
+                  </Text>
+                </View>
+              ) : null}
             </View>
           </View>
 

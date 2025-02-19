@@ -15,7 +15,7 @@ import {instance} from '../../api/instance';
 import {Colors} from '../../utils/Colors';
 import AppHeader from '../../components/AppHeader';
 import {Image} from '@rneui/themed';
-import { useNav } from '../../navigation/RootNavigation';
+import {useNav} from '../../navigation/RootNavigation';
 
 interface Category {
   category_id: string;
@@ -58,11 +58,15 @@ export const CategoryScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [categoryData, setCategoryData] = useState<Array<Category>>([]);
   const [cities, setCities] = useState<Array<City>>([]);
+  const [addresses, setAddresses] = useState<Array<Address>>([]);
 
   useEffect(() => {
     try {
       instance.get('/cities').then(response => {
         setCities(response.data);
+      });
+      instance.get('/users/addresses').then(response => {
+        setAddresses(response.data);
       });
     } catch (e) {
       console.log('Error ', e);
@@ -73,15 +77,11 @@ export const CategoryScreen = () => {
     try {
       let primaryAddress: Array<Address> = [];
       let cityData: Array<City> = [];
-      instance.get('/users/addresses').then(response => {
-        primaryAddress = response.data.filter((address: Address) => {
-          return address.is_primary === true;
-        });
+      primaryAddress = addresses.filter((address: Address) => {
+        return address.is_primary === true;
       });
-
       cityData = cities.filter((city: City) => {
-        // city.name === primaryAddress[0].city;
-        return city.name === 'Delhi';
+        return city.name === primaryAddress[0].city;
       });
       setCategoryData(cityData[0].serviceCategories);
     } catch (e) {
@@ -91,7 +91,7 @@ export const CategoryScreen = () => {
         setIsLoading(false);
       }, 300);
     }
-  }, [cities]);
+  }, [addresses, cities]);
 
   const _renderCategoryItem = ({item}: any) => {
     return (

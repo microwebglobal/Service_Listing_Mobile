@@ -9,8 +9,9 @@ import {
   StyleSheet,
   Image,
   FlatList,
+  RefreshControl,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Colors} from '../../utils/Colors';
@@ -20,7 +21,8 @@ import featuredData from '../../data/featuredData';
 import offerCardData from '../../data/offerList';
 import {FeaturedCard} from '../../components/FeaturedCard';
 import {instance} from '../../api/instance';
-import { useNav } from '../../navigation/RootNavigation';
+import {useNav} from '../../navigation/RootNavigation';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Get screen dimension
 const screenWidth = Dimensions.get('window').width;
@@ -38,12 +40,13 @@ export const HomeScreen = () => {
   const user = useAppSelector(state => state.user.user);
   const [hour, setHour] = useState<number>(0);
   const [userName, setUserName] = useState<string>();
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
-  useEffect(() => {
+  useFocusEffect(() => {
     instance.get(`/customer-profiles/user/${user?.id}`).then(response => {
       setUserName(response.data.name);
     });
-  }, [user?.id]);
+  });
 
   const getHour = async () => {
     const date = new Date();
@@ -66,6 +69,13 @@ export const HomeScreen = () => {
       BackHandler.removeEventListener('hardwareBackPress', handlerBackPress);
     };
   });
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
   const _renderOfferItem = ({item}: any) => {
     return (
@@ -95,25 +105,42 @@ export const HomeScreen = () => {
       <ScrollView
         className="flex-grow bg-white"
         showsVerticalScrollIndicator={false}
-        style={{marginBottom: tabBarHeight}}>
+        style={{marginBottom: tabBarHeight}}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         {/* Header bar */}
         <View
-          className="flex-row items-center justify-between px-8 pt-8 pb-5 bg-white"
-          style={{paddingHorizontal: RPW(6)}}>
+          className="flex-row items-center justify-between pt-8 pb-5 bg-white"
+          style={{paddingHorizontal: RPW(4)}}>
           <View className="flex-0.9">
             <Text className="text-xl font-medium text-dark">
               {hour < 12 ? 'Good Morning,' : 'Good evening,'}
             </Text>
-            <Text className="text-xl font-medium text-dark">{userName?.split(' ')[0]}!</Text>
+            <Text className="text-xl font-medium text-dark">
+              {userName?.split(' ')[0]}!
+            </Text>
           </View>
 
-          <View className="float-right bg-lightGrey rounded-full w-12 h-12 justify-center items-center">
+          <View className="flex-row float-right items-center space-x-3">
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('Profile');
+                navigation.navigate('Notification');
               }}>
-              <FontAwesome name="user-o" size={25} color={Colors.Dark} />
+              <Ionicons
+                name={'notifications-outline'}
+                size={25}
+                color={Colors.Dark}
+              />
             </TouchableOpacity>
+            <View className="float-right bg-lightGrey rounded-full w-12 h-12 justify-center items-center">
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Profile');
+                }}>
+                <FontAwesome name="user-o" size={25} color={Colors.Dark} />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
 

@@ -28,5 +28,5 @@ export interface LoginResponse {
 }
 
 export interface UserState {
-  user: UserDetailEntity | null;
+  user: UserDetailEntity;
 }

@@ -6,7 +6,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import AppHeader from '../../components/AppHeader';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -16,6 +16,7 @@ import {useAppSelector} from '../../redux';
 import {useDispatch} from 'react-redux';
 import {setId} from '../../redux/user/user.slice';
 import {useNav} from '../../navigation/RootNavigation';
+import {useFocusEffect} from '@react-navigation/native';
 
 interface UserData {
   u_id: number;
@@ -44,12 +45,12 @@ export const ProfileScreen = () => {
   const [userData, setUserData] = React.useState<UserData>();
   const user = useAppSelector(state => state.user.user);
 
-  useEffect(() => {
+  useFocusEffect(() => {
     instance.get(`/customer-profiles/user/${user?.id}`).then(response => {
       setUserData(response.data);
       dispatch(setId(response.data.u_id));
     });
-  }, [dispatch, user?.id]);
+  });
 
   const profileInfoItem = (
     title: string,
