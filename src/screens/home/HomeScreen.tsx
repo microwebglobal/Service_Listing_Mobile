@@ -11,7 +11,7 @@ import {
   FlatList,
   RefreshControl,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
@@ -43,14 +43,14 @@ export const HomeScreen = () => {
   const localCart = useAppSelector(state => state.cart.cart) || [];
   const [cart, setCart] = useState<Booking>();
 
-  useFocusEffect(() => {
-    instance.get(`/customer-profiles/user/${user?.id}`).then(response => {
+  const fetchUserData = useCallback(async () => {
+    await instance.get(`/customer-profiles/user/${user?.id}`).then(response => {
       setUserName(response.data.name);
     });
-  });
+  }, [user]);
 
-  useEffect(() => {
-    instance
+  const fetchCartItems = useCallback(async () => {
+    await instance
       .get('/cart')
       .then(res => {
         setCart(res.data);
@@ -60,14 +60,10 @@ export const HomeScreen = () => {
       });
   }, []);
 
-  const getHour = async () => {
+  const getHour = useCallback(async () => {
     const date = new Date();
     setHour(date.getHours());
-  };
-
-  useFocusEffect(() => {
-    getHour();
-  });
+  }, []);
 
   // Back handler function
   const handlerBackPress = () => {
@@ -75,19 +71,26 @@ export const HomeScreen = () => {
     return true;
   };
 
-  useFocusEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handlerBackPress);
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handlerBackPress);
-    };
-  });
+  useFocusEffect(
+    useCallback(() => {
+      getHour();
+      fetchUserData();
+      fetchCartItems();
+
+      BackHandler.addEventListener('hardwareBackPress', handlerBackPress);
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', handlerBackPress);
+      };
+    }, [fetchCartItems, fetchUserData, getHour]),
+  );
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    fetchCartItems();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
-  }, []);
+  }, [fetchCartItems]);
 
   const _renderOfferItem = ({item}: any) => {
     return (

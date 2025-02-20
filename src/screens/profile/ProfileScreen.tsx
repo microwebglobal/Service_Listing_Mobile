@@ -6,7 +6,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import AppHeader from '../../components/AppHeader';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -45,12 +45,14 @@ export const ProfileScreen = () => {
   const [userData, setUserData] = React.useState<UserData>();
   const user = useAppSelector(state => state.user.user);
 
-  useFocusEffect(() => {
-    instance.get(`/customer-profiles/user/${user?.id}`).then(response => {
-      setUserData(response.data);
-      dispatch(setId(response.data.u_id));
-    });
-  });
+  useFocusEffect(
+    useCallback(() => {
+      instance.get(`/customer-profiles/user/${user?.id}`).then(response => {
+        setUserData(response.data);
+        dispatch(setId(response.data.u_id));
+      });
+    }, [dispatch, user?.id]),
+  );
 
   const profileInfoItem = (
     title: string,
