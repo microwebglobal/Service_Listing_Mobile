@@ -22,6 +22,8 @@ import {EditLocationScreen} from '../screens/profile/EditLocationScreen';
 import {NotificationScreen} from '../screens/notification/NotificationScreen';
 import {ScheduleScreen} from '../screens/cart/ScheduleScreen';
 import {CartScreen} from '../screens/cart/CartScreen';
+import {SelectedItemsScreen} from '../screens/cart/SelectedItemsScreen';
+import {PaymentScreen} from '../screens/cart/PaymentScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -128,6 +130,8 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="Notification" component={NotificationScreen} />
         <Stack.Screen name="ServiceSchedule" component={ScheduleScreen} />
         <Stack.Screen name="Cart" component={CartScreen} />
+        <Stack.Screen name="SelectedItems" component={SelectedItemsScreen} />
+        <Stack.Screen name="Payment" component={PaymentScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

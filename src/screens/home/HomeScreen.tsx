@@ -11,7 +11,7 @@ import {
   FlatList,
   RefreshControl,
 } from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
@@ -22,8 +22,8 @@ import {FeaturedCard} from '../../components/FeaturedCard';
 import {instance} from '../../api/instance';
 import {useNav} from '../../navigation/RootNavigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {Booking} from '../cart/SelectedItemsScreen';
 
-// Get screen dimension
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 const RPW = (percentage: number) => {
@@ -40,13 +40,25 @@ export const HomeScreen = () => {
   const [hour, setHour] = useState<number>(0);
   const [userName, setUserName] = useState<string>();
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const cart = useAppSelector((state: any) => state.cart.cart);
+  const localCart = useAppSelector(state => state.cart.cart) || [];
+  const [cart, setCart] = useState<Booking>();
 
   useFocusEffect(() => {
     instance.get(`/customer-profiles/user/${user?.id}`).then(response => {
       setUserName(response.data.name);
     });
   });
+
+  useEffect(() => {
+    instance
+      .get('/cart')
+      .then(res => {
+        setCart(res.data);
+      })
+      .catch(function (e) {
+        console.log(e.message);
+      });
+  }, []);
 
   const getHour = async () => {
     const date = new Date();
@@ -125,13 +137,31 @@ export const HomeScreen = () => {
           <View className="flex-row float-right items-center space-x-4">
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('Cart');
+                cart
+                  ? navigation.navigate('Cart')
+                  : navigation.navigate('SelectedItems');
               }}>
-              <View className="">
-                <View className="z-10 bg-primary w-5 h-5 rounded-full items-center justify-center absolute -top-2 -right-2">
-                  <Text className="text-sm text-white font-normal">{cart.length}</Text>
-                </View>
-                <Ionicons name={'cart-outline'} size={26} color={Colors.Black} />
+              <View>
+                {localCart?.length > 0 && (
+                  <View className="z-10 bg-primary w-5 h-5 rounded-full items-center justify-center absolute -top-2 -right-2">
+                    <Text className="text-sm text-white font-normal">
+                      {localCart?.length}
+                    </Text>
+                  </View>
+                )}
+                {cart && (
+                  <View className="z-10 bg-primary w-5 h-5 rounded-full items-center justify-center absolute -top-2 -right-2">
+                    <Text className="text-sm text-white font-normal">
+                      {cart?.BookingItems?.length}
+                    </Text>
+                  </View>
+                )}
+
+                <Ionicons
+                  name={'cart-outline'}
+                  size={26}
+                  color={Colors.Black}
+                />
               </View>
             </TouchableOpacity>
             <TouchableOpacity

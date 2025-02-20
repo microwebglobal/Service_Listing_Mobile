@@ -20,8 +20,10 @@ export type RootStackParamList = {
   EditProfile: {itemName: string};
   EditLocation: undefined;
   Notification: undefined;
-  Cart: undefined;
+  SelectedItems: undefined;
   ServiceSchedule: undefined;
+  Cart: undefined;
+  Payment: {amount: string; bookingId: string};
 };
 
 export type NavigationHookType = NativeStackNavigationProp<RootStackParamList>;
