@@ -13,6 +13,7 @@ interface InputFieldProps {
   value: string;
   secure: boolean;
   inputMode: InputModeOptions;
+  multiline?: boolean;
   onBlur?: (event: any) => void;
   onChange?: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void;
   onChangeText: (text: string) => void;
@@ -22,9 +23,10 @@ const StyledInput = styled(TextInput);
 
 const InputField = ({
   value,
-  placeHolder,
-  inputMode,
   secure,
+  inputMode,
+  multiline,
+  placeHolder,
   onBlur,
   onChange,
   onChangeText,
@@ -36,10 +38,11 @@ const InputField = ({
       placeholderTextColor={Colors.Gray}
       secureTextEntry={secure}
       className={`border-2 rounded-md h-12 px-3 text-base text-dark ${
-        isFocused ? 'border-dark' : 'border-gray'
+        `${isFocused ? 'border-dark' : 'border-gray'} ${multiline ? 'h-24' : ''}`
       }`}
       value={value}
       inputMode={inputMode}
+      multiline={multiline}
       onChange={onChange}
       onChangeText={onChangeText}
       onBlur={() => {

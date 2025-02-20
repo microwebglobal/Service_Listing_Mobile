@@ -6,16 +6,16 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   Keyboard,
+  TextInput,
 } from 'react-native';
 import {Button} from '../../components/rneui';
 import {Calendar} from 'react-native-calendars';
-import {useCallback, useState} from 'react';
+import {useState} from 'react';
 import {Colors} from '../../utils/Colors';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import Arrow from 'react-native-vector-icons/MaterialIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Screen, useNav} from '../../navigation/RootNavigation';
-import {Input} from '@rneui/themed';
 import React from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import {Controller, useForm} from 'react-hook-form';
@@ -26,6 +26,7 @@ import {useAppSelector} from '../../redux';
 import {useDispatch} from 'react-redux';
 import {instance} from '../../api/instance';
 import {clearCart} from '../../redux/cart/cart.slice';
+import {styled} from 'nativewind';
 
 interface ServiceForm {
   date: string;
@@ -49,15 +50,17 @@ const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
 
+const StyledInput = styled(TextInput);
+
 export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
   const navigation = useNav();
   const dispatch = useDispatch();
   const today = new Date();
   const todayDate = today.toISOString().split('T')[0];
   const [loading, setLoading] = useState<boolean>(false);
-  const [timeValue, onChangeTimeValue] = useState<string>('Choose a time');
+  const [error, setError] = useState<boolean>(false);
+  const [timeValue, onChangeTimeValue] = useState<string>();
   const [selectDate, setSelectDate] = useState<string>(todayDate);
-
   const {
     control,
     handleSubmit,
@@ -75,34 +78,41 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
     onChangeTimeValue(currentDate.toLocaleTimeString());
   };
 
-  const submit = useCallback(
-    async (data: ServiceForm) => {
-      let formatTime = timeValue.replace('AM', '').replace('PM', '').split(':');
-      const payload: BookingPayload = {
-        cityId: 'CTY002',
-        items: [...cart],
-        bookingDate: selectDate,
-        startTime: formatTime[0] + ':' + formatTime[1],
-        serviceAddress: data.address,
-        serviceLocation: '',
-        customerNotes: data.note,
-      };
-      setLoading(true);
-      await instance
-        .post('cart/add', payload)
-        .then(res => {
-          res.status === 200 &&
-            (dispatch(clearCart()), navigation.navigate('Cart'));
-        })
-        .catch(function (e) {
-          console.log(e.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    },
-    [cart, dispatch, navigation, selectDate, timeValue],
-  );
+  function convertTo24HourFormat(timeString: string) {
+    const [hour, minute, period] = timeString.split(':');
+    let formattedHour = parseInt(hour, 10);
+    if (period[3] + period[4] === 'PM') {
+      formattedHour += 12;
+    }
+    return `${formattedHour}:${minute}`;
+  }
+
+  const submit = async (data: ServiceForm) => {
+    let formatTime = timeValue ? convertTo24HourFormat(timeValue) : '';
+    const payload: BookingPayload = {
+      cityId: 'CTY002',
+      items: [...cart],
+      bookingDate: selectDate,
+      startTime: formatTime,
+      serviceAddress: data.address,
+      serviceLocation: '',
+      customerNotes: data.note,
+    };
+    setLoading(true);
+    await instance
+      .post('cart/add', payload)
+      .then(res => {
+        res.status === 200 &&
+          (dispatch(clearCart()), navigation.navigate('Cart'));
+      })
+      .catch(e => {
+        console.log(e.message);
+        setError(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   return (
     <KeyboardAvoidingView className="flex-1 bg-white">
@@ -166,25 +176,25 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
               <Controller
                 name="timeSlot"
                 control={control}
-                render={({field: {value}}) => (
+                render={({field: {}}) => (
                   <View>
                     <TouchableOpacity onPress={() => setShow(true)}>
-                      {/* <StyledInput
+                      <StyledInput
+                        placeholder="Choose a time"
                         className="border-2 border-dark rounded-md h-12 px-3 text-base text-black"
                         value={timeValue}
-                        disabled
+                        inputMode="none"
                         onFocus={() => {
-                          setIsFocused(true);
+                          setShow(true);
                         }}
-                      /> */}
-                      <Input value={timeValue} disabled />
+                      />
                     </TouchableOpacity>
                     {show && (
                       <DateTimePicker
                         testID="dateTimePicker"
                         value={date}
                         mode={'time'}
-                        is24Hour={true}
+                        is24Hour={false}
                         display="spinner"
                         minuteInterval={30}
                         onChange={onChangeDate}
@@ -196,9 +206,14 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
                     )}
                   </View>
                 )}
-                // rules={{required: true}}
+                rules={{required: timeValue ? false : true}}
               />
-              {parseInt(timeValue.split(':')[0], 10) < 11 && (
+              {errors.timeSlot && (
+                <Text className="text-error">
+                  {'Please fill out this field.'}
+                </Text>
+              )}
+              {error && (
                 <Text className="text-error">
                   {'Please select a time between 11:00 AM and 8:30 PM.'}
                 </Text>
