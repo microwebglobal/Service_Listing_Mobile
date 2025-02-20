@@ -94,7 +94,7 @@ export const SelectedItemsScreen = () => {
             </View>
           )}
 
-          {/* Render cart items */}
+          {/* Render local cart items */}
           {LocalCart?.map((item: ItemEntity, index: number) => {
             totalPrice += item.price * item.quantity;
             return (
@@ -112,15 +112,19 @@ export const SelectedItemsScreen = () => {
                     <Text className="text-base text-black font-normal text-clip">
                       {item.name}
                     </Text>
-                    <Text className="text-base text-black font-normal">
-                      {'₹'}
-                      {item.price}
-                      {'.00'}
+                    <Text className="text-base text-gray font-normal">
+                      {'Quantity: '}
+                      {item.quantity}
                     </Text>
                   </View>
                 </View>
-                <View className="flex-row items-center space-x-4">
-                  <View className="flex-row items-center py-1 px-2 space-x-3 bg-lightGrey rounded-full">
+                <View className="flex-row items-center space-x-2">
+                  <Text className="text-base text-black font-normal">
+                    {'₹'}
+                    {item.price}
+                    {'.00'}
+                  </Text>
+                  <View className="py-1 px-2 bg-lightGrey rounded-full">
                     <TouchableOpacity
                       onPress={() => {
                         dispatch(removeItem(item.itemId));
