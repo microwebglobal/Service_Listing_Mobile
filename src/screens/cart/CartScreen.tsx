@@ -1,23 +1,21 @@
 import {
   View,
   Text,
+  Image,
   SafeAreaView,
   ScrollView,
-  Dimensions,
   TouchableOpacity,
-  Image,
+  Dimensions,
 } from 'react-native';
-import React from 'react';
-import AppHeader from '../../components/AppHeader';
-import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import {useAppSelector} from '../../redux';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Button} from '../../components/rneui';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {Colors} from '../../utils/Colors';
-import {ItemEntity} from '../../redux/cart/cart.entity';
-import {useDispatch} from 'react-redux';
-import {addItem, reduceQuantity, removeItem} from '../../redux/cart/cart.slice';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AppHeader from '../../components/AppHeader';
+import {useNav} from '../../navigation/RootNavigation';
+import {Booking, BookingItem} from './SelectedItemsScreen';
+import {instance} from '../../api/instance';
+import {Colors} from '../../utils/Colors';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -29,20 +27,58 @@ const RPH = (percentage: number) => {
 };
 
 export const CartScreen = () => {
-  const dispatch = useDispatch();
-  const tabBarHeight = useBottomTabBarHeight();
-  const cart = useAppSelector((state: any) => state.cart.cart);
-  let totalPrice = 0;
+  const navigation = useNav();
+  const [cart, setCart] = useState<Booking>();
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    instance
+      .get('/cart')
+      .then(res => {
+        setCart(res.data);
+      })
+      .catch(function (e) {
+        console.log(e.message);
+      });
+  }, []);
+
+  const updateCartItem = (itemId: string, quantity: number) => {
+    try {
+      instance.put('/cart/item', {itemId, quantity}).then(res => {
+        setCart(res.data);
+      });
+    } catch (error) {
+      console.log(cart);
+    }
+  };
+
+  const submit = useCallback(async () => {
+    setLoading(true);
+    if (cart) {
+      await instance
+        .post('/cart/checkout', {})
+        .then(res => {
+          console.log(res.status);
+          navigation.navigate('Payment', {
+            amount: cart.BookingPayment.total_amount,
+            bookingId: cart.booking_id,
+          });
+        })
+        .catch(function (e) {
+          console.log(e.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [cart, navigation]);
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <ScrollView
-        className="flex-grow"
-        showsVerticalScrollIndicator={false}
-        style={{marginBottom: tabBarHeight}}>
-        <AppHeader back={false} title={'Cart'} />
+      <ScrollView className="flex-grow" showsVerticalScrollIndicator={false}>
+        <AppHeader back={true} title={'Shopping Cart'} />
         <View className="flex-1 mt-5" style={{marginHorizontal: RPW(6)}}>
-          {cart.length === 0 && (
+          {cart?.BookingItems.length === 0 && (
             <View
               className="flex-1 justify-center items-center"
               style={{height: RPH(70)}}>
@@ -57,46 +93,66 @@ export const CartScreen = () => {
               </Text>
             </View>
           )}
-
           {/* Render cart items */}
-          {cart.map((item: ItemEntity, index: number) => {
-            totalPrice += item.price * item.quantity;
+          {cart?.BookingItems.map((item: BookingItem, index: number) => {
             return (
               <View
                 key={index}
                 className="flex-row justify-between items-center mb-7">
-                <View className="flex-row items-center space-x-4">
-                  <View className="ml-1 bg-lightGrey rounded-lg">
-                    <Image
-                      source={{uri: `http://10.0.2.2:5001/${item.icon_url}`}}
-                      style={{width: 50, height: 50}}
-                    />
+                {item.serviceItem && (
+                  <View className="flex-row items-center space-x-4">
+                    <View className="ml-1 bg-lightGrey rounded-lg">
+                      <Image
+                        source={{
+                          uri: `http://10.0.2.2:5001/${item.serviceItem.icon_url}`,
+                        }}
+                        style={{width: 50, height: 50}}
+                      />
+                    </View>
+                    <View>
+                      <Text className="text-base text-black font-normal text-clip">
+                        {item.serviceItem.name}
+                      </Text>
+                      <Text className="text-base text-black font-normal">
+                        {'₹'}
+                        {item.unit_price}
+                      </Text>
+                    </View>
                   </View>
-                  <View>
-                    <Text className="text-base text-black font-normal text-clip">
-                      {item.name}
-                    </Text>
-                    <Text className="text-base text-black font-normal">
-                      {'₹'}
-                      {item.price}
-                      {'.00'}
-                    </Text>
+                )}
+                {item.packageItem && (
+                  <View className="flex-row items-center space-x-4">
+                    <View className="ml-1 bg-lightGrey rounded-lg">
+                      <Image
+                        source={{
+                          uri: `http://10.0.2.2:5001/${item.packageItem.icon_url}`,
+                        }}
+                        style={{width: 50, height: 50}}
+                      />
+                    </View>
+                    <View>
+                      <Text className="text-base text-black font-normal text-clip">
+                        {item.packageItem.name}
+                      </Text>
+                      <Text className="text-base text-black font-normal">
+                        {'₹'}
+                        {item.unit_price}
+                      </Text>
+                    </View>
                   </View>
-                </View>
+                )}
+
                 <View className="flex-row items-center space-x-4">
                   <View className="flex-row items-center py-1 px-2 space-x-3 bg-lightGrey rounded-full">
                     {item.quantity > 1 ? (
                       <TouchableOpacity
                         onPress={() => {
-                          dispatch(reduceQuantity(item.itemId));
+                          updateCartItem(item.item_id, item.quantity - 1);
                         }}>
-                        <Entypo name="minus" size={20} color={Colors.Dark} />
+                        <Entypo name="minus" size={20} color={Colors.Black} />
                       </TouchableOpacity>
                     ) : (
-                      <TouchableOpacity
-                        onPress={() => {
-                          dispatch(removeItem(item.itemId));
-                        }}>
+                      <TouchableOpacity onPress={() => {}}>
                         <MaterialIcons
                           name="delete-outline"
                           size={20}
@@ -104,13 +160,14 @@ export const CartScreen = () => {
                         />
                       </TouchableOpacity>
                     )}
-
-                    <Text className="text-base text-dark">{item.quantity}</Text>
+                    <Text className="text-base text-black">
+                      {item.quantity}
+                    </Text>
                     <TouchableOpacity
                       onPress={() => {
-                        dispatch(addItem(item));
+                        updateCartItem(item.item_id, item.quantity + 1);
                       }}>
-                      <Entypo name="plus" size={20} color={Colors.Dark} />
+                      <Entypo name="plus" size={20} color={Colors.Black} />
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -120,23 +177,42 @@ export const CartScreen = () => {
         </View>
       </ScrollView>
 
-      {cart.length !== 0 && (
+      {cart && cart?.BookingItems.length > 0 && (
         <View
           style={{
             marginHorizontal: RPW(6),
-            marginBottom: tabBarHeight,
           }}>
           <View className="my-5 h-1 bg-lightGrey" />
+          <View className="mb-1 flex-row justify-between">
+            <Text className="text-base text-black">Subtotal</Text>
+            <Text className="text-base text-black">
+              {'₹'}
+              {cart.BookingPayment.subtotal}
+            </Text>
+          </View>
           <View className="flex-row justify-between">
-            <Text className="text-base text-black">Total</Text>
+            <Text className="text-base text-black">Tax (18%)</Text>
+            <Text className="text-base text-black">
+              {'₹'}
+              {cart.BookingPayment.tax_amount}
+            </Text>
+          </View>
+          <View className="my-3 flex-row justify-between">
+            <Text className="text-base text-black font-bold">Total</Text>
             <Text className="text-base text-black font-bold">
               {'₹'}
-              {totalPrice}
-              {'.00'}
+              {cart.BookingPayment.total_amount}
             </Text>
           </View>
           <View className="my-5">
-            <Button primary title="Checkout" size="sm" onPress={() => {}} />
+            <Button
+              loading={loading}
+              primary
+              title="Proceed to payment"
+              onPress={() => {
+                submit();
+              }}
+            />
           </View>
         </View>
       )}
