@@ -22,7 +22,6 @@ import {FeaturedCard} from '../../components/FeaturedCard';
 import {instance} from '../../api/instance';
 import {useNav} from '../../navigation/RootNavigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Booking} from '../cart/SelectedItemsScreen';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -41,24 +40,12 @@ export const HomeScreen = () => {
   const [userName, setUserName] = useState<string>();
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const localCart = useAppSelector(state => state.cart.cart) || [];
-  const [cart, setCart] = useState<Booking>();
 
   const fetchUserData = useCallback(async () => {
     await instance.get(`/customer-profiles/user/${user?.id}`).then(response => {
       setUserName(response.data.name);
     });
   }, [user]);
-
-  const fetchCartItems = useCallback(async () => {
-    await instance
-      .get('/cart')
-      .then(res => {
-        setCart(res.data);
-      })
-      .catch(function (e) {
-        console.log(e.message);
-      });
-  }, []);
 
   const getHour = useCallback(async () => {
     const date = new Date();
@@ -75,22 +62,19 @@ export const HomeScreen = () => {
     useCallback(() => {
       getHour();
       fetchUserData();
-      fetchCartItems();
-
       BackHandler.addEventListener('hardwareBackPress', handlerBackPress);
       return () => {
         BackHandler.removeEventListener('hardwareBackPress', handlerBackPress);
       };
-    }, [fetchCartItems, fetchUserData, getHour]),
+    }, [fetchUserData, getHour]),
   );
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    fetchCartItems();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
-  }, [fetchCartItems]);
+  }, []);
 
   const _renderOfferItem = ({item}: any) => {
     return (
@@ -140,22 +124,13 @@ export const HomeScreen = () => {
           <View className="flex-row float-right items-center space-x-4">
             <TouchableOpacity
               onPress={() => {
-                cart
-                  ? navigation.navigate('Cart')
-                  : navigation.navigate('SelectedItems');
+                navigation.navigate('SelectedItems');
               }}>
               <View>
                 {localCart?.length > 0 && (
                   <View className="z-10 bg-primary w-5 h-5 rounded-full items-center justify-center absolute -top-2 -right-2">
                     <Text className="text-sm text-white font-normal">
                       {localCart?.length}
-                    </Text>
-                  </View>
-                )}
-                {cart && (
-                  <View className="z-10 bg-primary w-5 h-5 rounded-full items-center justify-center absolute -top-2 -right-2">
-                    <Text className="text-sm text-white font-normal">
-                      {cart?.BookingItems?.length}
                     </Text>
                   </View>
                 )}
