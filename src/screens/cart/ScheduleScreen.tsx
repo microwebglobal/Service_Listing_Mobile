@@ -27,6 +27,7 @@ import {useDispatch} from 'react-redux';
 import {instance} from '../../api/instance';
 import {clearCart} from '../../redux/cart/cart.slice';
 import {styled} from 'nativewind';
+import {StackActions} from '@react-navigation/native';
 
 interface ServiceForm {
   date: string;
@@ -82,7 +83,10 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
   function convertTo24HourFormat(timeString: string) {
     const [hour, minute, period] = timeString.split(':');
     let formattedHour = parseInt(hour, 10);
-    if (period[3] + period[4] === 'PM') {
+    if (
+      (formattedHour < 12 && period[3] + period[4] === 'PM') ||
+      (formattedHour === 12 && period[3] + period[4] === 'AM')
+    ) {
       formattedHour += 12;
     }
     return `${formattedHour}:${minute}`;
@@ -104,7 +108,9 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
       .post('cart/add', payload)
       .then(res => {
         res.status === 200 &&
-          (dispatch(clearCart()), navigation.navigate('Cart'));
+          (dispatch(clearCart()),
+          navigation.dispatch(StackActions.pop(2)),
+          navigation.navigate('Cart'));
       })
       .catch(e => {
         console.log(e.message);

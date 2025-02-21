@@ -49,6 +49,6 @@ export default {
     });
   },
   clearCart: (state: CartState) => {
-    state.cart ? (state.cart = []) : null;
+    state.cart = null;
   },
 };

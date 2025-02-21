@@ -62,47 +62,47 @@ export const CategoryScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [categoryData, setCategoryData] = useState<Array<Category>>([]);
   const [cities, setCities] = useState<Array<City>>([]);
-  const [addresses, setAddresses] = useState<Array<Address>>([]);
+  const [primaryAddress, setPrimaryAddress] = useState<Address>();
 
-  const fetchData = useCallback(() => {
-    try {
-      instance.get('/cities').then(response => {
+  useEffect(() => {
+    instance
+      .get('/cities')
+      .then(response => {
         setCities(response.data);
+      })
+      .catch(e => {
+        console.log('Error ', e);
       });
-      instance.get('/users/addresses').then(response => {
-        setAddresses(response.data);
+  }, []);
+
+  const fetchAddress = useCallback(async () => {
+    await instance
+      .get('/users/addresses')
+      .then(response => {
+        setPrimaryAddress(
+          response.data.find((address: Address) => {
+            return address.is_primary === true;
+          }),
+        );
+      })
+      .catch(e => {
+        console.log('Error ', e);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-    } catch (e) {
-      console.log('Error ', e);
-    }
   }, []);
 
   useFocusEffect(
     useCallback(() => {
-      fetchData();
-    }, [fetchData]),
+      fetchAddress();
+      let cityData: any = cities.find((city: City) => {
+        return city.name === primaryAddress?.city;
+      });
+      dispatch(setPrimaryCityID(cityData?.city_id));
+      setCategoryData(cityData?.serviceCategories);
+    }, [cities, dispatch, fetchAddress, primaryAddress?.city]),
   );
-
-  useEffect(() => {
-    try {
-      let primaryAddress: Array<Address> = [];
-      let cityData: Array<City> = [];
-      primaryAddress = addresses.filter((address: Address) => {
-        return address.is_primary === true;
-      });
-      cityData = cities.filter((city: City) => {
-        return city.name === primaryAddress[0].city;
-      });
-      dispatch(setPrimaryCityID(cityData[0].city_id));
-      setCategoryData(cityData[0].serviceCategories);
-    } catch (e) {
-      console.log('Error ', e);
-    } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 300);
-    }
-  }, [addresses, cities, dispatch]);
 
   const _renderCategoryItem = ({item}: any) => {
     return (
