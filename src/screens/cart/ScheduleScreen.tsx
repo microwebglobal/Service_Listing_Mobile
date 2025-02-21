@@ -67,6 +67,7 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
     formState: {errors},
   } = useForm<ServiceForm>();
   const cart = useAppSelector((state: any) => state.cart.cart);
+  const addresses = useAppSelector((state: any) => state.address.addresses);
 
   //time picker
   const [date, setDate] = useState(new Date(1598051730000));
@@ -90,7 +91,7 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
   const submit = async (data: ServiceForm) => {
     let formatTime = timeValue ? convertTo24HourFormat(timeValue) : '';
     const payload: BookingPayload = {
-      cityId: 'CTY002',
+      cityId: addresses[0].cityId,
       items: [...cart],
       bookingDate: selectDate,
       startTime: formatTime,

@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {instance} from '../../api/instance';
@@ -16,6 +16,9 @@ import {Colors} from '../../utils/Colors';
 import AppHeader from '../../components/AppHeader';
 import {Image} from '@rneui/themed';
 import {useNav} from '../../navigation/RootNavigation';
+import {useFocusEffect} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {setPrimaryCityID} from '../../redux/address/address.slice';
 
 interface Category {
   category_id: string;
@@ -54,13 +57,14 @@ const RPW = (percentage: number) => {
 
 export const CategoryScreen = () => {
   const navigation = useNav();
+  const dispatch = useDispatch();
   const tabBarHeight = useBottomTabBarHeight();
   const [isLoading, setIsLoading] = useState(true);
   const [categoryData, setCategoryData] = useState<Array<Category>>([]);
   const [cities, setCities] = useState<Array<City>>([]);
   const [addresses, setAddresses] = useState<Array<Address>>([]);
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     try {
       instance.get('/cities').then(response => {
         setCities(response.data);
@@ -73,6 +77,12 @@ export const CategoryScreen = () => {
     }
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [fetchData]),
+  );
+
   useEffect(() => {
     try {
       let primaryAddress: Array<Address> = [];
@@ -83,6 +93,7 @@ export const CategoryScreen = () => {
       cityData = cities.filter((city: City) => {
         return city.name === primaryAddress[0].city;
       });
+      dispatch(setPrimaryCityID(cityData[0].city_id));
       setCategoryData(cityData[0].serviceCategories);
     } catch (e) {
       console.log('Error ', e);
@@ -91,7 +102,7 @@ export const CategoryScreen = () => {
         setIsLoading(false);
       }, 300);
     }
-  }, [addresses, cities]);
+  }, [addresses, cities, dispatch]);
 
   const _renderCategoryItem = ({item}: any) => {
     return (

@@ -3,6 +3,7 @@ export interface AddressEntity {
   line1: string;
   line2: string;
   city: string;
+  cityId: string;
   state: string;
   postal_code: string;
   is_primary: boolean;

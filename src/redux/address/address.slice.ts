@@ -12,5 +12,6 @@ const addressSlice = createSlice({
   reducers: addressReducer,
 });
 
-export const {saveAddressList, clearAddressList} = addressSlice.actions;
+export const {saveAddressList, setPrimaryCityID, clearAddressList} =
+  addressSlice.actions;
 export default addressSlice.reducer;
