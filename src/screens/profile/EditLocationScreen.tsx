@@ -6,7 +6,7 @@ import {
   Dimensions,
   KeyboardAvoidingView,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AppHeader from '../../components/AppHeader';
@@ -18,6 +18,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {Colors} from '../../utils/Colors';
 import {AddressForm} from '../../components/AddressForm';
 import BottomSheet from '@gorhom/bottom-sheet';
+import {useFocusEffect} from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -33,21 +35,37 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  useEffect(() => {
+  const fetchAddress = useCallback(() => {
     try {
       instance.get('/users/addresses').then(response => {
         setAddressList(response.data);
       });
     } catch (e) {
       console.log('Error ', e);
-    } finally {
     }
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchAddress();
+    }, [fetchAddress]),
+  );
+
+  const showToast = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Address Deleted',
+      text2: 'Address deleted successfully',
+      visibilityTime: 2000,
+      autoHide: true,
+    });
+  };
 
   const deleteAddress = (id: number) => {
     try {
       instance.delete(`/users/addresses/${id}`).then(() => {
         setAddressList(addressList.filter(address => address.id !== id));
+        showToast();
       });
     } catch (e) {
       console.log('Error ', e);
@@ -137,7 +155,11 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
             {addLocationType('Work', 'work-outline')}
 
             <View className="">
-              <TouchableOpacity onPress={() => setIsChecked(!isChecked)}>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsChecked(!isChecked);
+                  fetchAddress();
+                }}>
                 <View className="flex-row items-center justify-between">
                   <Text className="text-base text-black">View All</Text>
                   {isChecked ? (

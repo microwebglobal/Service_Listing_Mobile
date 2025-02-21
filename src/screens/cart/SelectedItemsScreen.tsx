@@ -87,7 +87,7 @@ export const SelectedItemsScreen = () => {
       <ScrollView className="flex-grow" showsVerticalScrollIndicator={false}>
         <AppHeader back={true} title={'Selected Services'} />
         <View className="flex-1 mt-5" style={{marginHorizontal: RPW(6)}}>
-          {!LocalCart || LocalCart?.length === 0 && (
+          {!LocalCart && (
             <View
               className="flex-1 justify-center items-center"
               style={{height: RPH(70)}}>

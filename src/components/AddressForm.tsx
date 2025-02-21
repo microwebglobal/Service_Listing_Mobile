@@ -23,6 +23,7 @@ export const AddressForm = ({bottomSheetRef}: AddressFormProps) => {
   const [selectedIndex, setIndex] = useState(0);
   const {
     control,
+    reset,
     handleSubmit,
     formState: {errors},
   } = useForm<Address>();
@@ -45,6 +46,7 @@ export const AddressForm = ({bottomSheetRef}: AddressFormProps) => {
         })
         .then(() => {
           handleClosePress();
+          reset();
         });
     } catch (e) {
       console.log('Error ', e);
