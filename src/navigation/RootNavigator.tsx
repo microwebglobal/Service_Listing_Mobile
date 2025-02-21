@@ -24,6 +24,8 @@ import {ScheduleScreen} from '../screens/cart/ScheduleScreen';
 import {CartScreen} from '../screens/cart/CartScreen';
 import {SelectedItemsScreen} from '../screens/cart/SelectedItemsScreen';
 import {PaymentScreen} from '../screens/cart/PaymentScreen';
+import {BookingDetailsScreen} from '../screens/booking/BookingDetailsScreen';
+import {BookingScreen} from '../screens/booking/BookingScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -89,6 +91,28 @@ export const ProfileNavigator = () => {
       }}>
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+    </Stack.Navigator>
+  );
+};
+
+export const BookingNavigator = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        headerStyle: {
+          backgroundColor: Colors.White,
+        },
+        headerShadowVisible: false,
+        headerTintColor: Colors.Dark,
+        headerTitleAlign: 'center',
+        headerTitleStyle: {
+          fontWeight: '500',
+          color: Colors.Dark,
+        },
+      }}>
+      <Stack.Screen name="Booking" component={BookingScreen} />
+      <Stack.Screen name="BookingDetails" component={BookingDetailsScreen} />
     </Stack.Navigator>
   );
 };

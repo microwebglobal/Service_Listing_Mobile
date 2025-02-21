@@ -5,11 +5,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Colors} from '../utils/Colors';
 import {TicketScreen} from '../screens/ticket/TicketScreen';
 import {
+  BookingNavigator,
   CategoryNavigator,
   HomeNavigator,
   ProfileNavigator,
 } from './RootNavigator';
-import {BookingScreen} from '../screens/booking/BookingScreen';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const screenHeight = Dimensions.get('window').height;
@@ -52,7 +52,7 @@ export const TabNavigator = () => {
             ) : (
               <FontAwesome name={'user-o'} size={26} color={color} />
             );
-          } else if (route.name === 'Booking') {
+          } else if (route.name === 'BookingTab') {
             iconName = focused ? 'receipt' : 'receipt-outline';
           }
 
@@ -74,7 +74,7 @@ export const TabNavigator = () => {
           headerShown: false,
         }}
       />
-      <Tab.Screen name={'Booking'} component={BookingScreen} />
+      <Tab.Screen name={'BookingTab'} component={BookingNavigator} />
       <Tab.Screen name={'ProfileTab'} component={ProfileNavigator} />
     </Tab.Navigator>
   );

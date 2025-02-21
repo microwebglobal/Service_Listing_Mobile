@@ -24,6 +24,8 @@ export type RootStackParamList = {
   ServiceSchedule: undefined;
   Cart: undefined;
   Payment: {amount: string; bookingId: string};
+  Booking: undefined;
+  BookingDetails: {booking: any};
 };
 
 export type NavigationHookType = NativeStackNavigationProp<RootStackParamList>;
