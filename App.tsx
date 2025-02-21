@@ -2,11 +2,13 @@ import React from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {RootNavigator} from './src/navigation/RootNavigator';
 import {ButtonProps, createTheme, ThemeProvider} from '@rneui/themed';
-import {Platform} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {Provider} from 'react-redux';
 import {persistor, store} from './src/redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
+import {Colors} from './src/utils/Colors';
 
 export const FONT_FAMILY = 'Poppins';
 
@@ -74,6 +76,25 @@ const theme = createTheme({
   },
 });
 
+const toastConfig = {
+  success: (props: any) => (
+    <BaseToast
+      {...props}
+      className="bg-white border-l-4 border-green-500"
+      text1Style={styles.text1Style}
+      text2Style={styles.text2Style}
+    />
+  ),
+  error: (props: any) => (
+    <ErrorToast
+      {...props}
+      className="bg-white border-l-4 border-red-500"
+      text1Style={styles.text1Style}
+      text2Style={styles.text2Style}
+    />
+  ),
+};
+
 function App(): React.JSX.Element {
   return (
     <Provider store={store}>
@@ -82,6 +103,7 @@ function App(): React.JSX.Element {
           <ThemeProvider theme={theme}>
             <SafeAreaProvider>
               <RootNavigator />
+              <Toast config={toastConfig} position="top" topOffset={60} />
             </SafeAreaProvider>
           </ThemeProvider>
         </GestureHandlerRootView>
@@ -89,5 +111,17 @@ function App(): React.JSX.Element {
     </Provider>
   );
 }
+
+const styles = StyleSheet.create({
+  text1Style: {
+    fontSize: 16,
+    fontWeight: 'semibold',
+  },
+  text2Style: {
+    fontSize: 14,
+    color: Colors.Dark,
+    fontWeight: 'normal',
+  },
+});
 
 export default App;

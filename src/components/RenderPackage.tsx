@@ -6,6 +6,7 @@ import {RenderPackageItem} from './RenderPackageItem';
 import {useDispatch} from 'react-redux';
 import {addMultipleItems} from '../redux/cart/cart.slice';
 import {ItemEntity} from '../redux/cart/cart.entity';
+import Toast from 'react-native-toast-message';
 
 export interface PackageItem {
   item_id: string;
@@ -119,6 +120,16 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
     // console.log('Cart Items', tempCartItems);
   };
 
+  const showToast = (packageName: string) => {
+    Toast.show({
+      type: 'success',
+      text1: 'Added to selection',
+      text2: `${packageName} and its package items has been added to your selection`,
+      visibilityTime: 2000,
+      autoHide: true,
+    });
+  };
+
   const _renderPackage = ({item}: {item: Package}) => {
     return (
       <View className="my-1 border-2 border-lightGrey rounded-lg p-2">
@@ -205,6 +216,7 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
                   setIsItemClicked(!isItemClicked);
                   dispatch(addMultipleItems(cartItems));
                   // console.log('Cart Items', cartItems);
+                  showToast(item.name);
                 }}
               />
             </View>

@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import {Colors} from '../utils/Colors';
 import {useDispatch} from 'react-redux';
 import {addItem} from '../redux/cart/cart.slice';
+import Toast from 'react-native-toast-message';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -26,6 +27,16 @@ export const RenderService = ({service}: {service: Service}) => {
     } catch (e) {
       console.log('Error ', e);
     }
+  };
+
+  const showToast = (serviceName: string) => {
+    Toast.show({
+      type: 'success',
+      text1: 'Added to selection',
+      text2: `${serviceName} has been added to your selection`,
+      visibilityTime: 2000,
+      autoHide: true,
+    });
   };
 
   const _renderServiceItem = ({item}: {item: ServiceItem}) => {
@@ -61,6 +72,7 @@ export const RenderService = ({service}: {service: Service}) => {
                       icon_url: item.icon_url,
                     }),
                   );
+                  showToast(item.name);
                 }}
               />
             </View>

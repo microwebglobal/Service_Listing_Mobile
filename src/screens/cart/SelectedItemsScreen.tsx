@@ -19,6 +19,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useNav} from '../../navigation/RootNavigation';
 import {ServiceItem} from '../category/ServiceTypeScreen';
 import {PackageItem} from '../../components/RenderPackage';
+import Toast from 'react-native-toast-message';
 
 export interface Booking {
   booking_id: string;
@@ -72,6 +73,14 @@ export const SelectedItemsScreen = () => {
   const dispatch = useDispatch();
   const LocalCart = useAppSelector((state: any) => state.cart.cart);
   let totalPrice = 0;
+
+  const showToast = () => {
+    Toast.show({
+      type: 'error',
+      text1: 'Removed from selection',
+      text2: 'Item has been removed from selection',
+    });
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -127,6 +136,7 @@ export const SelectedItemsScreen = () => {
                   <View className="py-1 px-2 bg-lightGrey rounded-full">
                     <TouchableOpacity
                       onPress={() => {
+                        showToast();
                         dispatch(removeItem(item.itemId));
                       }}>
                       <MaterialIcons
