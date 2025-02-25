@@ -29,22 +29,23 @@ import {BookingScreen} from '../screens/booking/BookingScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+const screenOptions: any = {
+  headerShown: false,
+  headerStyle: {
+    backgroundColor: Colors.White,
+  },
+  headerShadowVisible: false,
+  headerTintColor: Colors.Dark,
+  headerTitleAlign: 'center',
+  headerTitleStyle: {
+    fontWeight: '500',
+    color: Colors.Dark,
+  },
+};
+
 export const CategoryNavigator = () => {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        headerStyle: {
-          backgroundColor: Colors.White,
-        },
-        headerShadowVisible: false,
-        headerTintColor: Colors.Dark,
-        headerTitleAlign: 'center',
-        headerTitleStyle: {
-          fontWeight: '500',
-          color: Colors.Dark,
-        },
-      }}>
+    <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="Category" component={CategoryScreen} />
       <Stack.Screen name="SubCategory" component={SubCategoryScreen} />
       <Stack.Screen name="ServiceType" component={ServiceTypeScreen} />
@@ -54,20 +55,7 @@ export const CategoryNavigator = () => {
 
 export const HomeNavigator = () => {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        headerStyle: {
-          backgroundColor: Colors.White,
-        },
-        headerShadowVisible: false,
-        headerTintColor: Colors.Dark,
-        headerTitleAlign: 'center',
-        headerTitleStyle: {
-          fontWeight: '500',
-          color: Colors.Dark,
-        },
-      }}>
+    <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="Home" component={HomeScreen} />
     </Stack.Navigator>
   );
@@ -75,20 +63,7 @@ export const HomeNavigator = () => {
 
 export const ProfileNavigator = () => {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        headerStyle: {
-          backgroundColor: Colors.White,
-        },
-        headerShadowVisible: false,
-        headerTintColor: Colors.Dark,
-        headerTitleAlign: 'center',
-        headerTitleStyle: {
-          fontWeight: '500',
-          color: Colors.Dark,
-        },
-      }}>
+    <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
     </Stack.Navigator>
@@ -97,20 +72,7 @@ export const ProfileNavigator = () => {
 
 export const BookingNavigator = () => {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        headerStyle: {
-          backgroundColor: Colors.White,
-        },
-        headerShadowVisible: false,
-        headerTintColor: Colors.Dark,
-        headerTitleAlign: 'center',
-        headerTitleStyle: {
-          fontWeight: '500',
-          color: Colors.Dark,
-        },
-      }}>
+    <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="Booking" component={BookingScreen} />
       <Stack.Screen name="BookingDetails" component={BookingDetailsScreen} />
     </Stack.Navigator>
@@ -120,23 +82,9 @@ export const BookingNavigator = () => {
 export const RootNavigator: React.FC = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Splash"
-        screenOptions={{
-          headerShown: false,
-          headerStyle: {
-            backgroundColor: Colors.White,
-          },
-          headerShadowVisible: false,
-          headerTintColor: Colors.Dark,
-          headerTitleAlign: 'center',
-          headerTitleStyle: {
-            fontWeight: '500',
-            color: Colors.Dark,
-          },
-        }}>
+      <Stack.Navigator initialRouteName="Splash" screenOptions={screenOptions}>
         <Stack.Screen
-          name="Tab"
+          name="TabsNavigator"
           component={TabNavigator}
           options={{
             headerShown: false,

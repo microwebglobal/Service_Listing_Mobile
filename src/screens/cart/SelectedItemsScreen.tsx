@@ -98,9 +98,22 @@ export const SelectedItemsScreen = () => {
               </Text>
               <Text className="mt-5 text-base text-dark text-center">
                 {
-                  'Once you add items from a service package items or service items, your cart will appear here.'
+                  'Once you add items from a service, your cart will appear here.'
                 }
               </Text>
+
+              <View className="my-5">
+                <Button
+                  black
+                  size="sm"
+                  title="Browse Services"
+                  onPress={() => {
+                    navigation.navigate('TabsNavigator', {
+                      screen: 'CategoryTab',
+                    });
+                  }}
+                />
+              </View>
             </View>
           )}
 

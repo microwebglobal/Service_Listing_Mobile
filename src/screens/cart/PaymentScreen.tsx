@@ -24,7 +24,7 @@ export const PaymentScreen = ({route}: any) => {
   const {amount, bookingId} = route.params;
   const navigation = useNav();
   const paymentMethods = ['online', 'cash'];
-//   const [paymentMethod, setPaymentMethod] = useState<string>();
+  //   const [paymentMethod, setPaymentMethod] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedIndex, setIndex] = useState(1);
 
@@ -34,7 +34,7 @@ export const PaymentScreen = ({route}: any) => {
       .post(`/booking/${bookingId}/complete-cash-payment`)
       .then(res => {
         console.log(res.data.message);
-        navigation.navigate('Tab');
+        navigation.navigate('TabsNavigator');
       })
       .catch(function (e) {
         console.log(e.message);
@@ -68,7 +68,7 @@ export const PaymentScreen = ({route}: any) => {
               <TouchableOpacity
                 key={index}
                 onPress={() => {
-                //   setPaymentMethod(method);
+                  //   setPaymentMethod(method);
                   setIndex(index);
                 }}>
                 <View className="flex-row border-0 rounded-lg items-center">

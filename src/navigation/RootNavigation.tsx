@@ -10,7 +10,7 @@ export type RootStackParamList = {
   Verification: {phone: string};
   LoginSuccess: undefined;
   SelectLocation: undefined;
-  Tab: undefined;
+  TabsNavigator: undefined;
   Home: undefined;
   Profile: undefined;
   Category: undefined;
