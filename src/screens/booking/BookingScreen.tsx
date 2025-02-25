@@ -66,11 +66,10 @@ interface FetchBookingProps {
 
 const FetchBooking: React.FC<FetchBookingProps> = ({status}) => {
   const [bookings, setBookings] = useState<Array<Booking>>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const tabBarHeight = useBottomTabBarHeight();
 
   const fetchCartItems = useCallback(async () => {
-    setIsLoading(true);
     await instance
       .get('/customer/booking')
       .then(res => {

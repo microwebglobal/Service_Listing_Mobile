@@ -105,8 +105,10 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
 
         {/* Render services */}
         <View className="mx-2 mt-5">
-          {item.Services.map(service => (
-            <RenderService service={service} />
+          {item.Services.map((service, index: number) => (
+            <View key={index}>
+              <RenderService service={service} />
+            </View>
           ))}
         </View>
 

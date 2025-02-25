@@ -6,16 +6,25 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Button} from '../../components/rneui';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AppHeader from '../../components/AppHeader';
-import {useNav} from '../../navigation/RootNavigation';
-import {Booking, BookingItem} from './SelectedItemsScreen';
+import {BookingItem} from '../booking/BookingDetailsScreen';
 import {instance} from '../../api/instance';
 import {Colors} from '../../utils/Colors';
+import {useNav} from '../../navigation/RootNavigation';
+import {useDispatch} from 'react-redux';
+import {useAppSelector} from '../../redux';
+import {
+  addQuantity,
+  clearCart,
+  reduceQuantity,
+  setCart,
+} from '../../redux/shopping_cart/shopping_cart.slice';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -28,156 +37,176 @@ const RPH = (percentage: number) => {
 
 export const CartScreen = () => {
   const navigation = useNav();
-  const [cart, setCart] = useState<Booking>();
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState<boolean>(false);
+  const cart = useAppSelector(state => state.shopping_cart.shoppingCart);
+  console.log(cart);
 
   useEffect(() => {
     instance
       .get('/cart')
       .then(res => {
-        setCart(res.data);
+        dispatch(setCart(res.data));
       })
       .catch(function (e) {
         console.log(e.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-  }, []);
+  }, [dispatch]);
 
-  const updateCartItem = (itemId: string, quantity: number) => {
+  const updateCartItem = async (itemId: string, quantity: number) => {
     try {
-      instance.put('/cart/item', {itemId, quantity}).then(res => {
-        setCart(res.data);
-      });
+      await instance.put('/cart/item', {itemId, quantity}).then(() => {});
     } catch (error) {
-      console.log(cart);
+      console.log(error);
     }
   };
 
   const submit = useCallback(async () => {
-    setLoading(true);
-    if (cart) {
-      await instance
-        .post('/cart/checkout', {})
-        .then(res => {
-          console.log(res.status);
-          navigation.navigate('Payment', {
-            amount: cart.BookingPayment.total_amount,
-            bookingId: cart.booking_id,
-          });
-        })
-        .catch(function (e) {
-          console.log(e.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+    if (!cart) {
+      return 'Cart is empty';
     }
-  }, [cart, navigation]);
+    setLoading(true);
+    await instance
+      .post('/cart/checkout', {})
+      .then(() => {
+        navigation.navigate('Payment', {
+          amount: cart.BookingPayment.total_amount,
+          bookingId: cart.booking_id,
+        });
+        dispatch(clearCart());
+      })
+      .catch(function (e) {
+        console.log(e.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [cart, dispatch, navigation]);
 
+  if (isLoading) {
+    return (
+      <View className="items-center justify-center flex-1 bg-white">
+        <ActivityIndicator size="large" color={Colors.Black} />
+      </View>
+    );
+  }
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className="flex-grow" showsVerticalScrollIndicator={false}>
         <AppHeader back={true} title={'Shopping Cart'} />
         <View className="flex-1 mt-5" style={{marginHorizontal: RPW(6)}}>
-          {cart?.BookingItems.length === 0 && (
-            <View
-              className="flex-1 justify-center items-center"
-              style={{height: RPH(70)}}>
-              <Image source={require('../../assets/app-images/cart.png')} />
-              <Text className="mt-5 text-xl text-black text-center font-medium">
-                Add items to start a cart
-              </Text>
-              <Text className="mt-5 text-base text-dark text-center">
-                {
-                  'Once you add items from a service package items or service items, your cart will appear here.'
-                }
-              </Text>
-            </View>
-          )}
-          {/* Render cart items */}
-          {cart?.BookingItems.map((item: BookingItem, index: number) => {
-            return (
+          {!cart ||
+            (cart.BookingItems.length === 0 && (
               <View
-                key={index}
-                className="flex-row justify-between items-center mb-7">
-                {item.serviceItem && (
-                  <View className="flex-row items-center space-x-4">
-                    <View className="ml-1 bg-lightGrey rounded-lg">
-                      <Image
-                        source={{
-                          uri: `http://10.0.2.2:5001/${item.serviceItem.icon_url}`,
-                        }}
-                        style={{width: 50, height: 50}}
-                      />
+                className="flex-1 justify-center items-center"
+                style={{height: RPH(70)}}>
+                <Image source={require('../../assets/app-images/cart.png')} />
+                <Text className="mt-5 text-xl text-black text-center font-medium">
+                  Add items to start a cart
+                </Text>
+                <Text className="mt-5 text-base text-dark text-center">
+                  {
+                    'Once you add items from a service package items or service items, your cart will appear here.'
+                  }
+                </Text>
+              </View>
+            ))}
+          {/* Render cart items */}
+          {cart !== null &&
+            cart?.BookingItems.map((item: BookingItem, index: number) => {
+              return (
+                <View
+                  key={index}
+                  className="flex-row justify-between items-center mb-7">
+                  {item?.serviceItem && (
+                    <View className="flex-row items-center space-x-4">
+                      <View className="ml-1 bg-lightGrey rounded-lg">
+                        <Image
+                          source={{
+                            uri: `http://10.0.2.2:5001/${item.serviceItem.icon_url}`,
+                          }}
+                          style={{width: 50, height: 50}}
+                        />
+                      </View>
+                      <View>
+                        <Text className="text-base text-black font-normal text-clip">
+                          {item.serviceItem.name}
+                        </Text>
+                        <Text className="text-base text-black font-normal">
+                          {'₹'}
+                          {item.unit_price}
+                        </Text>
+                      </View>
                     </View>
-                    <View>
-                      <Text className="text-base text-black font-normal text-clip">
-                        {item.serviceItem.name}
-                      </Text>
-                      <Text className="text-base text-black font-normal">
-                        {'₹'}
-                        {item.unit_price}
-                      </Text>
+                  )}
+                  {item?.packageItem && (
+                    <View className="flex-row items-center space-x-4">
+                      <View className="ml-1 bg-lightGrey rounded-lg">
+                        <Image
+                          source={{
+                            uri: `http://10.0.2.2:5001/${item.packageItem.icon_url}`,
+                          }}
+                          style={{width: 50, height: 50}}
+                        />
+                      </View>
+                      <View>
+                        <Text className="text-base text-black font-normal text-clip">
+                          {item.packageItem.name}
+                        </Text>
+                        <Text className="text-base text-black font-normal">
+                          {'₹'}
+                          {item.unit_price}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                )}
-                {item.packageItem && (
-                  <View className="flex-row items-center space-x-4">
-                    <View className="ml-1 bg-lightGrey rounded-lg">
-                      <Image
-                        source={{
-                          uri: `http://10.0.2.2:5001/${item.packageItem.icon_url}`,
-                        }}
-                        style={{width: 50, height: 50}}
-                      />
-                    </View>
-                    <View>
-                      <Text className="text-base text-black font-normal text-clip">
-                        {item.packageItem.name}
-                      </Text>
-                      <Text className="text-base text-black font-normal">
-                        {'₹'}
-                        {item.unit_price}
-                      </Text>
-                    </View>
-                  </View>
-                )}
+                  )}
 
-                <View className="flex-row items-center space-x-4">
-                  <View className="flex-row items-center py-1 px-2 space-x-3 bg-lightGrey rounded-full">
-                    {item.quantity > 1 ? (
+                  <View className="flex-row items-center space-x-4">
+                    <View className="flex-row items-center py-1 px-2 space-x-3 bg-lightGrey rounded-full">
+                      {item?.quantity > 1 ? (
+                        <TouchableOpacity
+                          onPress={() => {
+                            dispatch(reduceQuantity(item.item_id));
+                            updateCartItem(item.item_id, item.quantity - 1);
+                          }}>
+                          <Entypo name="minus" size={20} color={Colors.Black} />
+                        </TouchableOpacity>
+                      ) : (
+                        <TouchableOpacity
+                          onPress={() => {
+                            dispatch(reduceQuantity(item?.item_id));
+                            updateCartItem(item.item_id, item.quantity - 1);
+                          }}>
+                          <MaterialIcons
+                            name="delete-outline"
+                            size={20}
+                            color={Colors.Dark}
+                          />
+                        </TouchableOpacity>
+                      )}
+                      <Text className="text-base text-black">
+                        {item?.quantity}
+                      </Text>
                       <TouchableOpacity
                         onPress={() => {
-                          updateCartItem(item.item_id, item.quantity - 1);
+                          dispatch(addQuantity(item.item_id));
+                          updateCartItem(item.item_id, item.quantity + 1);
                         }}>
-                        <Entypo name="minus" size={20} color={Colors.Black} />
+                        <Entypo name="plus" size={20} color={Colors.Black} />
                       </TouchableOpacity>
-                    ) : (
-                      <TouchableOpacity onPress={() => {}}>
-                        <MaterialIcons
-                          name="delete-outline"
-                          size={20}
-                          color={Colors.Dark}
-                        />
-                      </TouchableOpacity>
-                    )}
-                    <Text className="text-base text-black">
-                      {item.quantity}
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() => {
-                        updateCartItem(item.item_id, item.quantity + 1);
-                      }}>
-                      <Entypo name="plus" size={20} color={Colors.Black} />
-                    </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
-              </View>
-            );
-          })}
+              );
+            })}
         </View>
       </ScrollView>
 
-      {cart && cart?.BookingItems.length > 0 && (
+      {cart !== null && cart?.BookingItems.length > 0 && (
         <View
           style={{
             marginHorizontal: RPW(6),

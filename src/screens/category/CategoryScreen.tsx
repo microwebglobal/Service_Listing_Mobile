@@ -99,8 +99,10 @@ export const CategoryScreen = () => {
       let cityData: any = cities.find((city: City) => {
         return city.name === primaryAddress?.city;
       });
-      dispatch(setPrimaryCityID(cityData?.city_id));
-      setCategoryData(cityData?.serviceCategories);
+      if (cityData !== undefined) {
+        setCategoryData(cityData.serviceCategories);
+        dispatch(setPrimaryCityID(cityData.city_id));
+      }
     }, [cities, dispatch, fetchAddress, primaryAddress?.city]),
   );
 
