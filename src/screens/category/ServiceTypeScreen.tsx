@@ -18,6 +18,7 @@ import {RenderService} from '../../components/RenderService';
 import {Colors} from '../../utils/Colors';
 import {styled} from 'nativewind';
 import {RenderPackage} from '../../components/RenderPackage';
+import {SERVER_BASE} from '@env';
 
 interface CitySpecificPricing {
   id: number;
@@ -93,7 +94,7 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
         <View className="flex-row items-center space-x-5 bg-white">
           <View className="ml-1 bg-lightGrey rounded-lg">
             <Image
-              source={{uri: `http://10.0.2.2:5001/${item.icon_url}`}}
+              source={{uri: `${SERVER_BASE}${item.icon_url}`}}
               style={{width: 50, height: 50}}
             />
           </View>

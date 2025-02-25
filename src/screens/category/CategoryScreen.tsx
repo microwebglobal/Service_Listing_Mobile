@@ -19,6 +19,7 @@ import {useNav} from '../../navigation/RootNavigation';
 import {useFocusEffect} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {setPrimaryCityID} from '../../redux/address/address.slice';
+import {SERVER_BASE} from '@env';
 
 interface Category {
   category_id: string;
@@ -120,7 +121,7 @@ export const CategoryScreen = () => {
           <View className="py-2 items-center justify-center bg-lightGrey rounded-xl">
             <View className="">
               <Image
-                source={{uri: `http://10.0.2.2:5001${item.icon_url}`}}
+                source={{uri: `${SERVER_BASE}${item.icon_url}`}}
                 containerStyle={styles.item}
               />
             </View>

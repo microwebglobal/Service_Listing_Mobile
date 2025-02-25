@@ -2,6 +2,7 @@ import {View, Text, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import {useNav} from '../navigation/RootNavigation';
 import {BookingItem} from '../screens/booking/BookingDetailsScreen';
+import {SERVER_BASE} from '@env';
 
 export const BookingCard: React.FC<{booking: any}> = ({booking}) => {
   const navigation = useNav();
@@ -23,41 +24,43 @@ export const BookingCard: React.FC<{booking: any}> = ({booking}) => {
       }}>
       <View className="my-2 p-3 bg-white rounded-lg border-2 border-lightGrey">
         <View>
-          {booking.BookingItems.map((bookingItem: BookingItem, index: number) => (
-            <View key={index}>
-              {bookingItem.serviceItem ? (
-                <View className="flex-row items-center space-x-4 mb-2">
-                  <View className="bg-lightGrey rounded-lg p-2 flex-row items-center">
-                    <Image
-                      source={{
-                        uri: `http://10.0.2.2:5001/${bookingItem.serviceItem.icon_url}`,
-                      }}
-                      style={{width: 40, height: 40}}
-                    />
-                  </View>
-                  <Text className="text-base text-black font-medium">
-                    {bookingItem.serviceItem.name}
-                  </Text>
-                </View>
-              ) : (
-                <>
+          {booking.BookingItems.map(
+            (bookingItem: BookingItem, index: number) => (
+              <View key={index}>
+                {bookingItem.serviceItem ? (
                   <View className="flex-row items-center space-x-4 mb-2">
                     <View className="bg-lightGrey rounded-lg p-2 flex-row items-center">
                       <Image
                         source={{
-                          uri: `http://10.0.2.2:5001/${bookingItem.packageItem.icon_url}`,
+                          uri: `${SERVER_BASE}${bookingItem.serviceItem.icon_url}`,
                         }}
                         style={{width: 40, height: 40}}
                       />
                     </View>
                     <Text className="text-base text-black font-medium">
-                      {bookingItem.packageItem.name}
+                      {bookingItem.serviceItem.name}
                     </Text>
                   </View>
-                </>
-              )}
-            </View>
-          ))}
+                ) : (
+                  <>
+                    <View className="flex-row items-center space-x-4 mb-2">
+                      <View className="bg-lightGrey rounded-lg p-2 flex-row items-center">
+                        <Image
+                          source={{
+                            uri: `${SERVER_BASE}${bookingItem.packageItem.icon_url}`,
+                          }}
+                          style={{width: 40, height: 40}}
+                        />
+                      </View>
+                      <Text className="text-base text-black font-medium">
+                        {bookingItem.packageItem.name}
+                      </Text>
+                    </View>
+                  </>
+                )}
+              </View>
+            ),
+          )}
         </View>
 
         <View className="my-2 flex-row justify-between">

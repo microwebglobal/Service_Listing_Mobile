@@ -20,6 +20,7 @@ import {useNav} from '../../navigation/RootNavigation';
 import {ServiceItem} from '../category/ServiceTypeScreen';
 import {PackageItem} from '../../components/RenderPackage';
 import Toast from 'react-native-toast-message';
+import {SERVER_BASE} from '@env';
 
 export interface Booking {
   booking_id: string;
@@ -113,7 +114,7 @@ export const SelectedItemsScreen = () => {
                 <View className="flex-row items-center space-x-4">
                   <View className="ml-1 bg-lightGrey rounded-lg">
                     <Image
-                      source={{uri: `http://10.0.2.2:5001/${item.icon_url}`}}
+                      source={{uri: `${SERVER_BASE}${item.icon_url}`}}
                       style={{width: 50, height: 50}}
                     />
                   </View>

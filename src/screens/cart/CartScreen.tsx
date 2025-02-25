@@ -25,6 +25,7 @@ import {
   reduceQuantity,
   setCart,
 } from '../../redux/shopping_cart/shopping_cart.slice';
+import {SERVER_BASE} from '@env';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -127,7 +128,7 @@ export const CartScreen = () => {
                       <View className="ml-1 bg-lightGrey rounded-lg">
                         <Image
                           source={{
-                            uri: `http://10.0.2.2:5001/${item.serviceItem.icon_url}`,
+                            uri: `${SERVER_BASE}${item.serviceItem.icon_url}`,
                           }}
                           style={{width: 50, height: 50}}
                         />
@@ -148,7 +149,7 @@ export const CartScreen = () => {
                       <View className="ml-1 bg-lightGrey rounded-lg">
                         <Image
                           source={{
-                            uri: `http://10.0.2.2:5001/${item.packageItem.icon_url}`,
+                            uri: `${SERVER_BASE}${item.packageItem.icon_url}`,
                           }}
                           style={{width: 50, height: 50}}
                         />

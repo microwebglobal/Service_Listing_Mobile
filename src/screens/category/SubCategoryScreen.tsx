@@ -16,6 +16,7 @@ import {Image} from '@rneui/themed';
 import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
 import {ServiceType} from './ServiceTypeScreen';
+import {SERVER_BASE} from '@env';
 
 interface SubCategory {
   sub_category_id: string;
@@ -65,7 +66,7 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
           <View className="py-2 items-center justify-center bg-lightGrey rounded-xl">
             <View className="">
               <Image
-                source={{uri: `http://10.0.2.2:5001${item.icon_url}`}}
+                source={{uri: `${SERVER_BASE}${item.icon_url}`}}
                 containerStyle={styles.itemImage}
               />
             </View>
@@ -91,7 +92,7 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
         <AppHeader title={category} back={true} />
         <View>
           <Image
-            source={{uri: `http://10.0.2.2:5001${imageUrl}`}}
+            source={{uri: `${SERVER_BASE}${imageUrl}`}}
             containerStyle={styles.categoryImage}
           />
         </View>
