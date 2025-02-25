@@ -26,6 +26,7 @@ import {
   setCart,
 } from '../../redux/shopping_cart/shopping_cart.slice';
 import {SERVER_BASE} from '@env';
+import { StackActions } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -42,7 +43,6 @@ export const CartScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState<boolean>(false);
   const cart = useAppSelector(state => state.shopping_cart.shoppingCart);
-  console.log(cart);
 
   useEffect(() => {
     instance
@@ -74,6 +74,7 @@ export const CartScreen = () => {
     await instance
       .post('/cart/checkout', {})
       .then(() => {
+        navigation.dispatch(StackActions.pop(1));
         navigation.navigate('Payment', {
           amount: cart.BookingPayment.total_amount,
           bookingId: cart.booking_id,

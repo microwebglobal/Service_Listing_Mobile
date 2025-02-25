@@ -3,7 +3,6 @@ export interface AddressEntity {
   line1: string;
   line2: string;
   city: string;
-  cityId: string;
   state: string;
   postal_code: string;
   is_primary: boolean;
@@ -11,4 +10,5 @@ export interface AddressEntity {
 
 export interface AddressState {
   addresses: Array<AddressEntity | null>;
+  cityId: string | null;
 }

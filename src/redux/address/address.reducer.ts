@@ -14,11 +14,7 @@ export default {
     });
   },
   setPrimaryCityID: (state: AddressState, action: PayloadAction<string>) => {
-    state.addresses = [];
-    state.addresses.push({} as AddressEntity);
-    if (state.addresses[0]) {
-      state.addresses[0].cityId = action.payload;
-    }
+    state.cityId = action.payload;
   },
   clearAddressList: (state: AddressState) => {
     state.addresses = [];
