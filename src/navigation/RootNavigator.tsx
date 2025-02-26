@@ -26,6 +26,7 @@ import {SelectedItemsScreen} from '../screens/cart/SelectedItemsScreen';
 import {PaymentScreen} from '../screens/cart/PaymentScreen';
 import {BookingDetailsScreen} from '../screens/booking/BookingDetailsScreen';
 import {BookingScreen} from '../screens/booking/BookingScreen';
+import linking from './linking';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -81,7 +82,7 @@ export const BookingNavigator = () => {
 
 export const RootNavigator: React.FC = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Stack.Navigator initialRouteName="Splash" screenOptions={screenOptions}>
         <Stack.Screen
           name="TabsNavigator"
