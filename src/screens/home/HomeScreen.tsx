@@ -22,6 +22,7 @@ import {FeaturedCard} from '../../components/FeaturedCard';
 import {instance} from '../../api/instance';
 import {useNav} from '../../navigation/RootNavigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import messaging from '@react-native-firebase/messaging';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -40,6 +41,18 @@ export const HomeScreen = () => {
   const [userName, setUserName] = useState<string>();
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const localCart = useAppSelector(state => state.cart.cart) || [];
+
+  messaging().onNotificationOpenedApp((remoteMessage: any) => {
+    navigation.navigate('NotificationHandler', {remoteMessage});
+  });
+
+  messaging()
+    .getInitialNotification()
+    .then((remoteMessage: any) => {
+      if (remoteMessage) {
+        navigation.navigate('NotificationHandler', {remoteMessage});
+      }
+    });
 
   const fetchUserData = useCallback(async () => {
     await instance.get(`/customer-profiles/user/${user?.id}`).then(response => {

@@ -1,6 +1,7 @@
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {FC, PropsWithChildren} from 'react';
 import {RouteProp, useNavigation} from '@react-navigation/native';
+import {RemoteMessage} from '../screens/notification/NotificationHandler';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -20,6 +21,7 @@ export type RootStackParamList = {
   EditProfile: {itemName: string};
   EditLocation: undefined;
   Notification: undefined;
+  NotificationHandler: {remoteMessage: RemoteMessage};
   SelectedItems: undefined;
   ServiceSchedule: undefined;
   Cart: undefined;

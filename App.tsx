@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {RootNavigator} from './src/navigation/RootNavigator';
 import {ButtonProps, createTheme, ThemeProvider} from '@rneui/themed';
@@ -9,8 +9,68 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
 import {Colors} from './src/utils/Colors';
+import messaging from '@react-native-firebase/messaging';
+import PushNotification, {Importance} from 'react-native-push-notification';
 
 export const FONT_FAMILY = 'Poppins';
+
+const checkPermission = () => {
+  messaging()
+    .hasPermission()
+    .then(enabled => {
+      if (enabled) {
+        getToken();
+      } else {
+        requestPermission();
+      }
+    })
+    .catch(error => {
+      console.log('error checking permissions ' + error);
+    });
+};
+
+async function requestPermission() {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+    getToken();
+  } else {
+    console.log('permission rejected');
+  }
+}
+
+const getToken = async () => {
+  await messaging().getToken();
+};
+
+const handleNotification = async () => {
+  messaging().onMessage(async remoteMessage => {
+    const key = Date.now().toString();
+    PushNotification.createChannel(
+      {
+        channelId: key,
+        channelName: 'My channel',
+        channelDescription: 'A channel to categories your notifications',
+        soundName: 'default',
+        importance: Importance.HIGH,
+        vibrate: true,
+      },
+      created => console.log(`createChannel returned '${created}'`),
+    );
+
+    PushNotification.localNotification({
+      channelId: key,
+      title: remoteMessage.notification?.title,
+      message: remoteMessage.notification?.body ?? '',
+      vibration: 500,
+      actions: ['Yes', 'No'],
+    });
+  });
+};
 
 const theme = createTheme({
   lightColors: {
@@ -96,6 +156,11 @@ const toastConfig = {
 };
 
 function App(): React.JSX.Element {
+  useEffect(() => {
+    checkPermission();
+    handleNotification();
+  }, []);
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

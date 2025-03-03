@@ -15,7 +15,7 @@ export const LoginSuccessScreen = () => {
       addressUpdate(addressList.filter(address => address !== null));
     }
     setTimeout(() => {
-      navigation.navigate('Tab');
+      navigation.navigate('TabsNavigator');
     }, 3000);
   }, [addressList, navigation, user?.id]);
 
