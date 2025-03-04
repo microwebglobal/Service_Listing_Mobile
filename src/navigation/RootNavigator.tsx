@@ -26,8 +26,8 @@ import {SelectedItemsScreen} from '../screens/cart/SelectedItemsScreen';
 import {PaymentScreen} from '../screens/cart/PaymentScreen';
 import {BookingDetailsScreen} from '../screens/booking/BookingDetailsScreen';
 import {BookingScreen} from '../screens/booking/BookingScreen';
-import {NotificationHandler} from '../screens/notification/NotificationHandler';
 import linking from './linking';
+import {ActivityIndicator} from 'react-native';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -83,7 +83,9 @@ export const BookingNavigator = () => {
 
 export const RootNavigator: React.FC = () => {
   return (
-    <NavigationContainer linking={linking}>
+    <NavigationContainer
+      linking={linking}
+      fallback={<ActivityIndicator animating />}>
       <Stack.Navigator initialRouteName="Splash" screenOptions={screenOptions}>
         <Stack.Screen
           name="TabsNavigator"
@@ -102,10 +104,6 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="ServiceDetails" component={ServiceDetails} />
         <Stack.Screen name="EditLocation" component={EditLocationScreen} />
         <Stack.Screen name="Notification" component={NotificationScreen} />
-        <Stack.Screen
-          name="NotificationHandler"
-          component={NotificationHandler}
-        />
         <Stack.Screen name="ServiceSchedule" component={ScheduleScreen} />
         <Stack.Screen name="Cart" component={CartScreen} />
         <Stack.Screen name="SelectedItems" component={SelectedItemsScreen} />

@@ -49,10 +49,9 @@ const getToken = async () => {
 
 const handleNotification = async () => {
   messaging().onMessage(async remoteMessage => {
-    const key = Date.now().toString();
     PushNotification.createChannel(
       {
-        channelId: key,
+        channelId: 'channel-id',
         channelName: 'My channel',
         channelDescription: 'A channel to categories your notifications',
         soundName: 'default',
@@ -63,11 +62,9 @@ const handleNotification = async () => {
     );
 
     PushNotification.localNotification({
-      channelId: key,
+      channelId: 'channel-id',
       title: remoteMessage.notification?.title,
       message: remoteMessage.notification?.body ?? '',
-      vibration: 500,
-      actions: ['Yes', 'No'],
     });
   });
 };

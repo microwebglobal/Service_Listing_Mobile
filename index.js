@@ -2,7 +2,6 @@ import {AppRegistry} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
 import PushNotification from 'react-native-push-notification';
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import messaging from '@react-native-firebase/messaging';
 
 // switch off warnings for deprecated modules
@@ -13,28 +12,15 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
 });
 
 PushNotification.configure({
-  // onRegister: function (token) {
-  //   console.log('TOKEN:', token);
-  // },
-
-  // onRegistrationError: function (err) {
-  //   console.error(err.message, err);
-  // },
-
-  // (required) Called when a remote is received or opened, or local notification is opened
-  onNotification: function (notification) {
-    console.log('NOTIFICATION:', notification);
-    // (required) Called when a remote is received or opened, or local notification is opened
-    notification.finish(PushNotificationIOS.FetchResult.NoData);
+  onRegister: function (token) {
+    console.log('TOKEN:', token);
   },
 
-  // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
-  onAction: function (notification) {
-    console.log('ACTION:', notification.action);
-    // console.log('NOTIFICATION---:', notification);
+  onRegistrationError: function (err) {
+    console.error(err.message, err);
   },
 
-  // IOS ONLY (optional)
+  // IOS ONLY
   permissions: {
     alert: true,
     badge: true,
