@@ -1,5 +1,5 @@
 import {View, Text, FlatList} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {instance} from '../api/instance';
 import {Button} from './rneui';
 import {RenderPackageItem} from './RenderPackageItem';
@@ -49,11 +49,10 @@ export interface Package {
 
 export const RenderPackage = ({typeId}: {typeId: string}) => {
   const dispatch = useDispatch();
+  const cartItems = useRef<Array<ItemEntity>>([]);
   const [packageData, setPackageData] = useState<Package[]>();
   const [isItemClicked, setIsItemClicked] = useState<boolean>(false);
   const [packagePrice, setPackagePrice] = useState<number>(0);
-  const [cartItems, setCartItems] = useState<Array<ItemEntity>>([]);
-  // const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   useEffect(() => {
     try {
@@ -73,6 +72,7 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
           if (index === 0) {
             tempCartItems.push({
               itemId: packageItem.item_id,
+              sectionId: packageItem.section_id,
               itemType: 'package_item',
               name: packageItem.name,
               price: parseInt(packageItem.price, 10),
@@ -83,41 +83,24 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
         });
       });
     });
-    setCartItems(tempCartItems);
+    cartItems.current = tempCartItems;
   };
 
-  // Calculate default price of package
   const calculateDefaultPrice = (packageDetails: Package) => {
     let total = 0;
     packageDetails.PackageSections.forEach((section: PackageSections) => {
       total += parseInt(section.PackageItems[0].price, 10);
     });
-    setPackagePrice(total);
+    setTimeout(() => setPackagePrice(total), 0);
     return total;
   };
 
-  const calculatePackagePrice = (
-    packageItems: Array<PackageItem>,
-    selectedIndex: number,
-  ) => {
-    // Minus the price of the item that is not selected
-    let itemPrice = parseInt(packageItems[selectedIndex].price, 10);
-    // let tempCartItems: Array<ItemEntity> = cartItems;
-    packageItems.map((item: PackageItem, index: number) => {
-      if (index !== selectedIndex) {
-        itemPrice = parseInt(item.price, 10) - itemPrice;
-        // tempCartItems.push({
-        //   itemId: packageItems[index].item_id,
-        //   itemType: 'package_item',
-        //   name: packageItems[selectedIndex].name,
-        //   price: itemPrice,
-        //   quantity: 1,
-        // });
-      }
+  const calculatePackagePrice = () => {
+    let totalPackagePrice = 0;
+    cartItems.current.forEach(item => {
+      totalPackagePrice += item.price;
     });
-    setPackagePrice(packagePrice + itemPrice);
-    // setCartItems(cartItems.concat(tempCartItems));
-    // console.log('Cart Items', tempCartItems);
+    setPackagePrice(totalPackagePrice);
   };
 
   const showToast = (packageName: string) => {
@@ -191,9 +174,8 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
 
                   <RenderPackageItem
                     packageItems={section.PackageItems}
-                    onPress={selectIndex => {
-                      calculatePackagePrice(section.PackageItems, selectIndex);
-                    }}
+                    cartItems={cartItems}
+                    onPress={() => calculatePackagePrice()}
                   />
                   <View className="my-4 h-0.5 bg-lightGrey" />
                 </View>
@@ -214,8 +196,7 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
                 size="sm"
                 onPress={() => {
                   setIsItemClicked(!isItemClicked);
-                  dispatch(addMultipleItems(cartItems));
-                  // console.log('Cart Items', cartItems);
+                  dispatch(addMultipleItems(cartItems.current));
                   showToast(item.name);
                 }}
               />

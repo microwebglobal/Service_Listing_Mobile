@@ -3,17 +3,35 @@ import React from 'react';
 import {PackageItem} from './RenderPackage';
 import {CheckBox} from '@rneui/themed';
 import {Colors} from '../utils/Colors';
+import {ItemEntity} from '../redux/cart/cart.entity';
 
 interface RenderPackageItemProps {
   packageItems: Array<PackageItem>;
-  onPress: (index: number) => void;
+  cartItems: React.MutableRefObject<Array<ItemEntity>>;
+  onPress: () => void;
 }
 
 export const RenderPackageItem = ({
   packageItems,
+  cartItems,
   onPress,
 }: RenderPackageItemProps) => {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+
+  const handleAddToCart = (item: PackageItem) => {
+    cartItems.current = cartItems.current.filter(
+      cartItem => cartItem.sectionId !== item.section_id,
+    );
+    cartItems.current.push({
+      itemId: item.item_id,
+      sectionId: item.section_id,
+      itemType: 'package_item',
+      name: item.name,
+      price: parseInt(item.price, 10),
+      quantity: 1,
+      icon_url: item.icon_url,
+    });
+  };
 
   return (
     <>
@@ -27,8 +45,9 @@ export const RenderPackageItem = ({
               onPress={() => {
                 if (selectedIndex !== index) {
                   setSelectedIndex(index);
-                  onPress(selectedIndex);
                 }
+                onPress();
+                handleAddToCart(item);
               }}
               checkedIcon="dot-circle-o"
               uncheckedIcon="circle-o"

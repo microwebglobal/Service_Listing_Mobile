@@ -1,5 +1,6 @@
 export interface ItemEntity {
   itemId: string;
+  sectionId: string;
   itemType: string;
   name: string;
   price: number;
