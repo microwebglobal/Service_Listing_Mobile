@@ -115,94 +115,96 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
 
   const _renderPackage = ({item}: {item: Package}) => {
     return (
-      <View className="my-1 border-2 border-lightGrey rounded-lg p-2">
-        {!isItemClicked && (
-          <>
-            <Text className="text-base text-dark font-medium first-letter:capitalize">
-              {item.name}
-            </Text>
-            <View className="flex-row justify-between items-center space-x-2">
-              <View className="w-1/2 align-top">
-                <Text className="text-sm text-dark overflow-clip">
-                  {item.description}
-                </Text>
-                <View className="flex-row items-center space-x-2">
+      <View className="rounded-lg shadow-sm shadow-black">
+        <View className="bg-white rounded-lg p-2">
+          {!isItemClicked && (
+            <>
+              <Text className="text-base text-black font-medium first-letter:capitalize">
+                {item.name}
+              </Text>
+              <View className="flex-row justify-between items-center space-x-2">
+                <View className="w-1/2 align-top">
                   <Text className="text-sm text-dark overflow-clip">
-                    {'Service Duration: '}
+                    {item.description}
                   </Text>
-                  <Text className="text-sm text-dark overflow-clip">
-                    {item.duration_hours} {'h'} {item.duration_minutes} {'m'}
-                  </Text>
-                </View>
-              </View>
-
-              <View className="items-end">
-                <Text className="text-base text-black font-bold">
-                  {'₹'}
-                  {calculateDefaultPrice(item)}
-                </Text>
-                <View className="my-2">
-                  <Button
-                    black
-                    title="Customize"
-                    size="sm"
-                    onPress={() => {
-                      setIsItemClicked(!isItemClicked);
-                      addDefaultItemsToCart();
-                    }}
-                  />
-                </View>
-              </View>
-            </View>
-          </>
-        )}
-
-        {/* Render package section */}
-        {isItemClicked && (
-          <>
-            {item.PackageSections.map((section: PackageSections) => {
-              return (
-                <View key={section.section_id} className="mb-2">
-                  <View className="mb-2">
-                    <Text className="mb-1 text-base text-black font-medium first-letter:capitalize">
-                      {section.name}
+                  <View className="flex-row items-center space-x-2">
+                    <Text className="text-sm text-dark overflow-clip">
+                      {'Service Duration: '}
                     </Text>
-                    <Text className="text-sm text-black overflow-clip">
-                      {section.description}
+                    <Text className="text-sm text-dark overflow-clip">
+                      {item.duration_hours} {'h'} {item.duration_minutes} {'m'}
                     </Text>
                   </View>
-
-                  <RenderPackageItem
-                    packageItems={section.PackageItems}
-                    cartItems={cartItems}
-                    onPress={() => calculatePackagePrice()}
-                  />
-                  <View className="my-4 h-0.5 bg-lightGrey" />
                 </View>
-              );
-            })}
 
-            <View className="flex-row justify-between">
-              <Text className="text-base text-black">Total</Text>
-              <Text className="text-base text-black font-bold">
-                {'₹'}
-                {packagePrice}
-              </Text>
-            </View>
-            <View className="mb-2 mt-3">
-              <Button
-                black
-                title="Add to Cart"
-                size="sm"
-                onPress={() => {
-                  setIsItemClicked(!isItemClicked);
-                  dispatch(addMultipleItems(cartItems.current));
-                  showToast(item.name);
-                }}
-              />
-            </View>
-          </>
-        )}
+                <View className="items-end">
+                  <Text className="text-base text-black font-bold shadow-sm">
+                    {'₹'}
+                    {calculateDefaultPrice(item)}
+                  </Text>
+                  <View className="my-2 bg-black rounded-xl shadow-md shadow-black">
+                    <Button
+                      secondary
+                      title="Customize"
+                      size="sm"
+                      onPress={() => {
+                        setIsItemClicked(!isItemClicked);
+                        addDefaultItemsToCart();
+                      }}
+                    />
+                  </View>
+                </View>
+              </View>
+            </>
+          )}
+
+          {/* Render package section */}
+          {isItemClicked && (
+            <>
+              {item.PackageSections.map((section: PackageSections) => {
+                return (
+                  <View key={section.section_id} className="mb-2">
+                    <View className="mb-2">
+                      <Text className="mb-1 text-base text-black font-medium first-letter:capitalize">
+                        {section.name}
+                      </Text>
+                      <Text className="text-sm text-black overflow-clip">
+                        {section.description}
+                      </Text>
+                    </View>
+
+                    <RenderPackageItem
+                      packageItems={section.PackageItems}
+                      cartItems={cartItems}
+                      onPress={() => calculatePackagePrice()}
+                    />
+                    <View className="my-4 h-0.5 bg-lightGrey" />
+                  </View>
+                );
+              })}
+
+              <View className="flex-row justify-between">
+                <Text className="text-base text-black">Total</Text>
+                <Text className="text-base text-black font-bold">
+                  {'₹'}
+                  {packagePrice}
+                </Text>
+              </View>
+              <View className="mb-2 mt-3 bg-black rounded-xl shadow-sm shadow-black">
+                <Button
+                  primary
+                  title="Add to Cart"
+                  size="md"
+                  onPress={() => {
+                    setIsItemClicked(!isItemClicked);
+                    dispatch(addMultipleItems(cartItems.current));
+                    showToast(item.name);
+                  }}
+                />
+              </View>
+            </>
+          )}
+        </View>
       </View>
     );
   };

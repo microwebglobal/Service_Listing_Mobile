@@ -37,8 +37,8 @@ const InputField = ({
       placeholder={placeHolder}
       placeholderTextColor={Colors.Gray}
       secureTextEntry={secure}
-      className={`border-2 rounded-md h-12 px-3 text-base text-dark ${
-        `${isFocused ? 'border-dark' : 'border-gray'} ${multiline ? 'h-24' : ''}`
+      className={`border-[1.5px] rounded-md h-12 px-3 text-base text-dark ${
+        `${isFocused ? 'border-black' : 'border-gray'} ${multiline ? 'h-24' : ''}`
       }`}
       value={value}
       inputMode={inputMode}

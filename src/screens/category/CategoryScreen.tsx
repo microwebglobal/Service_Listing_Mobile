@@ -109,8 +109,9 @@ export const CategoryScreen = () => {
 
   const _renderCategoryItem = ({item}: any) => {
     return (
-      <View className="w-full basis-1/2 px-2 my-3 rounded-xl">
+      <View className="w-full basis-1/2 px-2 my-3">
         <TouchableOpacity
+          className="shadow-sm shadow-black rounded-xl"
           onPress={() => {
             navigation.navigate('SubCategory', {
               categoryId: item.category_id,
@@ -122,10 +123,10 @@ export const CategoryScreen = () => {
             <View className="">
               <Image
                 source={{uri: `${SERVER_BASE}${item.icon_url}`}}
-                containerStyle={styles.item}
+                containerStyle={styles.itemImage}
               />
             </View>
-            <View className="w-full mt-2 px-3 items-center bg-white shadow-lg shadow-gray rounded-b-xl">
+            <View className="w-full mt-2 px-3 items-center bg-white shadow-sm shadow-black rounded-b-xl">
               <Text className="my-2 text-base text-black">{item.name}</Text>
             </View>
           </View>
@@ -168,7 +169,7 @@ export const CategoryScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  item: {
+  itemImage: {
     width: 150,
     height: 100,
     borderRadius: 12,

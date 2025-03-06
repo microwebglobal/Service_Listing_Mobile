@@ -117,7 +117,7 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
           <View className="ml-1 bg-lightGrey rounded-lg">
             <Feather name={'package'} size={15} color={Colors.Black} />
           </View>
-          <Text className="text-base text-black font-medium">
+          <Text className="text-base text-dark font-medium">
             Available Packages
           </Text>
         </View>

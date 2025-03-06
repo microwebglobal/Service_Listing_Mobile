@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   Dimensions,
   KeyboardAvoidingView,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import React, {useCallback, useRef, useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -14,11 +16,11 @@ import {Screen, useNav} from '../../navigation/RootNavigation';
 import {instance} from '../../api/instance';
 import {Address} from '../category/CategoryScreen';
 import {FlatList} from 'react-native-gesture-handler';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Colors} from '../../utils/Colors';
 import {AddressForm} from '../../components/AddressForm';
 import BottomSheet from '@gorhom/bottom-sheet';
 import {useFocusEffect} from '@react-navigation/native';
+import Octicons from 'react-native-vector-icons/Octicons';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -32,16 +34,20 @@ const RPH = (percentage: number) => {
 export const EditLocationScreen: Screen<'EditLocation'> = () => {
   const navigation = useNav();
   const [addressList, setAddressList] = useState<Array<Address>>([]);
-  const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const fetchAddress = useCallback(() => {
+    setIsLoading(true);
     try {
       instance.get('/users/addresses').then(response => {
         setAddressList(response.data);
       });
     } catch (e) {
       console.log('Error ', e);
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -50,6 +56,14 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
       fetchAddress();
     }, [fetchAddress]),
   );
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchAddress();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1500);
+  }, [fetchAddress]);
 
   const addLocationType = (type: string, iconName: string) => {
     return (
@@ -78,23 +92,26 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
 
   const _renderAddress = (address: Address) => {
     return (
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('AddressDetails', {address: address});
-        }}>
-        <View className="my-2 bg-lightGrey p-3 rounded-lg" key={address.id}>
-          <View className="flex-row items-center gap-x-3 overflow-hidden">
-            {address.type === 'work' ? (
+      <View className="my-2 bg-lightGrey rounded-lg shadow-sm shadow-black">
+        <View
+          key={address.id}
+          className="px-2 py-4 rounded-lg flex-row flex-wrap items-center justify-between overflow-hidden">
+          <View className="flex-row items-center space-x-3 overflow-hidden">
+            {address.type === 'work' && (
               <MaterialIcons
                 name="work-outline"
                 size={18}
                 color={Colors.Primary}
               />
-            ) : (
+            )}
+            {address.type === 'home' && (
               <AntDesign name="home" size={20} color={Colors.Primary} />
             )}
+            {address.type === 'other' && (
+              <Octicons name="location" size={20} color={Colors.Primary} />
+            )}
             {address.line2 ? (
-              <Text className="text-base text-dark">
+              <Text className="basis-4/6 text-base text-dark">
                 {address.line1 +
                   ' ' +
                   address.line2 +
@@ -104,20 +121,31 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
                   address.state}
               </Text>
             ) : (
-              <Text className="text-base text-dark">
+              <Text className="basis-4/6 text-base text-dark">
                 {address.line1 + ', ' + address.city + ', ' + address.state}
               </Text>
             )}
           </View>
+          <TouchableOpacity
+            className="basis-1/6 items-end mr-1"
+            onPress={() => {
+              navigation.navigate('AddressDetails', {address: address});
+            }}>
+            <MaterialIcons name="edit" size={18} color={Colors.Gray} />
+          </TouchableOpacity>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   };
 
   return (
     <KeyboardAvoidingView className="flex-1 bg-white">
       <AppHeader title="Your Location" back={true} />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <View
           className="pt-10"
           style={{paddingHorizontal: RPW(6), height: RPH(95)}}>
@@ -126,54 +154,30 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
             {addLocationType('Home', 'home')}
             {addLocationType('Work', 'work-outline')}
 
-            <View className="">
-              <TouchableOpacity
-                onPress={() => {
-                  setIsChecked(!isChecked);
-                  fetchAddress();
-                }}>
-                <View className="flex-row items-center justify-between">
-                  <Text className="text-base text-black">View All</Text>
-                  {isChecked ? (
-                    <View>
-                      <MaterialCommunityIcons
-                        name="chevron-up"
-                        size={30}
-                        color={Colors.Gray}
-                      />
-                    </View>
-                  ) : (
-                    <View>
-                      <MaterialCommunityIcons
-                        name="chevron-down"
-                        size={30}
-                        color={Colors.Gray}
-                      />
-                    </View>
-                  )}
-                </View>
-              </TouchableOpacity>
+            <Text className="text-lg text-black">Available Addresses</Text>
+            {isLoading && (
+              <View className="items-center justify-center flex-1 bg-white">
+                <ActivityIndicator size="small" color={Colors.Black} />
+              </View>
+            )}
 
-              {isChecked && (
-                <FlatList
-                  horizontal={false}
-                  scrollEnabled={false}
-                  showsHorizontalScrollIndicator={false}
-                  data={addressList}
-                  keyExtractor={item => item.id.toString()}
-                  renderItem={({item}) => _renderAddress(item)}
-                />
-              )}
-
-              {isChecked && addressList.length === 0 ? (
-                <View className="mt-20">
-                  <Text className="text-base text-center text-dark">
-                    No address available
-                  </Text>
-                </View>
-              ) : null}
-            </View>
+            {addressList.length === 0 ? (
+              <View className="mt-20">
+                <Text className="text-base text-center text-dark">
+                  No address available
+                </Text>
+              </View>
+            ) : null}
           </View>
+
+          <FlatList
+            horizontal={false}
+            scrollEnabled={false}
+            showsHorizontalScrollIndicator={false}
+            data={addressList}
+            keyExtractor={item => item.id.toString()}
+            renderItem={({item}) => _renderAddress(item)}
+          />
 
           <AddressForm bottomSheetRef={bottomSheetRef} />
         </View>

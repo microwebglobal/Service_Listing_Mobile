@@ -125,7 +125,7 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
 
   return (
     <KeyboardAvoidingView className="flex-1 bg-white">
-      <AppHeader back={false} title="Schedule Your Service" />
+      <AppHeader back={false} title="Schedule Service" />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Calendar component */}
         <View className="mb-6">

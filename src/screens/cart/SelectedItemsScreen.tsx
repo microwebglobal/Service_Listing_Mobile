@@ -104,8 +104,8 @@ export const SelectedItemsScreen = () => {
 
               <View className="my-5">
                 <Button
-                  black
-                  size="sm"
+                  primary
+                  size="md"
                   title="Browse Services"
                   onPress={() => {
                     navigation.navigate('TabsNavigator', {

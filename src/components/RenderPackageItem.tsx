@@ -40,7 +40,7 @@ export const RenderPackageItem = ({
           <View className="-ml-3 flex-row items-center">
             <CheckBox
               checked={selectedIndex === index}
-              checkedColor={Colors.Black}
+              checkedColor={Colors.Primary}
               uncheckedColor={Colors.Gray}
               onPress={() => {
                 if (selectedIndex !== index) {

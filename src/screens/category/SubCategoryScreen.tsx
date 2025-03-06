@@ -53,8 +53,9 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
 
   const _renderSubCategoryItem = ({item}: any) => {
     return (
-      <View className="w-full basis-1/2 px-2 my-3 rounded-xl">
+      <View className="w-full basis-1/2 px-2 my-3">
         <TouchableOpacity
+          className="shadow-sm shadow-black rounded-xl"
           onPress={() => {
             if (item.ServiceTypes.length > 0) {
               navigation.navigate('ServiceType', {
@@ -70,7 +71,7 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
                 containerStyle={styles.itemImage}
               />
             </View>
-            <View className="w-full mt-2 px-3 items-center bg-white shadow-lg shadow-gray rounded-b-xl">
+            <View className="w-full mt-2 px-3 items-center bg-white shadow-sm shadow-black rounded-b-xl">
               <Text className="my-2 text-base text-black">{item.name}</Text>
             </View>
           </View>

@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity, FlatList, Dimensions} from 'react-native';
+import {View, Text, TouchableOpacity, FlatList, Image} from 'react-native';
 import React, {useState} from 'react';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {Service, ServiceItem} from '../screens/category/ServiceTypeScreen';
@@ -9,11 +9,7 @@ import {Colors} from '../utils/Colors';
 import {useDispatch} from 'react-redux';
 import {addItem} from '../redux/cart/cart.slice';
 import Toast from 'react-native-toast-message';
-
-const screenWidth = Dimensions.get('window').width;
-const RPW = (percentage: number) => {
-  return (percentage / 100) * screenWidth;
-};
+import {SERVER_BASE} from '@env';
 
 export const RenderService = ({service}: {service: Service}) => {
   const [serviceItemData, setServiceItemData] = useState<ServiceItem[]>();
@@ -41,40 +37,47 @@ export const RenderService = ({service}: {service: Service}) => {
 
   const _renderServiceItem = ({item}: {item: ServiceItem}) => {
     return (
-      <View className="border-2 border-lightGrey rounded-lg p-2 my-2">
-        <View className="flex-row justify-between space-x-2">
-          <View className="w-1/2">
-            <Text className="mb-1 text-base text-black font-medium first-letter:capitalize">
-              {item.name}
-            </Text>
-            <Text className="text-sm text-black overflow-clip">
-              {item.description}
-            </Text>
-          </View>
-          <View className="items-center">
-            <Text className="text-base text-black font-bold">
-              {'₹'}
-              {item.base_price}
-            </Text>
-            <View className="my-2">
-              <Button
-                black
-                title="Add to Cart"
-                size="sm"
-                onPress={() => {
-                  dispatch(
-                    addItem({
-                      itemId: item.item_id,
-                      itemType: 'service_item',
-                      quantity: 1,
-                      name: item.name,
-                      price: parseInt(item.base_price, 10),
-                      icon_url: item.icon_url,
-                    }),
-                  );
-                  showToast(item.name);
-                }}
+      <View className="rounded-lg shadow-sm shadow-black" >
+        <View className="bg-white rounded-lg p-2">
+          <View className="flex-row justify-between space-x-2">
+            <View className="w-1/2">
+              <Text className="text-base text-black font-medium first-letter:capitalize">
+                {item.name}
+              </Text>
+              <Text className="my-1 text-base text-black font-bold">
+                {'₹'}
+                {item.base_price}
+              </Text>
+              <Text className="text-sm text-black overflow-clip">
+                {item.description}
+              </Text>
+            </View>
+            <View className="items-center">
+              <Image
+                source={{uri: `${SERVER_BASE}${item.icon_url}`}}
+                style={{width: 90, height: 90, borderRadius: 8}}
               />
+              <View className="relative -mt-5 w-20 bg-black rounded-xl shadow-md shadow-black">
+                <Button
+                  secondary
+                  title="Add"
+                  size="sm"
+                  onPress={() => {
+                    dispatch(
+                      addItem({
+                        itemId: item.item_id,
+                        sectionId: item.service_id,
+                        itemType: 'service_item',
+                        quantity: 1,
+                        name: item.name,
+                        price: parseInt(item.base_price, 10),
+                        icon_url: item.icon_url,
+                      }),
+                    );
+                    showToast(item.name);
+                  }}
+                />
+              </View>
             </View>
           </View>
         </View>
@@ -103,21 +106,18 @@ export const RenderService = ({service}: {service: Service}) => {
           </Text>
         </View>
       </TouchableOpacity>
-      {/* Render service Item */}
-      <View style={{marginLeft: RPW(2)}}>
-        {isItemClicked && serviceItemData && (
-          <FlatList
-            className="mt-2"
-            horizontal={false}
-            numColumns={1}
-            scrollEnabled={false}
-            showsHorizontalScrollIndicator={false}
-            data={serviceItemData}
-            keyExtractor={(element: ServiceItem) => element.item_id}
-            renderItem={_renderServiceItem}
-          />
-        )}
-      </View>
+      {isItemClicked && serviceItemData && (
+        <FlatList
+          className="mt-2"
+          horizontal={false}
+          numColumns={1}
+          scrollEnabled={false}
+          showsHorizontalScrollIndicator={false}
+          data={serviceItemData}
+          keyExtractor={(element: ServiceItem) => element.item_id}
+          renderItem={_renderServiceItem}
+        />
+      )}
     </View>
   );
 };
