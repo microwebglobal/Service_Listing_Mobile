@@ -10,7 +10,7 @@ import React, {useCallback, useRef, useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AppHeader from '../../components/AppHeader';
-import {Screen} from '../../navigation/RootNavigation';
+import {Screen, useNav} from '../../navigation/RootNavigation';
 import {instance} from '../../api/instance';
 import {Address} from '../category/CategoryScreen';
 import {FlatList} from 'react-native-gesture-handler';
@@ -19,7 +19,6 @@ import {Colors} from '../../utils/Colors';
 import {AddressForm} from '../../components/AddressForm';
 import BottomSheet from '@gorhom/bottom-sheet';
 import {useFocusEffect} from '@react-navigation/native';
-import Toast from 'react-native-toast-message';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -31,6 +30,7 @@ const RPH = (percentage: number) => {
 };
 
 export const EditLocationScreen: Screen<'EditLocation'> = () => {
+  const navigation = useNav();
   const [addressList, setAddressList] = useState<Array<Address>>([]);
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -50,27 +50,6 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
       fetchAddress();
     }, [fetchAddress]),
   );
-
-  const showToast = () => {
-    Toast.show({
-      type: 'success',
-      text1: 'Address Deleted',
-      text2: 'Address deleted successfully',
-      visibilityTime: 2000,
-      autoHide: true,
-    });
-  };
-
-  const deleteAddress = (id: number) => {
-    try {
-      instance.delete(`/users/addresses/${id}`).then(() => {
-        setAddressList(addressList.filter(address => address.id !== id));
-        showToast();
-      });
-    } catch (e) {
-      console.log('Error ', e);
-    }
-  };
 
   const addLocationType = (type: string, iconName: string) => {
     return (
@@ -99,20 +78,23 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
 
   const _renderAddress = (address: Address) => {
     return (
-      <View className="my-2 bg-lightGrey p-3 rounded-lg" key={address.id}>
-        <View className="flex-row justify-between items-center">
-          <View className="basis-4/5 flex-row items-center gap-x-3">
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('AddressDetails', {address: address});
+        }}>
+        <View className="my-2 bg-lightGrey p-3 rounded-lg" key={address.id}>
+          <View className="flex-row items-center gap-x-3 overflow-hidden">
             {address.type === 'work' ? (
               <MaterialIcons
                 name="work-outline"
-                size={16}
+                size={18}
                 color={Colors.Primary}
               />
             ) : (
               <AntDesign name="home" size={20} color={Colors.Primary} />
             )}
             {address.line2 ? (
-              <Text className="text-base text-dark overflow-clip">
+              <Text className="text-base text-dark">
                 {address.line1 +
                   ' ' +
                   address.line2 +
@@ -122,23 +104,13 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
                   address.state}
               </Text>
             ) : (
-              <Text className="text-base text-dark overflow-clip">
+              <Text className="text-base text-dark">
                 {address.line1 + ', ' + address.city + ', ' + address.state}
               </Text>
             )}
           </View>
-          <TouchableOpacity
-            onPress={() => {
-              deleteAddress(address.id);
-            }}>
-            <MaterialCommunityIcons
-              name="delete-outline"
-              size={25}
-              color={Colors.Gray}
-            />
-          </TouchableOpacity>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 

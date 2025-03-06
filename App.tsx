@@ -98,7 +98,7 @@ const theme = createTheme({
       },
       themeColor,
     ) => ({
-      uppercase: true,
+      capitalize: true,
       titleStyle: {
         paddingHorizontal: 5,
         fontFamily: FONT_FAMILY,

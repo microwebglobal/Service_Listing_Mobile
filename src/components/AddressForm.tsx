@@ -21,6 +21,7 @@ const RPW = (percentage: number) => {
 
 export const AddressForm = ({bottomSheetRef}: AddressFormProps) => {
   const [selectedIndex, setIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
   const {
     control,
     reset,
@@ -34,6 +35,7 @@ export const AddressForm = ({bottomSheetRef}: AddressFormProps) => {
   };
 
   const submit = (data: Address) => {
+    setLoading(true);
     try {
       instance
         .post('/users/addresses/', {
@@ -50,6 +52,8 @@ export const AddressForm = ({bottomSheetRef}: AddressFormProps) => {
         });
     } catch (e) {
       console.log('Error ', e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -223,9 +227,10 @@ export const AddressForm = ({bottomSheetRef}: AddressFormProps) => {
         </View>
         <View className="my-5">
           <Button
+            primary
+            loading={loading}
             title={'Save Address'}
             onPress={(Keyboard.dismiss(), handleSubmit(submit))}
-            primary
           />
         </View>
       </BottomSheetView>

@@ -28,6 +28,7 @@ import {instance} from '../../api/instance';
 import {clearCart} from '../../redux/cart/cart.slice';
 import {styled} from 'nativewind';
 import {StackActions} from '@react-navigation/native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface ServiceForm {
   date: string;
@@ -53,7 +54,7 @@ const RPW = (percentage: number) => {
 
 const StyledInput = styled(TextInput);
 
-export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
+export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
   const navigation = useNav();
   const dispatch = useDispatch();
   const today = new Date();
@@ -62,18 +63,19 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
   const [error, setError] = useState<boolean>(false);
   const [timeValue, onChangeTimeValue] = useState<string>();
   const [selectDate, setSelectDate] = useState<string>(todayDate);
+  const address = route.params?.address;
   const {
     control,
     handleSubmit,
     formState: {errors},
-  } = useForm<ServiceForm>();
+  } = useForm<ServiceForm>({defaultValues: {address: address}});
   const cart = useAppSelector((state: any) => state.cart.cart);
   const cityId = useAppSelector((state: any) => state.address.cityId);
 
   //time picker
   const [date, setDate] = useState(new Date(1598051730000));
   const [show, setShow] = useState<boolean>(false);
-  const onChangeDate = (event: any, selectedDate: any) => {
+  const onChangeTime = (event: any, selectedDate: any) => {
     const currentDate = selectedDate;
     setShow(false);
     setDate(currentDate);
@@ -123,10 +125,10 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
 
   return (
     <KeyboardAvoidingView className="flex-1 bg-white">
-      <AppHeader back={true} title="Schedule Your Service" />
+      <AppHeader back={false} title="Schedule Your Service" />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Calendar component */}
-        <View className="mb-8">
+        <View className="mb-6">
           <Calendar
             theme={{
               dayTextColor: Colors.Black,
@@ -188,7 +190,7 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
                     <TouchableOpacity onPress={() => setShow(true)}>
                       <StyledInput
                         placeholder="Choose a time"
-                        className="border-2 border-dark rounded-md h-12 px-3 text-base text-black"
+                        className="border-b border-gray rounded-md px-3 text-base text-black"
                         value={timeValue}
                         inputMode="none"
                         onFocus={() => {
@@ -204,7 +206,7 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
                         is24Hour={false}
                         display="spinner"
                         minuteInterval={30}
-                        onChange={onChangeDate}
+                        onChange={onChangeTime}
                         positiveButton={{
                           label: 'OK',
                           textColor: Colors.Primary,
@@ -243,14 +245,26 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
                 name="address"
                 control={control}
                 render={({field: {onChange, onBlur, value}}) => (
-                  <InputField
-                    placeHolder={'Enter complete service address'}
-                    value={value}
-                    secure={false}
-                    inputMode={'text'}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                  />
+                  <View className="flex-row items-center justify-between border-b border-gray rounded-md">
+                    <StyledInput
+                      placeholder="Select address"
+                      className="px-3 h-12 text-base text-black"
+                      value={value}
+                      inputMode="text"
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                    />
+                    <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate('SelectAddress');
+                      }}>
+                      <MaterialCommunityIcons
+                        name="chevron-right"
+                        size={25}
+                        color={Colors.Gray}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 )}
                 rules={{required: true}}
               />
@@ -262,7 +276,7 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
             </View>
 
             <View>
-              <View className="flex-row items-center space-x-2">
+              <View className="flex-row items-center space-x-2 mb-1">
                 <Feather
                   name="message-square"
                   size={18}
@@ -292,7 +306,6 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = () => {
               />
             </View>
           </View>
-
           <View className="my-5">
             <Button
               primary

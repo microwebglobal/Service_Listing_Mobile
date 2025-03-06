@@ -12,6 +12,8 @@ module.exports = {
         lightGrey: '#EFEFFA',
         yellow: '#eab308',
         error: '#C62B3B',
+        primaryBlackRGBA: 'rgba(12,15,20,0.5)',
+        secondaryBlackRGBA: 'rgba(0,0,0,0.7)',
       },
     },
   },
