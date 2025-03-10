@@ -108,7 +108,7 @@ export const SelectedItemsScreen = () => {
                   size="md"
                   title="Browse Services"
                   onPress={() => {
-                    navigation.navigate('TabsNavigator', {
+                    navigation.navigate('TabNavigator', {
                       screen: 'CategoryTab',
                     });
                   }}
@@ -186,7 +186,7 @@ export const SelectedItemsScreen = () => {
               primary
               title="Proceed to booking"
               onPress={() => {
-                navigation.navigate('ServiceSchedule');
+                navigation.navigate('ServiceSchedule', {address: undefined});
               }}
             />
           </View>

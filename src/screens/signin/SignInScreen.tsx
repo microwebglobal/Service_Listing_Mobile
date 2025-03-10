@@ -22,11 +22,9 @@ interface SignInData {
   phone: string;
 }
 
-// Get screen dimension
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-// RPW and RPH are functions to set responsive width and height
 const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
@@ -108,7 +106,6 @@ export const SignInScreen = () => {
         </View>
 
         <View className="gap-5 mb-3">
-          {/* phone input */}
           <View>
             <Controller
               name="phone"
@@ -133,7 +130,6 @@ export const SignInScreen = () => {
           </View>
         </View>
 
-        {/* Button */}
         <View className="my-5">
           <Button
             loading={loading}
@@ -149,7 +145,7 @@ export const SignInScreen = () => {
           </Text>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('SignUp' as never);
+              navigation.navigate('SignUp');
             }}>
             <Text className="mb-2 text-base font-medium text-primary underline">
               Sign Up

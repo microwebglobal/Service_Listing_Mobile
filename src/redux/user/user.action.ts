@@ -7,7 +7,7 @@ import {saveTokenToStorage} from '../../utils/token-storage';
 import {setId} from './user.slice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AddressEntity} from '../address/address.entity';
-import { clearAddressList } from '../address/address.slice';
+import {clearAddressList} from '../address/address.slice';
 
 export function extractToken(cookieString: string, tokenName: string) {
   const tokenRegex = new RegExp(`${tokenName}=([^;]+)`);

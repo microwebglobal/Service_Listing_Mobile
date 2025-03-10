@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {API_BASE} from '@env';
-import { getRefreshToken, getToken } from '../utils/token-storage';
-import { refreshTokens } from '../redux/user/user.action';
+import {getRefreshToken, getToken} from '../utils/token-storage';
+import {refreshTokens} from '../redux/user/user.action';
 
 export const instance = axios.create({
   baseURL: API_BASE,

@@ -11,13 +11,12 @@ export type RootStackParamList = {
   Verification: {phone: string};
   LoginSuccess: undefined;
   SelectLocation: undefined;
-  TabsNavigator: undefined;
+  TabNavigator: undefined;
   Home: undefined;
   Profile: undefined;
   Category: undefined;
   SubCategory: {categoryId: string; category: string; imageUrl: string};
   ServiceType: {subCategoryId: string; subCategory: string};
-  ServiceDetails: undefined;
   EditProfile: {itemName: string};
   EditLocation: undefined;
   AddressDetails: {address: Address};

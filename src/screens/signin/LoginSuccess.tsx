@@ -1,11 +1,11 @@
 import {View, Text} from 'react-native';
 import React, {useEffect} from 'react';
 import LottieView from 'lottie-react-native';
-import {useNav} from '../../navigation/RootNavigation';
+import {Screen, useNav} from '../../navigation/RootNavigation';
 import {addressUpdate} from '../../redux/user/user.action';
 import {useAppSelector} from '../../redux';
 
-export const LoginSuccessScreen = () => {
+export const LoginSuccessScreen: Screen<'LoginSuccess'> = () => {
   const navigation = useNav();
   const user = useAppSelector(state => state.user.user);
   const addressList = useAppSelector(state => state.address.addresses);
@@ -15,9 +15,9 @@ export const LoginSuccessScreen = () => {
       addressUpdate(addressList.filter(address => address !== null));
     }
     setTimeout(() => {
-      navigation.navigate('TabsNavigator');
+      navigation.navigate('TabNavigator');
     }, 3000);
-  }, [addressList, navigation, user?.id]);
+  }, [addressList, navigation, user.id]);
 
   return (
     <View className="items-center justify-center flex-1 bg-primaryWhite">

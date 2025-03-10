@@ -15,7 +15,6 @@ import {ProfileScreen} from '../screens/profile/ProfileScreen';
 import {SubCategoryScreen} from '../screens/category/SubCategoryScreen';
 import {CategoryScreen} from '../screens/category/CategoryScreen';
 import {ServiceTypeScreen} from '../screens/category/ServiceTypeScreen';
-import {ServiceDetails} from '../screens/serviceDetails/ServiceDetails';
 import {HomeScreen} from '../screens/home/HomeScreen';
 import {EditProfileScreen} from '../screens/profile/EditProfileScreen';
 import {EditLocationScreen} from '../screens/profile/EditLocationScreen';
@@ -92,7 +91,7 @@ export const RootNavigator: React.FC = () => {
         initialRouteName="Splash"
         screenOptions={screenOptions}>
         <Stack.Screen
-          name="TabsNavigator"
+          name="TabNavigator"
           component={TabNavigator}
           options={{
             headerShown: false,
@@ -105,7 +104,6 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="Verification" component={VerificationScreen} />
         <Stack.Screen name="LoginSuccess" component={LoginSuccessScreen} />
         <Stack.Screen name="SelectLocation" component={SelectLocation} />
-        <Stack.Screen name="ServiceDetails" component={ServiceDetails} />
         <Stack.Screen name="EditLocation" component={EditLocationScreen} />
         <Stack.Screen name="AddressDetails" component={AddressDetailsScreen} />
         <Stack.Screen name="SelectAddress" component={AddressSelectionScreen} />

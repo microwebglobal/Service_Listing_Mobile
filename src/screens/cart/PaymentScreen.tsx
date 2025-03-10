@@ -34,7 +34,7 @@ export const PaymentScreen = ({route}: any) => {
       .post(`/booking/${bookingId}/complete-cash-payment`)
       .then(res => {
         console.log(res.data.message);
-        navigation.navigate('TabsNavigator');
+        navigation.navigate('TabNavigator');
       })
       .catch(function (e) {
         console.log(e.message);

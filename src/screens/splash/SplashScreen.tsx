@@ -13,7 +13,7 @@ export const SplashScreen: Screen<'Splash'> = () => {
 
       if (result?.success) {
         setTimeout(() => {
-          navigation.navigate('TabsNavigator');
+          navigation.navigate('TabNavigator');
         }, 1000);
       } else {
         setTimeout(() => {
