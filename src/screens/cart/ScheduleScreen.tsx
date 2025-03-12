@@ -14,7 +14,6 @@ import {useState} from 'react';
 import {Colors} from '../../utils/Colors';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import Arrow from 'react-native-vector-icons/MaterialIcons';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import {Screen, useNav} from '../../navigation/RootNavigation';
 import React from 'react';
 import Feather from 'react-native-vector-icons/Feather';
@@ -29,6 +28,7 @@ import {clearCart} from '../../redux/cart/cart.slice';
 import {styled} from 'nativewind';
 import {StackActions} from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import DateTimePicker from '../../components/DateTimePicker';
 
 interface ServiceForm {
   date: string;
@@ -61,7 +61,7 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
   const todayDate = today.toISOString().split('T')[0];
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const [timeValue, onChangeTimeValue] = useState<string>();
+  const [timeValue, onChangeTimeValue] = useState<string>('');
   const [selectDate, setSelectDate] = useState<string>(todayDate);
   const address = route.params?.address;
   const {
@@ -71,16 +71,6 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
   } = useForm<ServiceForm>({defaultValues: {address: address}});
   const cart = useAppSelector((state: any) => state.cart.cart);
   const cityId = useAppSelector((state: any) => state.address.cityId);
-
-  //time picker
-  const [date, setDate] = useState(new Date(1598051730000));
-  const [show, setShow] = useState<boolean>(false);
-  const onChangeTime = (event: any, selectedDate: any) => {
-    const currentDate = selectedDate;
-    setShow(false);
-    setDate(currentDate);
-    onChangeTimeValue(currentDate.toLocaleTimeString());
-  };
 
   function convertTo24HourFormat(timeString: string) {
     const [hour, minute, period] = timeString.split(':');
@@ -95,7 +85,7 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
   }
 
   const submit = async (data: ServiceForm) => {
-    let formatTime = timeValue ? convertTo24HourFormat(timeValue) : '';
+    let formatTime = convertTo24HourFormat(timeValue);
     const payload: BookingPayload = {
       cityId: cityId,
       items: [...cart],
@@ -127,7 +117,6 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
     <KeyboardAvoidingView className="flex-1 bg-white">
       <AppHeader back={false} title="Schedule Service" />
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Calendar component */}
         <View className="mb-6">
           <Calendar
             theme={{
@@ -185,34 +174,27 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
               <Controller
                 name="timeSlot"
                 control={control}
-                render={({field: {}}) => (
-                  <View>
-                    <TouchableOpacity onPress={() => setShow(true)}>
-                      <StyledInput
-                        placeholder="Choose a time"
-                        className="border-b border-gray rounded-md px-3 text-base text-black"
+                render={({field: {onChange, onBlur}}) => (
+                  <View className="flex-row overflow-auto">
+                    <View className="w-full">
+                      <InputField
+                        placeHolder={'Choose a time'}
                         value={timeValue}
-                        inputMode="none"
-                        onFocus={() => {
-                          setShow(true);
-                        }}
+                        secure={false}
+                        inputMode={'none'}
+                        onBlur={onBlur}
+                        onChangeText={onChange}
                       />
-                    </TouchableOpacity>
-                    {show && (
+                    </View>
+                    <View className="-ml-12">
                       <DateTimePicker
-                        testID="dateTimePicker"
-                        value={date}
-                        mode={'time'}
-                        is24Hour={false}
-                        display="spinner"
-                        minuteInterval={30}
-                        onChange={onChangeTime}
-                        positiveButton={{
-                          label: 'OK',
-                          textColor: Colors.Primary,
+                        mode="time"
+                        currentDate={new Date()}
+                        onChange={(time: Date) => {
+                          onChangeTimeValue(time.toLocaleTimeString());
                         }}
                       />
-                    )}
+                    </View>
                   </View>
                 )}
                 rules={{required: timeValue ? false : true}}
@@ -245,7 +227,7 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
                 name="address"
                 control={control}
                 render={({field: {onChange, onBlur, value}}) => (
-                  <View className="flex-row items-center justify-between border-b border-gray rounded-md">
+                  <View className="flex-row items-center justify-between border-[1.5px] border-gray rounded-md">
                     <StyledInput
                       placeholder="Select address"
                       className="px-3 h-12 text-base text-black"
