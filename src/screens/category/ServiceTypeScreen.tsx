@@ -10,15 +10,14 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import {instance} from '../../api/instance';
-import {Screen} from '../../navigation/RootNavigation';
-import AppHeader from '../../components/AppHeader';
-import Feather from 'react-native-vector-icons/Feather';
-import {RenderService} from '../../components/RenderService';
-import {Colors} from '../../utils/Colors';
-import {styled} from 'nativewind';
-import {RenderPackage} from '../../components/RenderPackage';
 import {SERVER_BASE} from '@env';
+import {styled} from 'nativewind';
+import {Colors} from '../../utils/Colors';
+import {instance} from '../../api/instance';
+import AppHeader from '../../components/AppHeader';
+import {Screen} from '../../navigation/RootNavigation';
+import {RenderService} from '../../components/RenderService';
+import {RenderPackage} from '../../components/RenderPackage';
 
 interface CitySpecificPricing {
   id: number;
@@ -95,7 +94,7 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
           <View className="ml-1 bg-lightGrey rounded-lg">
             <Image
               source={{uri: `${SERVER_BASE}${item.icon_url}`}}
-              style={{width: 50, height: 50}}
+              style={{width: 50, height: 50, borderRadius: 8}}
             />
           </View>
           <View className="">
@@ -113,19 +112,8 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
           ))}
         </View>
 
-        <View className="mx-1 mb-1 flex-row items-center bg-white space-x-3">
-          <View className="ml-1 bg-lightGrey rounded-lg">
-            <Feather name={'package'} size={15} color={Colors.Black} />
-          </View>
-          <Text className="text-base text-dark font-medium">
-            Available Packages
-          </Text>
-        </View>
-
         {/* Render packages */}
-        <View className="mx-2">
-          <RenderPackage typeId={item.type_id} />
-        </View>
+        <RenderPackage typeId={item.type_id} />
 
         <View className="mt-5 h-0.5 bg-lightGrey" />
       </StyledView>

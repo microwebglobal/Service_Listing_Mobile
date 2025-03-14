@@ -44,7 +44,7 @@ export const BookingScreen = () => {
     return booking.status === 'confirmed';
   }).length;
   assignedCountRef.current = bookings.filter((booking: Booking) => {
-    return booking.status === 'assigned';
+    return booking.status === 'accepted';
   }).length;
   inProgressCountRef.current = bookings.filter((booking: Booking) => {
     return booking.status === 'in progress';
@@ -251,7 +251,7 @@ const Confirmed: React.FC<TabProps> = ({badgeCountRef}) => {
 };
 
 const Assigned: React.FC<TabProps> = ({badgeCountRef}) => {
-  return <FetchBooking status="assigned" badgeCountRef={badgeCountRef} />;
+  return <FetchBooking status="accepted" badgeCountRef={badgeCountRef} />;
 };
 
 const InProgress: React.FC<TabProps> = ({badgeCountRef}) => {

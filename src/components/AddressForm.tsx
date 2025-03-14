@@ -109,6 +109,7 @@ export const AddressForm = ({bottomSheetRef}: AddressFormProps) => {
           <View>
             <Text className="mb-2 text-base text-black font-medium">
               Street Address
+              {errors.line1 && <Text className="text-error">{' *'}</Text>}
             </Text>
             <Controller
               name="line1"
@@ -125,11 +126,6 @@ export const AddressForm = ({bottomSheetRef}: AddressFormProps) => {
               )}
               rules={{required: true}}
             />
-            {errors.line1 && (
-              <Text className="text-error">
-                {'Please fill out this field.'}
-              </Text>
-            )}
           </View>
 
           <View>
@@ -156,6 +152,7 @@ export const AddressForm = ({bottomSheetRef}: AddressFormProps) => {
             <View className="basis-1/2 pr-2">
               <Text className="mb-2 text-base text-black font-medium">
                 City
+                {errors.city && <Text className="text-error">{' *'}</Text>}
               </Text>
               <Controller
                 name="city"
@@ -172,13 +169,11 @@ export const AddressForm = ({bottomSheetRef}: AddressFormProps) => {
                 )}
                 rules={{required: true}}
               />
-              {errors.city && (
-                <Text className="text-error">{'City is required.'}</Text>
-              )}
             </View>
             <View className="basis-1/2 pl-2">
               <Text className="mb-2 text-base text-black font-medium">
                 State
+                {errors.state && <Text className="text-error">{' *'}</Text>}
               </Text>
               <Controller
                 name="state"
@@ -195,15 +190,13 @@ export const AddressForm = ({bottomSheetRef}: AddressFormProps) => {
                 )}
                 rules={{required: true}}
               />
-              {errors.state && (
-                <Text className="text-error">{'State is required.'}</Text>
-              )}
             </View>
           </View>
 
           <View>
             <Text className="mb-2 text-base text-black font-medium">
               Postal Code
+              {errors.postal_code && <Text className="text-error">{' *'}</Text>}
             </Text>
             <Controller
               name="postal_code"
@@ -220,9 +213,6 @@ export const AddressForm = ({bottomSheetRef}: AddressFormProps) => {
               )}
               rules={{required: true}}
             />
-            {errors.postal_code && (
-              <Text className="text-error">{'Postal code is required.'}</Text>
-            )}
           </View>
         </View>
         <View className="my-5">

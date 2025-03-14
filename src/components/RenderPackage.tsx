@@ -7,6 +7,8 @@ import {useDispatch} from 'react-redux';
 import {addMultipleItems} from '../redux/cart/cart.slice';
 import {ItemEntity} from '../redux/cart/cart.entity';
 import Toast from 'react-native-toast-message';
+import Feather from 'react-native-vector-icons/Feather';
+import {Colors} from '../utils/Colors';
 
 export interface PackageItem {
   item_id: string;
@@ -211,6 +213,17 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
 
   return (
     <View>
+      {packageData?.length !== 0 && (
+        <View className="mx-1 mb-1 flex-row items-center bg-white space-x-2">
+          <View className="ml-1 bg-lightGrey rounded-lg">
+            <Feather name={'package'} size={15} color={Colors.Black} />
+          </View>
+          <Text className="text-base text-dark font-medium">
+            Available Packages
+          </Text>
+        </View>
+      )}
+
       <FlatList
         className="mt-2"
         horizontal={false}

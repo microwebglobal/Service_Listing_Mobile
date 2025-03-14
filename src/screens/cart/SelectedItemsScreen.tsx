@@ -128,7 +128,7 @@ export const SelectedItemsScreen = () => {
                   <View className="ml-1 bg-lightGrey rounded-lg">
                     <Image
                       source={{uri: `${SERVER_BASE}${item.icon_url}`}}
-                      style={{width: 50, height: 50}}
+                      style={{width: 50, height: 50, borderRadius: 8}}
                     />
                   </View>
                   <View>

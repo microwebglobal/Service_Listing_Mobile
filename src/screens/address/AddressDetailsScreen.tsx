@@ -84,7 +84,8 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
       setLoading(false);
       bottomSheetRef.current?.close();
       setIsOpen(false);
-      navigation.goBack();
+      navigation.pop();
+      navigation.navigate('EditLocation');
     }
   };
 

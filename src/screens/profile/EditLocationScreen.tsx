@@ -23,12 +23,8 @@ import {useFocusEffect} from '@react-navigation/native';
 import Octicons from 'react-native-vector-icons/Octicons';
 
 const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
 const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
-};
-const RPH = (percentage: number) => {
-  return (percentage / 100) * screenHeight;
 };
 
 export const EditLocationScreen: Screen<'EditLocation'> = () => {
@@ -92,7 +88,7 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
 
   const _renderAddress = (address: Address) => {
     return (
-      <View className="my-2 bg-lightGrey rounded-lg shadow-sm shadow-black">
+      <View className="my-1 bg-lightGrey rounded-lg shadow-sm shadow-black">
         <View
           key={address.id}
           className="px-2 py-4 rounded-lg flex-row flex-wrap items-center justify-between overflow-hidden">
@@ -146,9 +142,7 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        <View
-          className="pt-10"
-          style={{paddingHorizontal: RPW(6), height: RPH(95)}}>
+        <View className="pt-10" style={{paddingHorizontal: RPW(6)}}>
           <Text className="text-3xl text-black font-semibold">Location</Text>
           <View className="flex-1 mt-8">
             {addLocationType('Home', 'home')}
@@ -178,10 +172,9 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
             keyExtractor={item => item.id.toString()}
             renderItem={({item}) => _renderAddress(item)}
           />
-
-          <AddressForm bottomSheetRef={bottomSheetRef} />
         </View>
       </ScrollView>
+      <AddressForm bottomSheetRef={bottomSheetRef} />
     </KeyboardAvoidingView>
   );
 };
