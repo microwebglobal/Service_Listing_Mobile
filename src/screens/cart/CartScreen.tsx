@@ -7,48 +7,54 @@ import {
   TouchableOpacity,
   Dimensions,
   ActivityIndicator,
+  StyleSheet,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {Button} from '../../components/rneui';
-import Entypo from 'react-native-vector-icons/Entypo';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import AppHeader from '../../components/AppHeader';
-import {BookingItem} from '../booking/BookingDetailsScreen';
-import {instance} from '../../api/instance';
-import {Colors} from '../../utils/Colors';
-import {useNav} from '../../navigation/RootNavigation';
-import {useDispatch} from 'react-redux';
-import {useAppSelector} from '../../redux';
-import {
-  addQuantity,
-  clearCart,
-  reduceQuantity,
-  setCart,
-} from '../../redux/shopping_cart/shopping_cart.slice';
 import {SERVER_BASE} from '@env';
+import {Colors} from '../../utils/Colors';
+import {instance} from '../../api/instance';
+import {Button} from '../../components/rneui';
+import {BookingPayment} from '../booking/types';
+import AppHeader from '../../components/AppHeader';
+import Entypo from 'react-native-vector-icons/Entypo';
 import {StackActions} from '@react-navigation/native';
+import {useNav} from '../../navigation/RootNavigation';
+import {BookingItem} from '../booking/BookingDetailsScreen';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
+interface Booking {
+  booking_id: string;
+  user_id: number;
+  provider_id: string;
+  city_id: string;
+  booking_date: string;
+  status: string;
+  service_address: string;
+  customer_notes: string;
+  BookingItems: Array<BookingItem>;
+  BookingPayment: BookingPayment;
+}
 
 const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
 const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
-};
-const RPH = (percentage: number) => {
-  return (percentage / 100) * screenHeight;
 };
 
 export const CartScreen = () => {
   const navigation = useNav();
-  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const [loading, setLoading] = useState<boolean>(false);
-  const cart = useAppSelector(state => state.shopping_cart.shoppingCart);
+  const [cart, setCart] = useState<Booking>();
 
   useEffect(() => {
-    instance
+    getCart();
+  }, []);
+
+  const getCart = async () => {
+    await instance
       .get('/cart')
       .then(res => {
-        dispatch(setCart(res.data));
+        setCart(res.data);
       })
       .catch(function (e) {
         console.log(e.message);
@@ -56,11 +62,13 @@ export const CartScreen = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [dispatch]);
+  };
 
   const updateCartItem = async (itemId: string, quantity: number) => {
     try {
-      await instance.put('/cart/item', {itemId, quantity}).then(() => {});
+      await instance.put('/cart/item', {itemId, quantity}).then(() => {
+        getCart();
+      });
     } catch (error) {
       console.log(error);
     }
@@ -79,7 +87,6 @@ export const CartScreen = () => {
           amount: cart.BookingPayment.subtotal,
           bookingId: cart.booking_id,
         });
-        dispatch(clearCart());
       })
       .catch(function (e) {
         console.log(e.message);
@@ -87,7 +94,7 @@ export const CartScreen = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, [cart, dispatch, navigation]);
+  }, [cart, navigation]);
 
   if (isLoading) {
     return (
@@ -101,24 +108,7 @@ export const CartScreen = () => {
       <ScrollView className="flex-grow" showsVerticalScrollIndicator={false}>
         <AppHeader back={true} title={'Shopping Cart'} />
         <View className="flex-1 mt-5" style={{marginHorizontal: RPW(6)}}>
-          {!cart ||
-            (cart.BookingItems.length === 0 && (
-              <View
-                className="flex-1 justify-center items-center"
-                style={{height: RPH(70)}}>
-                <Image source={require('../../assets/app-images/cart.png')} />
-                <Text className="mt-5 text-xl text-black text-center font-medium">
-                  Add items to start a cart
-                </Text>
-                <Text className="mt-5 text-base text-dark text-center">
-                  {
-                    'Once you add items from a service package items or service items, your cart will appear here.'
-                  }
-                </Text>
-              </View>
-            ))}
-          {/* Render cart items */}
-          {cart !== null &&
+          {cart !== undefined &&
             cart?.BookingItems.map((item: BookingItem, index: number) => {
               return (
                 <View
@@ -131,7 +121,7 @@ export const CartScreen = () => {
                           source={{
                             uri: `${SERVER_BASE}${item.serviceItem.icon_url}`,
                           }}
-                          style={{width: 50, height: 50}}
+                          style={styles.ImageStyle}
                         />
                       </View>
                       <View>
@@ -152,7 +142,7 @@ export const CartScreen = () => {
                           source={{
                             uri: `${SERVER_BASE}${item.packageItem.icon_url}`,
                           }}
-                          style={{width: 50, height: 50}}
+                          style={styles.ImageStyle}
                         />
                       </View>
                       <View>
@@ -172,7 +162,6 @@ export const CartScreen = () => {
                       {item?.quantity > 1 ? (
                         <TouchableOpacity
                           onPress={() => {
-                            dispatch(reduceQuantity(item.item_id));
                             updateCartItem(item.item_id, item.quantity - 1);
                           }}>
                           <Entypo name="minus" size={20} color={Colors.Black} />
@@ -180,7 +169,6 @@ export const CartScreen = () => {
                       ) : (
                         <TouchableOpacity
                           onPress={() => {
-                            dispatch(reduceQuantity(item?.item_id));
                             updateCartItem(item.item_id, item.quantity - 1);
                           }}>
                           <MaterialIcons
@@ -195,7 +183,6 @@ export const CartScreen = () => {
                       </Text>
                       <TouchableOpacity
                         onPress={() => {
-                          dispatch(addQuantity(item.item_id));
                           updateCartItem(item.item_id, item.quantity + 1);
                         }}>
                         <Entypo name="plus" size={20} color={Colors.Black} />
@@ -208,7 +195,7 @@ export const CartScreen = () => {
         </View>
       </ScrollView>
 
-      {cart !== null && cart?.BookingItems.length > 0 && (
+      {cart !== undefined && cart.BookingItems.length > 0 && (
         <View
           style={{
             marginHorizontal: RPW(6),
@@ -259,3 +246,11 @@ export const CartScreen = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  ImageStyle: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+  },
+});
