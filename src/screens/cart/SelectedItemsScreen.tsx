@@ -124,7 +124,7 @@ export const SelectedItemsScreen = () => {
               <View
                 key={index}
                 className="flex-row justify-between items-center mb-7">
-                <View className="flex-row items-center space-x-4">
+                <View className="flex-row basis-2/4 items-center space-x-4">
                   <View className="ml-1 bg-lightGrey rounded-lg">
                     <Image
                       source={{uri: `${SERVER_BASE}${item.icon_url}`}}

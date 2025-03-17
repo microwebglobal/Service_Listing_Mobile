@@ -1,4 +1,4 @@
-import {View, Text, FlatList} from 'react-native';
+import {View, Text, FlatList, ActivityIndicator} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {instance} from '../api/instance';
 import {Button} from './rneui';
@@ -52,7 +52,8 @@ export interface Package {
 export const RenderPackage = ({typeId}: {typeId: string}) => {
   const dispatch = useDispatch();
   const cartItems = useRef<Array<ItemEntity>>([]);
-  const [packageData, setPackageData] = useState<Package[]>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [packageData, setPackageData] = useState<Package[]>([]);
   const [isItemClicked, setIsItemClicked] = useState<boolean>(false);
   const [packagePrice, setPackagePrice] = useState<number>(0);
 
@@ -63,6 +64,8 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
       });
     } catch (e) {
       console.log('Error ', e);
+    } finally {
+      setIsLoading(false);
     }
   }, [typeId]);
 
@@ -80,6 +83,7 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
               price: parseInt(packageItem.price, 10),
               quantity: 1,
               icon_url: packageItem.icon_url,
+              is_home_visit: packageItem.is_none_option,
             });
           }
         });
@@ -211,11 +215,18 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
     );
   };
 
+  if (isLoading) {
+    return (
+      <View className="items-center justify-center flex-1 bg-white">
+        <ActivityIndicator size="large" color={Colors.Black} />
+      </View>
+    );
+  }
   return (
     <View>
       {packageData?.length !== 0 && (
-        <View className="mx-1 mb-1 flex-row items-center bg-white space-x-2">
-          <View className="ml-1 bg-lightGrey rounded-lg">
+        <View className="mb-1 flex-row items-center bg-white space-x-2">
+          <View className="bg-lightGrey rounded-lg">
             <Feather name={'package'} size={15} color={Colors.Black} />
           </View>
           <Text className="text-base text-dark font-medium">

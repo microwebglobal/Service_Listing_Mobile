@@ -32,8 +32,12 @@ export interface ServiceItem {
   service_id: string;
   name: string;
   description: string;
+  duration_hours: number;
+  duration_minutes: number;
   overview: string;
   base_price: string;
+  advance_percentage: string;
+  is_home_visit: boolean;
   icon_url: string;
   CitySpecificPricings: Array<CitySpecificPricing>;
 }
@@ -75,7 +79,6 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
   useEffect(() => {
     try {
       instance.get(`/subcategories/${subCategoryId}/types`).then(response => {
-        // console.log('service type data ', response.data);
         setServiceTypeData(response.data);
       });
     } catch (e) {
@@ -89,7 +92,7 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
 
   const _renderServiceType = ({item}: {item: ServiceType}) => {
     return (
-      <StyledView className="w-full px-2 py-3 mb-2 rounded-xl drop-shadow-xl">
+      <StyledView className="w-full py-3 mb-2 rounded-xl drop-shadow-xl">
         <View className="flex-row items-center space-x-5 bg-white">
           <View className="ml-1 bg-lightGrey rounded-lg">
             <Image
@@ -104,7 +107,7 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
         </View>
 
         {/* Render services */}
-        <View className="mx-2 mt-5">
+        <View className="mt-5">
           {item.Services.map((service, index: number) => (
             <View key={index}>
               <RenderService service={service} />
@@ -114,8 +117,6 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
 
         {/* Render packages */}
         <RenderPackage typeId={item.type_id} />
-
-        <View className="mt-5 h-0.5 bg-lightGrey" />
       </StyledView>
     );
   };
@@ -136,7 +137,7 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
         <AppHeader back={true} title={subCategory} />
         <View
           className="flex-1 justify-between"
-          style={{marginHorizontal: RPW(4)}}>
+          style={{marginHorizontal: RPW(5)}}>
           <FlatList
             className="mt-2"
             horizontal={false}

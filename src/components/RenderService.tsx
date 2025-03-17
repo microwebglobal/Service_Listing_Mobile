@@ -10,11 +10,13 @@ import {useDispatch} from 'react-redux';
 import {addItem} from '../redux/cart/cart.slice';
 import Toast from 'react-native-toast-message';
 import {SERVER_BASE} from '@env';
+import {useAppSelector} from '../redux';
 
 export const RenderService = ({service}: {service: Service}) => {
-  const [serviceItemData, setServiceItemData] = useState<ServiceItem[]>();
-  const [isItemClicked, setIsItemClicked] = useState<boolean>(false);
   const dispatch = useDispatch();
+  const LocalCart = useAppSelector(state => state.cart.cart);
+  const [isItemClicked, setIsItemClicked] = useState<boolean>(false);
+  const [serviceItemData, setServiceItemData] = useState<ServiceItem[]>();
 
   const fetchServiceItem = async (serviceId: string) => {
     try {
@@ -25,22 +27,59 @@ export const RenderService = ({service}: {service: Service}) => {
     }
   };
 
-  const showToast = (serviceName: string) => {
+  function addItemToCart(item: ServiceItem) {
+    dispatch(
+      addItem({
+        itemId: item.item_id,
+        sectionId: item.service_id,
+        itemType: 'service_item',
+        quantity: 1,
+        name: item.name,
+        price: parseInt(item.base_price, 10),
+        icon_url: item.icon_url,
+        is_home_visit: item.is_home_visit,
+      }),
+    );
     Toast.show({
       type: 'success',
       text1: 'Added to selection',
-      text2: `${serviceName} has been added to your selection`,
+      text2: `${item.name} has been added to your selection`,
       visibilityTime: 2000,
       autoHide: true,
     });
+  }
+
+  const showToast = (item: ServiceItem) => {
+    if (LocalCart?.length === 0) {
+      addItemToCart(item);
+      return;
+    } else if (LocalCart && LocalCart?.length !== 0) {
+      for (let i = 0; i < 1; i++) {
+        const cartItem = LocalCart[i];
+        if (cartItem.is_home_visit !== item.is_home_visit) {
+          Toast.show({
+            type: 'error',
+            text1: 'Selection Restriction',
+            text2:
+              'You can only select either home visit or non-home visit items, not both.',
+            visibilityTime: 2000,
+            autoHide: true,
+          });
+          break;
+        } else {
+          addItemToCart(item);
+          break;
+        }
+      }
+    }
   };
 
   const _renderServiceItem = ({item}: {item: ServiceItem}) => {
     return (
-      <View className="rounded-lg shadow-sm shadow-black" >
+      <View className="rounded-lg shadow-sm shadow-black">
         <View className="bg-white rounded-lg p-2">
           <View className="flex-row justify-between space-x-2">
-            <View className="w-1/2">
+            <View className="w-2/3">
               <Text className="text-base text-black font-medium first-letter:capitalize">
                 {item.name}
               </Text>
@@ -48,9 +87,20 @@ export const RenderService = ({service}: {service: Service}) => {
                 {'₹'}
                 {item.base_price}
               </Text>
+              {parseInt(item.advance_percentage, 10) !== 0 && (
+                <Text className="my-1 text-sm text-error">
+                  {item.advance_percentage}
+                  {'% Advanced Payment Required'}
+                </Text>
+              )}
               <Text className="text-sm text-black overflow-clip">
                 {item.description}
               </Text>
+              {item.is_home_visit && (
+                <Text className="my-2 text-sm text-error">
+                  You need to visit service provider to get an service
+                </Text>
+              )}
             </View>
             <View className="items-center">
               <Image
@@ -63,18 +113,7 @@ export const RenderService = ({service}: {service: Service}) => {
                   title="Add"
                   size="sm"
                   onPress={() => {
-                    dispatch(
-                      addItem({
-                        itemId: item.item_id,
-                        sectionId: item.service_id,
-                        itemType: 'service_item',
-                        quantity: 1,
-                        name: item.name,
-                        price: parseInt(item.base_price, 10),
-                        icon_url: item.icon_url,
-                      }),
-                    );
-                    showToast(item.name);
+                    showToast(item);
                   }}
                 />
               </View>

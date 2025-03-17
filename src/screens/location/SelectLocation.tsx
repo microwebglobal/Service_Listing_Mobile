@@ -25,6 +25,7 @@ import {Controller, useForm} from 'react-hook-form';
 import {API_BASE} from '@env';
 import axios from 'axios';
 import {useAppSelector} from '../../redux';
+import {CheckBox} from '@rneui/themed';
 
 // Get screen dimension
 const screenWidth = Dimensions.get('window').width;
@@ -47,8 +48,9 @@ export const SelectLocation = () => {
   const [homeAddress, setHomeAddress] = useState<AddressEntity>();
   const [workAddress, setWorkAddress] = useState<AddressEntity>();
   const [addressType, setAddressType] = useState<string>('Home');
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const snapPoints = useMemo(() => ['50%'], []);
+  const snapPoints = useMemo(() => ['100%'], []);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const handleClosePress = () => {
     bottomSheetRef.current?.close();
@@ -253,135 +255,181 @@ export const SelectLocation = () => {
         </View>
       </View>
 
-      <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints} index={0}>
-        <BottomSheetView style={styles.contentContainer}>
-          <View className="items-center p-6">
-            <View className="flex-row justify-between w-full items-center">
-              <Text className="text-lg font-medium text-black">
-                Add {addressType} Address
+      <BottomSheet
+        ref={bottomSheetRef}
+        snapPoints={snapPoints}
+        enablePanDownToClose={true}
+        style={styles.contentContainer}
+        index={-1}>
+        <BottomSheetView>
+          <View className="mb-5 flex-row justify-between w-full items-center">
+            <Text className="text-lg font-medium text-black">
+              Add New Address
+            </Text>
+            <MaterialIcons
+              name="close"
+              color={Colors.Dark}
+              size={22}
+              onPress={handleClosePress}
+            />
+          </View>
+
+          <View className="flex-row mb-3">
+            <View>
+              <CheckBox
+                title="Home"
+                checked={selectedIndex === 0}
+                onPress={() => setSelectedIndex(0)}
+                checkedColor={Colors.Primary}
+                wrapperStyle={styles.wrapperStyle}
+                textStyle={styles.textStyle}
+                checkedIcon="dot-circle-o"
+                uncheckedIcon="circle-o"
+              />
+            </View>
+            <View>
+              <CheckBox
+                title="Work"
+                checked={selectedIndex === 1}
+                onPress={() => setSelectedIndex(1)}
+                checkedColor={Colors.Primary}
+                wrapperStyle={styles.wrapperStyle}
+                textStyle={styles.textStyle}
+                checkedIcon="dot-circle-o"
+                uncheckedIcon="circle-o"
+              />
+            </View>
+          </View>
+
+          {/* User Details Form */}
+          <View className="gap-5 mb-3">
+            <View>
+              <Text className="mb-2 text-base text-black font-medium">
+                Street Address
               </Text>
-              <MaterialIcons
-                name="close"
-                color={Colors.Dark}
-                size={22}
-                onPress={handleClosePress}
+              <Controller
+                name="line1"
+                control={control}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <InputField
+                    placeHolder={'Street Address'}
+                    value={value}
+                    secure={false}
+                    inputMode={'text'}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                  />
+                )}
+                rules={{required: true}}
+              />
+              {errors.line1 && (
+                <Text className="text-error">
+                  {'Please fill out this field.'}
+                </Text>
+              )}
+            </View>
+
+            <View>
+              <Text className="mb-2 text-base text-black font-medium">
+                Apartment, suite, etc.
+              </Text>
+              <Controller
+                name="line2"
+                control={control}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <InputField
+                    placeHolder={'Apartment, suite, etc. (optional)'}
+                    value={value}
+                    secure={false}
+                    inputMode={'text'}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                  />
+                )}
               />
             </View>
 
-            <View className="w-full mt-5 space-y-5">
-              <View className="gap-5 mb-3">
-                <View>
-                  <Controller
-                    name="line1"
-                    control={control}
-                    render={({field: {onChange, onBlur, value}}) => (
-                      <InputField
-                        placeHolder={'Line 1'}
-                        value={value}
-                        secure={false}
-                        inputMode={'text'}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                      />
-                    )}
-                    rules={{required: true}}
-                  />
-                  {errors.line1 && (
-                    <Text className="text-error">{'* required field'}</Text>
-                  )}
-                </View>
-
-                <View>
-                  <Controller
-                    name="line2"
-                    control={control}
-                    render={({field: {onChange, onBlur, value}}) => (
-                      <InputField
-                        placeHolder={'Line 2'}
-                        value={value}
-                        secure={false}
-                        inputMode={'text'}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                      />
-                    )}
-                  />
-                </View>
-
-                <View className="flex-row justify-between">
-                  <View className="basis-1/2 pr-2">
-                    <Controller
-                      name="city"
-                      control={control}
-                      render={({field: {onChange, onBlur, value}}) => (
-                        <InputField
-                          placeHolder={'City'}
-                          value={value}
-                          secure={false}
-                          inputMode={'text'}
-                          onBlur={onBlur}
-                          onChangeText={onChange}
-                        />
-                      )}
-                      rules={{required: true}}
+            <View className="flex-row">
+              <View className="basis-1/2 pr-2">
+                <Text className="mb-2 text-base text-black font-medium">
+                  City
+                </Text>
+                <Controller
+                  name="city"
+                  control={control}
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <InputField
+                      placeHolder={'City'}
+                      value={value}
+                      secure={false}
+                      inputMode={'text'}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
                     />
-                    {errors.city && (
-                      <Text className="text-error">{'* required field'}</Text>
-                    )}
-                  </View>
-
-                  <View className="basis-1/2 pl-2">
-                    <Controller
-                      name="state"
-                      control={control}
-                      render={({field: {onChange, onBlur, value}}) => (
-                        <InputField
-                          placeHolder={'State'}
-                          value={value}
-                          secure={false}
-                          inputMode={'text'}
-                          onBlur={onBlur}
-                          onChangeText={onChange}
-                        />
-                      )}
-                      rules={{required: true}}
-                    />
-                    {errors.state && (
-                      <Text className="text-error">{'* required field'}</Text>
-                    )}
-                  </View>
-                </View>
-
-                <View>
-                  <Controller
-                    name="postal_code"
-                    control={control}
-                    render={({field: {onChange, onBlur, value}}) => (
-                      <InputField
-                        placeHolder={'Postal Code'}
-                        value={value}
-                        secure={false}
-                        inputMode={'numeric'}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                      />
-                    )}
-                    rules={{required: true}}
-                  />
-                  {errors.postal_code && (
-                    <Text className="text-error">{'* required field'}</Text>
                   )}
-                </View>
-              </View>
-
-              <View>
-                <Button
-                  title={'Save Address'}
-                  onPress={(Keyboard.dismiss(), handleSubmit(submit))}
-                  primary
+                  rules={{required: true}}
                 />
+                {errors.city && (
+                  <Text className="text-error">
+                    {'Postal code is required.'}
+                  </Text>
+                )}
+              </View>
+              <View className="basis-1/2 pl-2">
+                <Text className="mb-2 text-base text-black font-medium">
+                  State
+                </Text>
+                <Controller
+                  name="state"
+                  control={control}
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <InputField
+                      placeHolder={'State'}
+                      value={value}
+                      secure={false}
+                      inputMode={'text'}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                    />
+                  )}
+                  rules={{required: true}}
+                />
+                {errors.state && (
+                  <Text className="text-error">{'State is required.'}</Text>
+                )}
               </View>
             </View>
+
+            <View>
+              <Text className="mb-2 text-base text-black font-medium">
+                Postal Code
+              </Text>
+              <Controller
+                name="postal_code"
+                control={control}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <InputField
+                    placeHolder={'Postal code'}
+                    value={value}
+                    secure={false}
+                    inputMode={'numeric'}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                  />
+                )}
+                rules={{required: true}}
+              />
+              {errors.postal_code && (
+                <Text className="text-error">{'Postal code is required.'}</Text>
+              )}
+            </View>
+          </View>
+          <View className="my-5">
+            <Button
+              title={'Save Address'}
+              onPress={(Keyboard.dismiss(), handleSubmit(submit))}
+              primary
+            />
           </View>
         </BottomSheetView>
       </BottomSheet>
@@ -391,10 +439,18 @@ export const SelectLocation = () => {
 
 const styles = StyleSheet.create({
   contentContainer: {
-    backgroundColor: Colors.White,
+    marginHorizontal: RPW(6),
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderColor: Colors.Gray,
-    borderWidth: 1,
+  },
+  textStyle: {color: Colors.Dark, fontSize: 16, fontWeight: 'normal'},
+  wrapperStyle: {
+    marginTop: -10,
+    marginLeft: -20,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    backgroundColor: Colors.LightGrey,
   },
 });

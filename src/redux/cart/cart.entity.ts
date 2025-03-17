@@ -6,6 +6,7 @@ export interface ItemEntity {
   price: number;
   quantity: number;
   icon_url: string;
+  is_home_visit: boolean;
 }
 
 export interface CartState {
