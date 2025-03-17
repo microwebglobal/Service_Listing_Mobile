@@ -8,59 +8,17 @@ import {
   Image,
 } from 'react-native';
 import React from 'react';
-import AppHeader from '../../components/AppHeader';
+import {SERVER_BASE} from '@env';
+import {useDispatch} from 'react-redux';
+import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
 import {Button} from '../../components/rneui';
-import {Colors} from '../../utils/Colors';
-import {ItemEntity} from '../../redux/cart/cart.entity';
-import {useDispatch} from 'react-redux';
-import {removeItem} from '../../redux/cart/cart.slice';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useNav} from '../../navigation/RootNavigation';
-import {ServiceItem} from '../category/ServiceTypeScreen';
-import {PackageItem} from '../../components/RenderPackage';
 import Toast from 'react-native-toast-message';
-import {SERVER_BASE} from '@env';
-
-export interface Booking {
-  booking_id: string;
-  user_id: number;
-  provider_id: string;
-  city_id: string;
-  booking_date: string;
-  status: string;
-  service_address: string;
-  customer_notes: string;
-  BookingItems: Array<BookingItem>;
-  BookingPayment: BookingPayment;
-}
-
-export interface BookingItem {
-  id: number;
-  booking_id: string;
-  item_id: string;
-  item_type: string;
-  quantity: number;
-  unit_price: string;
-  special_price: string;
-  total_price: string;
-  advance_payment: string;
-  serviceItem: Array<ServiceItem>[];
-  packageItem: Array<PackageItem>[];
-}
-
-export interface BookingPayment {
-  payment_id: string;
-  booking_id: string;
-  subtotal: string;
-  tip_amount: string;
-  tax_amount: string;
-  discount_amount: string;
-  total_amount: string;
-  advance_payment: string;
-  payment_method: string;
-  payment_status: string;
-}
+import AppHeader from '../../components/AppHeader';
+import {useNav} from '../../navigation/RootNavigation';
+import {removeItem} from '../../redux/cart/cart.slice';
+import {ItemEntity} from '../../redux/cart/cart.entity';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;

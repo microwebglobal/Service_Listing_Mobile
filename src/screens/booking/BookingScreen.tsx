@@ -11,7 +11,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
-import {Booking} from '../cart/SelectedItemsScreen';
+import {Booking} from './types';
 import {BookingCard} from '../../components/BookingCard';
 import {useFocusEffect} from '@react-navigation/native';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';

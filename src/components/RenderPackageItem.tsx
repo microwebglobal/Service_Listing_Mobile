@@ -30,6 +30,7 @@ export const RenderPackageItem = ({
       price: parseInt(item.price, 10),
       quantity: 1,
       icon_url: item.icon_url,
+      is_home_visit: false,
     });
   };
 

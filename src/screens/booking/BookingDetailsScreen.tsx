@@ -4,7 +4,7 @@ import {ScrollView} from 'react-native';
 import AppHeader from '../../components/AppHeader';
 import {Screen} from '../../navigation/RootNavigation';
 import {ServiceItem} from '../category/ServiceTypeScreen';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
 export interface BookingItem {
   id: number;
@@ -89,7 +89,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
           <View className="items-end space-y-1">
             <Text className="text-base text-dark">Status</Text>
             <Text className="text-base text-primary font-medium">
-              {booking.status === 'payment_pending' ? 'Pending'  : '' }
+              {booking.status === 'payment_pending' ? 'Pending' : ''}
             </Text>
           </View>
         </View>
@@ -127,9 +127,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                   <Text className="text-base text-black">
                     {bookingItem.packageItem.name}
                   </Text>
-                  <Text className="text-sm text-dark">
-                    {'Quantity: 1'}
-                  </Text>
+                  <Text className="text-sm text-dark">{'Quantity: 1'}</Text>
                 </View>
                 <Text className="text-base text-primary">
                   {'₹'}
