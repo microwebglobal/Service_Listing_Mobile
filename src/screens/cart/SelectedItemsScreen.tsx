@@ -42,8 +42,9 @@ export interface BookingItem {
   item_type: string;
   quantity: number;
   unit_price: string;
-  special_price: number;
-  total_price: number;
+  special_price: string;
+  total_price: string;
+  advance_payment: string;
   serviceItem: Array<ServiceItem>[];
   packageItem: Array<PackageItem>[];
 }
@@ -56,6 +57,7 @@ export interface BookingPayment {
   tax_amount: string;
   discount_amount: string;
   total_amount: string;
+  advance_payment: string;
   payment_method: string;
   payment_status: string;
 }

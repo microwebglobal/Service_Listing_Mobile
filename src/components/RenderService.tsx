@@ -50,7 +50,7 @@ export const RenderService = ({service}: {service: Service}) => {
   }
 
   const showToast = (item: ServiceItem) => {
-    if (LocalCart?.length === 0) {
+    if (LocalCart === null || LocalCart?.length === 0) {
       addItemToCart(item);
       return;
     } else if (LocalCart && LocalCart?.length !== 0) {

@@ -26,7 +26,7 @@ import {
   setCart,
 } from '../../redux/shopping_cart/shopping_cart.slice';
 import {SERVER_BASE} from '@env';
-import { StackActions } from '@react-navigation/native';
+import {StackActions} from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -76,7 +76,7 @@ export const CartScreen = () => {
       .then(() => {
         navigation.dispatch(StackActions.pop(1));
         navigation.navigate('Payment', {
-          amount: cart.BookingPayment.total_amount,
+          amount: cart.BookingPayment.subtotal,
           bookingId: cart.booking_id,
         });
         dispatch(clearCart());
@@ -228,8 +228,17 @@ export const CartScreen = () => {
               {cart.BookingPayment.tax_amount}
             </Text>
           </View>
-          <View className="my-3 flex-row justify-between">
+          <View className="my-1 flex-row justify-between">
             <Text className="text-base text-black font-bold">Total</Text>
+            <Text className="text-base text-black font-bold">
+              {'₹'}
+              {cart.BookingPayment.total_amount}
+            </Text>
+          </View>
+          <View className="flex-row justify-between">
+            <Text className="text-base text-black font-bold">
+              Advance Amount
+            </Text>
             <Text className="text-base text-black font-bold">
               {'₹'}
               {cart.BookingPayment.total_amount}
