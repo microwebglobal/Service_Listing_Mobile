@@ -255,7 +255,7 @@ const Assigned: React.FC<TabProps> = ({badgeCountRef}) => {
 };
 
 const InProgress: React.FC<TabProps> = ({badgeCountRef}) => {
-  return <FetchBooking status="in progress" badgeCountRef={badgeCountRef} />;
+  return <FetchBooking status="in_progress" badgeCountRef={badgeCountRef} />;
 };
 
 const Completed: React.FC<TabProps> = ({badgeCountRef}) => {

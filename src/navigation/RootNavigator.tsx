@@ -77,7 +77,6 @@ export const BookingNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="Booking" component={BookingScreen} />
-      <Stack.Screen name="BookingDetails" component={BookingDetailsScreen} />
     </Stack.Navigator>
   );
 };
@@ -87,9 +86,7 @@ export const RootNavigator: React.FC = () => {
     <NavigationContainer
       linking={linking}
       fallback={<ActivityIndicator animating />}>
-      <Stack.Navigator
-        initialRouteName="Splash"
-        screenOptions={screenOptions}>
+      <Stack.Navigator initialRouteName="Splash" screenOptions={screenOptions}>
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
@@ -109,6 +106,7 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="SelectAddress" component={AddressSelectionScreen} />
         <Stack.Screen name="Notification" component={NotificationScreen} />
         <Stack.Screen name="ServiceSchedule" component={ScheduleScreen} />
+        <Stack.Screen name="BookingDetails" component={BookingDetailsScreen} />
         <Stack.Screen name="Cart" component={CartScreen} />
         <Stack.Screen name="SelectedItems" component={SelectedItemsScreen} />
         <Stack.Screen name="Payment" component={PaymentScreen} />
