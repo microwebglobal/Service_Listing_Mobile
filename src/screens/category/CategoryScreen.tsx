@@ -77,6 +77,7 @@ export const CategoryScreen = () => {
   }, []);
 
   const fetchAddress = useCallback(async () => {
+    setIsLoading(true);
     await instance
       .get('/users/addresses')
       .then(response => {
@@ -148,7 +149,7 @@ export const CategoryScreen = () => {
         className="flex-grow mb-[var(--tabBarHeight, 10px)]"
         showsVerticalScrollIndicator={false}
         style={{marginBottom: tabBarHeight}}>
-        <AppHeader back={false} title="Our Services" />
+        <AppHeader back={false} title="Our Services" cartVisible={true} />
         <View
           className="flex-1 justify-between"
           style={{marginHorizontal: RPW(6)}}>

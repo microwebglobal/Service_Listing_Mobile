@@ -134,7 +134,7 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
         className="flex-grow"
         showsVerticalScrollIndicator={false}
         style={{marginBottom: tabBarHeight}}>
-        <AppHeader back={true} title={subCategory} />
+        <AppHeader back={true} title={subCategory} cartVisible={true} />
         <View
           className="flex-1 justify-between"
           style={{marginHorizontal: RPW(5)}}>

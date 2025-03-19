@@ -90,7 +90,7 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className="flex-grow" showsVerticalScrollIndicator={false}>
-        <AppHeader title={category} back={true} />
+        <AppHeader title={category} back={true} cartVisible={true} />
         <View>
           <Image
             source={{uri: `${SERVER_BASE}${imageUrl}`}}
