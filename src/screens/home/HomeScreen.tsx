@@ -3,25 +3,27 @@ import {
   Text,
   BackHandler,
   SafeAreaView,
-  ScrollView,
   TouchableOpacity,
   Dimensions,
   StyleSheet,
   Image,
   FlatList,
   RefreshControl,
+  ActivityIndicator,
+  Animated,
 } from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
-import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import featuredData from '../../data/featuredData';
-import offerCardData from '../../data/offerList';
-import {FeaturedCard} from '../../components/FeaturedCard';
 import {instance} from '../../api/instance';
+import offerCardData from '../../data/offerList';
+import featuredData from '../../data/featuredData';
+import {Address} from '../category/CategoryScreen';
 import {useNav} from '../../navigation/RootNavigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {FeaturedCard} from '../../components/FeaturedCard';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -38,14 +40,42 @@ export const HomeScreen = () => {
   const user = useAppSelector(state => state.user.user);
   const [hour, setHour] = useState<number>(0);
   const [userName, setUserName] = useState<string>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [primaryAddress, setPrimaryAddress] = useState<Address>();
   const localCart = useAppSelector(state => state.cart.cart) || [];
+  // Animated scroll
+  const scrolling = useRef(new Animated.Value(0)).current;
+  const diffClamp = Animated.diffClamp(scrolling, 10, 200);
+  const translation = diffClamp.interpolate({
+    inputRange: [10, 200],
+    outputRange: [0, -100],
+    extrapolate: 'clamp',
+  });
 
   const fetchUserData = useCallback(async () => {
     await instance.get(`/customer-profiles/user/${user?.id}`).then(response => {
       setUserName(response.data.name);
     });
   }, [user]);
+
+  const fetchAddress = useCallback(async () => {
+    await instance
+      .get('/users/addresses')
+      .then(response => {
+        setPrimaryAddress(
+          response.data.find((address: Address) => {
+            return address.is_primary === true;
+          }),
+        );
+      })
+      .catch(e => {
+        console.log('Error ', e);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
 
   const getHour = useCallback(async () => {
     const date = new Date();
@@ -62,11 +92,12 @@ export const HomeScreen = () => {
     useCallback(() => {
       getHour();
       fetchUserData();
+      fetchAddress();
       BackHandler.addEventListener('hardwareBackPress', handlerBackPress);
       return () => {
         BackHandler.removeEventListener('hardwareBackPress', handlerBackPress);
       };
-    }, [fetchUserData, getHour]),
+    }, [fetchAddress, fetchUserData, getHour]),
   );
 
   const onRefresh = useCallback(() => {
@@ -99,29 +130,59 @@ export const HomeScreen = () => {
     );
   };
 
+  if (isLoading) {
+    return (
+      <View className="items-center justify-center flex-1 bg-white">
+        <ActivityIndicator size="large" color={Colors.Black} />
+      </View>
+    );
+  }
   return (
-    <SafeAreaView className="flex-1">
-      <ScrollView
-        className="flex-grow bg-white"
-        showsVerticalScrollIndicator={false}
-        style={{marginBottom: tabBarHeight}}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
-        {/* Header bar */}
-        <View
-          className="flex-row items-center justify-between pt-5 pb-4 bg-white"
-          style={{paddingHorizontal: RPW(4)}}>
-          <View className="flex-0.9">
-            <Text className="text-xl font-medium text-dark">
-              {hour < 12 ? 'Good Morning,' : 'Good evening,'}
-            </Text>
-            <Text className="text-xl font-medium text-dark">
+    <SafeAreaView className="flex-1 bg-white">
+      {/* Header bar */}
+      <Animated.View
+        className="absolute top-0 right-0 left-0 z-10 bg-white shadow-md shadow-black"
+        style={{
+          transform: [{translateY: translation}],
+          paddingHorizontal: RPW(4),
+        }}>
+        <View className="flex-row items-center justify-between py-4">
+          <View className="basis-3/4">
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              className="mb-1 text-lg font-medium text-black">
+              {hour < 12 ? 'Good Morning,' : 'Good evening,'}{' '}
               {userName?.split(' ')[0]}!
             </Text>
+
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('SelectAddress', {prevScreen: 'Home'});
+              }}>
+              <View className="flex-row items-center basis-5/6 space-x-2">
+                <Text
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  className="basis-5/6 text-base text-dark font-normal">
+                  {primaryAddress?.line2
+                    ? primaryAddress.line1 +
+                      ' ' +
+                      primaryAddress?.line2 +
+                      ', ' +
+                      primaryAddress.city
+                    : primaryAddress?.line1 + ', ' + primaryAddress?.city}
+                </Text>
+                {/* <MaterialCommunityIcons
+                  name="chevron-down"
+                  size={25}
+                  color={Colors.Dark}
+                /> */}
+              </View>
+            </TouchableOpacity>
           </View>
 
-          <View className="flex-row float-right items-center space-x-4">
+          <View className="basis-1/4 flex-row justify-end items-center space-x-5">
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('SelectedItems');
@@ -154,11 +215,24 @@ export const HomeScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
+      </Animated.View>
 
-        <FeaturedCard featuredData={featuredData} />
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{marginBottom: tabBarHeight}}
+        onScroll={Animated.event(
+          [{nativeEvent: {contentOffset: {y: scrolling}}}],
+          {useNativeDriver: true},
+        )}
+        scrollEventThrottle={16}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <View className="mt-20">
+          <FeaturedCard featuredData={featuredData} />
+        </View>
 
-        {/* Offers */}
-        <View className="my-8" style={{marginHorizontal: RPW(6)}}>
+        <View className="my-8" style={{marginHorizontal: RPW(5)}}>
           <FlatList
             horizontal={false}
             scrollEnabled={false}
@@ -168,7 +242,7 @@ export const HomeScreen = () => {
             renderItem={_renderOfferItem}
           />
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 };

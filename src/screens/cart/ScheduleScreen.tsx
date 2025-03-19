@@ -238,7 +238,9 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
                     />
                     <TouchableOpacity
                       onPress={() => {
-                        navigation.navigate('SelectAddress');
+                        navigation.navigate('SelectAddress', {
+                          prevScreen: 'ServiceSchedule',
+                        });
                       }}>
                       <MaterialCommunityIcons
                         name="chevron-right"

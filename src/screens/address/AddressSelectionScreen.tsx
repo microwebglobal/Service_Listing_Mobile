@@ -8,22 +8,24 @@ import {
 } from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {Screen, useNav} from '../../navigation/RootNavigation';
-import {SearchBarComponent} from '../../components/Searchbar';
+import {Colors} from '../../utils/Colors';
+import {instance} from '../../api/instance';
 import AppHeader from '../../components/AppHeader';
 import {Address} from '../category/CategoryScreen';
 import {useFocusEffect} from '@react-navigation/native';
-import {instance} from '../../api/instance';
+import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {SearchBarComponent} from '../../components/Searchbar';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {Colors} from '../../utils/Colors';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
 
-export const AddressSelectionScreen: Screen<'SelectAddress'> = () => {
+export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
   const navigation = useNav();
+  const {prevScreen} = route.params;
   const [addressList, setAddressList] = useState<Array<Address>>([]);
 
   const fetchAddress = useCallback(() => {
@@ -35,6 +37,19 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = () => {
       console.log('Error ', e);
     }
   }, []);
+
+  const setPrimaryAddress = useCallback(
+    (id: number) => {
+      try {
+        instance.patch(`/users/addresses/${id}/primary`).then(() => {
+          navigation.pop();
+        });
+      } catch (e) {
+        console.log('Error ', e);
+      }
+    },
+    [navigation],
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -60,8 +75,11 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = () => {
                 ', ' +
                 address.state
               : address.line1 + ', ' + address.city + ', ' + address.state;
-            // navigation.pop();
-            navigation.navigate('ServiceSchedule', {address: selectedAddress});
+            prevScreen === 'Home'
+              ? setPrimaryAddress(address.id)
+              : navigation.navigate('ServiceSchedule', {
+                  address: selectedAddress,
+                });
           }}>
           <View className="flex-row items-center gap-x-5 overflow-hidden">
             {address.type === 'work' ? (
@@ -70,8 +88,10 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = () => {
                 size={18}
                 color={Colors.Primary}
               />
-            ) : (
+            ) : address.type === 'home' ? (
               <AntDesign name="home" size={20} color={Colors.Primary} />
+            ) : (
+              <Octicons name="location" size={20} color={Colors.Primary} />
             )}
             {address.line2 ? (
               <Text className="basis-3/4 text-base text-dark">
@@ -109,8 +129,9 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = () => {
             placeholder={'Search for an address'}
             iconName={'search'}
             onSearch={(text: string) => {
-              // navigation.pop();
-              navigation.navigate('ServiceSchedule', {address: text});
+              prevScreen === 'Home'
+                ? navigation.pop()
+                : navigation.navigate('ServiceSchedule', {address: text});
             }}
           />
           <Text className="mt-5 mb-2 text-lg text-black">

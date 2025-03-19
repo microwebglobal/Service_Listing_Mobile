@@ -29,6 +29,7 @@ export const TabNavigator = () => {
         tabBarLabelStyle: styles.tabBarLabelStyle,
         tabBarHideOnKeyboard: true,
         tabBarActiveTintColor: Colors.Primary,
+        tabBarInactiveTintColor: Colors.Dark,
         headerShown: false,
         headerShadowVisible: false,
         headerTitleAlign: 'center',

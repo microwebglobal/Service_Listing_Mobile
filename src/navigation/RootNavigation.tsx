@@ -20,7 +20,7 @@ export type RootStackParamList = {
   EditProfile: {itemName: string};
   EditLocation: undefined;
   AddressDetails: {address: Address};
-  SelectAddress: undefined;
+  SelectAddress: {prevScreen: string};
   Notification: undefined;
   SelectedItems: undefined;
   ServiceSchedule: {address?: string};
