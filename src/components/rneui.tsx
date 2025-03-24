@@ -9,7 +9,7 @@ import {classed} from '@tw-classed/react';
 export const Button: FC<
   ButtonProps & {
     primary?: boolean;
-    secondary?: boolean;
+    success?: boolean;
     white?: boolean;
     error?: boolean;
     black?: boolean;

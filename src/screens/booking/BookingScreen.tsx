@@ -150,7 +150,9 @@ const FetchBooking: React.FC<FetchBookingProps> = ({status, badgeCountRef}) => {
       .get('/customer/booking')
       .then(res => {
         let temp = res.data.filter((booking: Booking) => {
-          return booking.status === status;
+          return status === 'confirmed'
+            ? booking.status === status || booking.status === 'payment_pending'
+            : booking.status === status;
         });
         setBookings(temp);
         badgeCountRef.current = temp.length;

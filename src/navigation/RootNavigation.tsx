@@ -13,8 +13,9 @@ export type RootStackParamList = {
   SelectLocation: undefined;
   TabNavigator: undefined;
   HomeScreen: undefined;
+  AccountScreen: undefined;
   Profile: undefined;
-  CategoryScreen: undefined;
+  Category: undefined;
   SubCategory: {categoryId: string; category: string; imageUrl: string};
   ServiceType: {subCategoryId: string; subCategory: string};
   EditProfile: {itemName: string};

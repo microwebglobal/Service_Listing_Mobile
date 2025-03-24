@@ -69,7 +69,7 @@ export const SelectedItemsScreen = () => {
                   title="Browse Services"
                   onPress={() => {
                     navigation.navigate('TabNavigator', {
-                      screen: 'Category',
+                      screen: 'Service',
                     });
                   }}
                 />

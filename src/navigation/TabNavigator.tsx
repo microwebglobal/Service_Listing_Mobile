@@ -45,7 +45,7 @@ export const TabNavigator = () => {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Ticket') {
             iconName = focused ? 'ticket' : 'ticket-outline';
-          } else if (route.name === 'Category') {
+          } else if (route.name === 'Service') {
             iconName = focused ? 'duplicate' : 'duplicate-outline';
           } else if (route.name === 'Account') {
             return focused ? (
@@ -69,7 +69,7 @@ export const TabNavigator = () => {
       <Tab.Screen name={'Home'} component={HomeNavigator} />
       <Tab.Screen name={'Ticket'} component={TicketScreen} />
       <Tab.Screen
-        name={'Category'}
+        name={'Service'}
         component={CategoryNavigator}
         options={{
           headerShown: false,

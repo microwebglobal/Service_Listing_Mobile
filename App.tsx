@@ -91,6 +91,7 @@ const theme = createTheme({
     Button: (
       props: ButtonProps & {
         primary?: boolean;
+        success?: boolean;
         secondary?: boolean;
         error?: boolean;
         black?: boolean;
@@ -117,9 +118,11 @@ const theme = createTheme({
       },
       buttonStyle: {
         borderRadius: props.size === 'sm' ? 8 : 10,
-        borderWidth: props.primary || props.secondary ? 0 : 1,
+        borderWidth: props.error || props.success ? 0 : 1,
         borderColor: props.black
           ? themeColor.colors.black
+          : props.primary
+          ? themeColor.colors.primary
           : themeColor.colors.primary,
         backgroundColor: props.primary
           ? themeColor.colors.primary
@@ -127,6 +130,8 @@ const theme = createTheme({
           ? themeColor.colors.error
           : props.black
           ? themeColor.colors.black
+          : props.success
+          ? themeColor.colors.success
           : themeColor.colors.white,
       },
     }),

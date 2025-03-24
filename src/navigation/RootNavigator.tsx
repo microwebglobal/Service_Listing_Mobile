@@ -30,6 +30,7 @@ import {ActivityIndicator} from 'react-native';
 import {AddressDetailsScreen} from '../screens/address/AddressDetailsScreen';
 import {AddressSelectionScreen} from '../screens/address/AddressSelectionScreen';
 import {BookingHistoryScreen} from '../screens/booking/BookingHistoryScreen';
+import {AccountScreen} from '../screens/profile/AccountScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -50,7 +51,7 @@ const screenOptions: any = {
 export const CategoryNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      <Stack.Screen name="CategoryScreen" component={CategoryScreen} />
+      <Stack.Screen name="Category" component={CategoryScreen} />
       <Stack.Screen name="SubCategory" component={SubCategoryScreen} />
       <Stack.Screen name="ServiceType" component={ServiceTypeScreen} />
     </Stack.Navigator>
@@ -68,6 +69,7 @@ export const HomeNavigator = () => {
 export const ProfileNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen name="AccountScreen" component={AccountScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
     </Stack.Navigator>

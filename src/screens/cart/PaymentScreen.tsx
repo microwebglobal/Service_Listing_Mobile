@@ -9,15 +9,15 @@ import {
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import classNames from 'classnames';
 import {CheckBox} from '@rneui/themed';
+import {Booking} from '../booking/types';
 import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
 import {Button} from '../../components/rneui';
-import {Booking} from './SelectedItemsScreen';
 import AppHeader from '../../components/AppHeader';
 import {useNav} from '../../navigation/RootNavigation';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import classNames from 'classnames';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -175,9 +175,11 @@ export const PaymentScreen = ({route}: any) => {
                   size={18}
                   color={Colors.Error}
                 />
-                <Text className="text-sm text-error">
-                  You should pay the remaining 560.84 after completing the
-                  service.
+                <Text className="flex-1 text-sm text-error">
+                  {`You should pay the remaining ${
+                    parseFloat(booking.BookingPayment.total_amount) -
+                    parseFloat(booking.BookingPayment.advance_payment)
+                  } after completing the service.`}
                 </Text>
               </View>
             )}
