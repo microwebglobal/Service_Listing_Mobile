@@ -29,6 +29,7 @@ import linking from './linking';
 import {ActivityIndicator} from 'react-native';
 import {AddressDetailsScreen} from '../screens/address/AddressDetailsScreen';
 import {AddressSelectionScreen} from '../screens/address/AddressSelectionScreen';
+import {BookingHistoryScreen} from '../screens/booking/BookingHistoryScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -49,7 +50,7 @@ const screenOptions: any = {
 export const CategoryNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      <Stack.Screen name="Category" component={CategoryScreen} />
+      <Stack.Screen name="CategoryScreen" component={CategoryScreen} />
       <Stack.Screen name="SubCategory" component={SubCategoryScreen} />
       <Stack.Screen name="ServiceType" component={ServiceTypeScreen} />
     </Stack.Navigator>
@@ -59,7 +60,7 @@ export const CategoryNavigator = () => {
 export const HomeNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="HomeScreen" component={HomeScreen} />
     </Stack.Navigator>
   );
 };
@@ -76,7 +77,7 @@ export const ProfileNavigator = () => {
 export const BookingNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
-      <Stack.Screen name="Booking" component={BookingScreen} />
+      <Stack.Screen name="BookingScreen" component={BookingScreen} />
     </Stack.Navigator>
   );
 };
@@ -110,6 +111,7 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="Cart" component={CartScreen} />
         <Stack.Screen name="SelectedItems" component={SelectedItemsScreen} />
         <Stack.Screen name="Payment" component={PaymentScreen} />
+        <Stack.Screen name="BookingHistory" component={BookingHistoryScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

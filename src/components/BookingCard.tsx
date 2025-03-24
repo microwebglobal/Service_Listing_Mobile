@@ -1,143 +1,164 @@
-import {View, Text, Image, TouchableOpacity, Linking} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
+import React, {} from 'react';
 import {SERVER_BASE} from '@env';
-import {Colors} from '../utils/Colors';
-import {instance} from '../api/instance';
+import classNames from 'classnames';
 import {useNav} from '../navigation/RootNavigation';
-import Feather from 'react-native-vector-icons/Feather';
-import {Booking, Employee} from '../screens/booking/types';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import { BookingItem } from '../screens/booking/BookingDetailsScreen';
+import { BookingPayment } from '../screens/booking/types';
+
+export interface Booking {
+  booking_id: string;
+  user_id: number;
+  provider_id: string;
+  employee_id: number;
+  city_id: string;
+  booking_date: string;
+  start_time: string;
+  end_time: string;
+  status: string;
+  service_address: string;
+  customer_notes: string;
+  BookingItems: Array<BookingItem>;
+  BookingPayment: BookingPayment;
+}
 
 export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
   const navigation = useNav();
-  const [employee, setEmployee] = useState<Employee>();
-
-  useEffect(() => {
-    booking.provider &&
-      instance
-        .get(`/providers/${booking.provider_id}/employees`)
-        .then(res => {
-          let employees: Array<Employee> = res.data;
-          employees.forEach((emp: Employee) => {
-            if (emp.employee_id === booking.employee_id) {
-              setEmployee(emp);
-            }
-          });
-        })
-        .catch(function (e) {
-          console.log(e.message);
-        });
-  }, [booking]);
 
   function convertTo12HourFormat(timeString: string) {
     const [hour, minute] = timeString.split(':');
     let formattedHour = parseInt(hour, 10);
     if (formattedHour > 12) {
       formattedHour -= 12;
-      return `${formattedHour}:${minute} pm`;
+      return `${formattedHour}:${minute} PM`;
     }
-    return `${formattedHour}:${minute} am`;
+    return `${formattedHour}:${minute} AM`;
   }
 
-  const makeCall = (phone: string) => {
-    let formattedPhoneNumber = `tel:${phone}`;
-    Linking.openURL(formattedPhoneNumber);
-  };
+  if (
+    booking.status === 'payment_pending' ||
+    booking.status === 'confirmed' ||
+    booking.status === 'accepted' ||
+    booking.status === 'assigned' ||
+    booking.status === 'in_progress'
+  ) {
+    return (
+      <View className="my-1 mx-1 bg-white rounded-lg border border-lightGrey shadow-sm shadow-black">
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('BookingDetails', {booking});
+          }}>
+          <View className="p-3 rounded-lg">
+            <View className="">
+              <View className="flex-row items-center space-x-4">
+                <View className="bg-lightGrey rounded-lg">
+                  {booking.BookingItems[0]?.serviceItem ? (
+                    <Image
+                      source={{
+                        uri: `${SERVER_BASE}${booking.BookingItems[0].serviceItem.icon_url}`,
+                      }}
+                      className="w-12 h-12 rounded-lg"
+                    />
+                  ) : (
+                    <Image
+                      source={{
+                        uri: `${SERVER_BASE}${booking.BookingItems[0].packageItem.icon_url}`,
+                      }}
+                      className="w-12 h-12 rounded-lg"
+                    />
+                  )}
+                </View>
+                <View>
+                  <Text
+                    numberOfLines={1}
+                    className="text-base text-black font-medium">
+                    Saloon for women
+                  </Text>
 
-  return (
-    <View className="my-2 mx-1 bg-white rounded-lg border border-lightGrey shadow-sm shadow-black">
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('BookingDetails', {booking});
-        }}>
-        <View className="p-3 rounded-lg">
-          {booking.provider &&
-            (booking.provider.business_type === 'business' &&
-            employee !== undefined ? (
-              <View>
-                <View className="flex flex-row justify-between items-center">
-                  <View className="flex flex-row justify-start space-x-3">
-                    <View>
-                      {employee?.User.photo === null ? (
-                        <Image
-                          source={require('../assets/app-images/emptyProfile.jpg')}
-                          className="rounded-full w-12 h-12"
-                        />
-                      ) : (
-                        <Image
-                          source={{
-                            uri: `${SERVER_BASE}${employee?.User.photo}`,
-                          }}
-                          className="rounded-full w-14 h-14"
-                        />
-                      )}
-                    </View>
-                    <View>
-                      <Text className="text-base text-black font-medium">
-                        {employee?.User.name}
-                      </Text>
-                      <View className="flex-row items-center space-x-1">
-                        <AntDesign
-                          name="star"
-                          size={14}
-                          color={Colors.Yellow}
-                        />
-                        <Text className="text-sm font-bold text-SecondaryYellow">
-                          {'4.5'}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-
-                  <View className="mr-1">
-                    <TouchableOpacity
-                      onPress={() => makeCall(employee?.User.mobile)}>
-                      <Feather
-                        name="phone-call"
-                        size={20}
-                        color={Colors.Primary}
-                      />
-                    </TouchableOpacity>
-                  </View>
+                  <Text className="text-sm text-dark">
+                    {new Date(booking.booking_date).toLocaleString('en-us', {
+                      weekday: 'short',
+                      month: 'short',
+                      day: 'numeric',
+                    })}{' '}
+                    {' at '}
+                    {convertTo12HourFormat(booking.start_time)}
+                  </Text>
                 </View>
               </View>
-            ) : null)}
 
-          <View className="my-2 flex-row justify-between">
-            <View className="flex-row items-center">
-              <Text className="text-sm text-dark">{'Booking ID: '}</Text>
-              <Text className="text-sm text-black">{booking.booking_id}</Text>
-            </View>
-            <View>
-              <Text className="text-base text-primary font-medium">
-                {'₹'}
-                {booking.BookingPayment.total_amount}
-              </Text>
+              <View className="mt-1 flex-row justify-between items-center">
+                <Text className="text-sm text-black">Payment status</Text>
+                <View
+                  className={classNames(
+                    `px-2 , ${
+                      booking.BookingPayment.payment_status === 'completed'
+                        ? 'bg-lime-100 rounded-2xl'
+                        : booking.BookingPayment.payment_status === 'pending'
+                        ? 'bg-blue-100 rounded-2xl'
+                        : booking.BookingPayment.payment_status ===
+                          'advance_only_paid'
+                        ? 'bg-yellow-200 rounded-2xl'
+                        : 'bg-red-100'
+                    }`,
+                  )}>
+                  <Text className="text-sm text-black first-letter:capitalize">
+                    {booking.BookingPayment.payment_status ===
+                    'advance_only_paid'
+                      ? 'Advance Paid'
+                      : booking.BookingPayment.payment_status}
+                  </Text>
+                </View>
+              </View>
             </View>
           </View>
+        </TouchableOpacity>
+      </View>
+    );
+  } else {
+    // Booking Card for cancelled, completed, refunded, rejected
+    return (
+      <View className="my-1 mx-1 bg-white rounded-lg border border-lightGrey shadow-sm shadow-black">
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('BookingDetails', {booking});
+          }}>
+          <View className="p-3 rounded-lg">
+            <View className="flex-row items-center space-x-4">
+              <View className="bg-lightGrey rounded-lg">
+                <Image
+                  source={{
+                    uri: `${SERVER_BASE}${booking.BookingItems[0].serviceItem.icon_url}`,
+                  }}
+                  className="w-12 h-12 rounded-lg"
+                />
+              </View>
+              <View className="basis-3/4 space-y-1">
+                <Text
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  className="text-base text-black font-medium">
+                  {booking.BookingItems[0].serviceItem.name}
+                </Text>
 
-          <View className="p-2 bg-lightGrey rounded-lg">
-            <View className="mb-1 flex-row justify-between items-center">
-              <Text className="text-sm text-dark">Date</Text>
-              <Text className="text-sm text-black">{booking.booking_date}</Text>
-            </View>
-            <View className="mb-1 flex-row justify-between items-center">
-              <Text className="text-sm text-dark">Start Time</Text>
-              <Text className="text-sm text-black">
-                {convertTo12HourFormat(booking.start_time)}
-              </Text>
-            </View>
-            <View className="mb-1 flex-row justify-between items-center">
-              <Text className="text-sm text-dark">Payment Status</Text>
-              <Text className="text-sm text-black first-letter:capitalize">
-                {booking.BookingPayment.payment_status === 'advance_only_paid'
-                  ? 'Advance Paid'
-                  : booking.BookingPayment.payment_status}
-              </Text>
+                <View className="flex-row items-center">
+                  <Text className="text-base text-dark first-letter:capitalize">
+                    {booking.status}
+                    {' . '}
+                  </Text>
+                  <Text className="text-base text-dark">
+                    {new Date(booking.booking_date).toLocaleString('en-us', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </Text>
+                </View>
+              </View>
             </View>
           </View>
-        </View>
-      </TouchableOpacity>
-    </View>
-  );
+        </TouchableOpacity>
+      </View>
+    );
+  }
 };

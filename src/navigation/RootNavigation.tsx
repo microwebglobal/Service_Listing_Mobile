@@ -12,9 +12,9 @@ export type RootStackParamList = {
   LoginSuccess: undefined;
   SelectLocation: undefined;
   TabNavigator: undefined;
-  Home: undefined;
+  HomeScreen: undefined;
   Profile: undefined;
-  Category: undefined;
+  CategoryScreen: undefined;
   SubCategory: {categoryId: string; category: string; imageUrl: string};
   ServiceType: {subCategoryId: string; subCategory: string};
   EditProfile: {itemName: string};
@@ -26,8 +26,9 @@ export type RootStackParamList = {
   ServiceSchedule: {address?: string};
   Cart: undefined;
   Payment: {amount: string; bookingId: string};
-  Booking: undefined;
+  BookingScreen: undefined;
   BookingDetails: {booking: any};
+  BookingHistory: undefined;
 };
 
 export type NavigationHookType = NativeStackNavigationProp<RootStackParamList>;

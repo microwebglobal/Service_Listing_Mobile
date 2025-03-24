@@ -110,7 +110,7 @@ export const CategoryScreen = () => {
 
   const _renderCategoryItem = ({item}: any) => {
     return (
-      <View className="w-full basis-1/2 px-2 my-3">
+      <View className="w-full basis-1/2 px-2 mt-3">
         <TouchableOpacity
           className="shadow-sm shadow-black rounded-xl"
           onPress={() => {
@@ -152,9 +152,8 @@ export const CategoryScreen = () => {
         <AppHeader back={false} title="Our Services" cartVisible={true} />
         <View
           className="flex-1 justify-between"
-          style={{marginHorizontal: RPW(6)}}>
+          style={{marginHorizontal: RPW(4)}}>
           <FlatList
-            className="mt-2"
             horizontal={false}
             numColumns={2}
             scrollEnabled={false}

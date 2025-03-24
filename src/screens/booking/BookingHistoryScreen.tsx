@@ -1,21 +1,20 @@
 import {
   View,
   Text,
+  ActivityIndicator,
   Dimensions,
+  FlatList,
   SafeAreaView,
   ScrollView,
-  ActivityIndicator,
-  FlatList,
   Image,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {Booking} from './types';
 import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
-import {Button} from '../../components/rneui';
-import {useNav} from '../../navigation/RootNavigation';
+import AppHeader from '../../components/AppHeader';
 import {useFocusEffect} from '@react-navigation/native';
-import {Booking, BookingCard} from '../../components/BookingCard';
-import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import {BookingCard} from '../../components/BookingCard';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 const screenWidth = Dimensions.get('window').width;
@@ -28,23 +27,20 @@ const RPH = (percentage: number) => {
 };
 const Tab = createMaterialTopTabNavigator();
 
-export const BookingScreen = () => {
-  const navigation = useNav();
-  const pendingCountRef = useRef<number>(0);
-  const assignedCountRef = useRef<number>(0);
-  const inProgressCountRef = useRef<number>(0);
+export const BookingHistoryScreen = () => {
+  const completedCountRef = useRef<number>(0);
+  const cancelledCountRef = useRef<number>(0);
+  const refundedCountRef = useRef<number>(0);
   const [bookings, setBookings] = useState<Array<Booking>>([]);
 
-  pendingCountRef.current = bookings.filter((booking: Booking) => {
-    return (
-      booking.status === 'payment_pending' || booking.status === 'confirmed'
-    );
+  completedCountRef.current = bookings.filter((booking: Booking) => {
+    return booking.status === 'completed';
   }).length;
-  assignedCountRef.current = bookings.filter((booking: Booking) => {
-    return booking.status === 'accepted';
+  cancelledCountRef.current = bookings.filter((booking: Booking) => {
+    return booking.status === 'cancelled';
   }).length;
-  inProgressCountRef.current = bookings.filter((booking: Booking) => {
-    return booking.status === 'in progress';
+  refundedCountRef.current = bookings.filter((booking: Booking) => {
+    return booking.status === 'refunded';
   }).length;
 
   useEffect(() => {
@@ -72,62 +68,46 @@ export const BookingScreen = () => {
     );
   };
 
+  const screenOptions: any = {
+    tabBarLabelStyle: {
+      fontFamily: 'Poppins',
+      fontWeight: 'bold',
+      fontSize: 16,
+      textTransform: 'capitalize',
+    },
+    tabBarPressOpacity: 0,
+    tabBarPressColor: Colors.LightGrey,
+    tabBarIndicatorStyle: {
+      backgroundColor: Colors.Primary,
+      height: 2,
+    },
+    tabBarScrollEnabled: true,
+    tabBarItemStyle: {width: screenWidth / 3},
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {/* <AppHeader back={false} title="Your Activities" /> */}
-      <View className="flex-row items-center py-5 bg-white ">
-        <View className="basis-1/4" />
-        <View className="basis-1/2 items-center">
-          <Text className="text-lg text-black font-medium">
-            {'My Activities'}
-          </Text>
-        </View>
-        <View className="basis-1/4 items-center">
-          <Button
-            size="sm"
-            title={'History'}
-            onPress={() => navigation.navigate('BookingHistory')}
-          />
-        </View>
-      </View>
-
-      <Tab.Navigator
-        initialRouteName="Pending"
-        screenOptions={{
-          tabBarLabelStyle: {
-            fontFamily: 'Poppins',
-            fontWeight: 'bold',
-            fontSize: 16,
-            textTransform: 'capitalize',
-          },
-          tabBarPressOpacity: 0,
-          tabBarPressColor: Colors.LightGrey,
-          tabBarIndicatorStyle: {
-            backgroundColor: Colors.Primary,
-            height: 2,
-          },
-          tabBarScrollEnabled: true,
-          tabBarItemStyle: {width: screenWidth / 3},
-        }}>
+      <AppHeader back={true} title="Booking History" />
+      <Tab.Navigator initialRouteName="Completed" screenOptions={screenOptions}>
         <Tab.Screen
-          name={'Pending'}
-          children={() => <Pending badgeCountRef={pendingCountRef} />}
+          name={'Completed'}
+          children={() => <Completed badgeCountRef={completedCountRef} />}
           options={{
-            tabBarBadge: () => badgeCount(pendingCountRef),
+            tabBarBadge: () => badgeCount(completedCountRef),
           }}
         />
         <Tab.Screen
-          name={'Assigned'}
-          children={() => <Assigned badgeCountRef={assignedCountRef} />}
+          name={'Cancelled'}
+          children={() => <Cancelled badgeCountRef={cancelledCountRef} />}
           options={{
-            tabBarBadge: () => badgeCount(assignedCountRef),
+            tabBarBadge: () => badgeCount(cancelledCountRef),
           }}
         />
         <Tab.Screen
-          name={'Ongoing'}
-          children={() => <InProgress badgeCountRef={inProgressCountRef} />}
+          name={'Refunded'}
+          children={() => <Refunded badgeCountRef={refundedCountRef} />}
           options={{
-            tabBarBadge: () => badgeCount(inProgressCountRef),
+            tabBarBadge: () => badgeCount(refundedCountRef),
           }}
         />
       </Tab.Navigator>
@@ -143,7 +123,6 @@ interface FetchBookingProps {
 const FetchBooking: React.FC<FetchBookingProps> = ({status, badgeCountRef}) => {
   const [bookings, setBookings] = useState<Array<Booking>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const tabBarHeight = useBottomTabBarHeight();
 
   const fetchBookings = useCallback(async () => {
     await instance
@@ -169,6 +148,10 @@ const FetchBooking: React.FC<FetchBookingProps> = ({status, badgeCountRef}) => {
     }, [fetchBookings]),
   );
 
+  const _renderBookings = (booking: Booking) => {
+    return <BookingCard booking={booking} />;
+  };
+
   if (isLoading) {
     return (
       <View className="items-center justify-center flex-1 bg-white">
@@ -179,9 +162,9 @@ const FetchBooking: React.FC<FetchBookingProps> = ({status, badgeCountRef}) => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView
-        className="flex-grow"
+        className="flex-grow py-1"
         showsVerticalScrollIndicator={false}
-        style={{marginHorizontal: RPW(4), marginBottom: tabBarHeight}}>
+        style={{marginHorizontal: RPW(4)}}>
         <View className="mb-5">
           {bookings.length === 0 ? (
             <View className="justify-center" style={{height: RPH(50)}}>
@@ -201,7 +184,7 @@ const FetchBooking: React.FC<FetchBookingProps> = ({status, badgeCountRef}) => {
               scrollEnabled={false}
               showsVerticalScrollIndicator={false}
               keyExtractor={booking => booking.booking_id}
-              renderItem={({item}) => <BookingCard booking={item} />}
+              renderItem={({item}) => _renderBookings(item)}
               ListFooterComponent={
                 isLoading ? (
                   <ActivityIndicator size={'small'} color={Colors.Primary} />
@@ -219,14 +202,14 @@ interface TabProps {
   badgeCountRef: React.MutableRefObject<number>;
 }
 
-const Pending: React.FC<TabProps> = ({badgeCountRef}) => {
-  return <FetchBooking status="confirmed" badgeCountRef={badgeCountRef} />;
+const Completed: React.FC<TabProps> = ({badgeCountRef}) => {
+  return <FetchBooking status="completed" badgeCountRef={badgeCountRef} />;
 };
 
-const Assigned: React.FC<TabProps> = ({badgeCountRef}) => {
-  return <FetchBooking status="assigned" badgeCountRef={badgeCountRef} />;
+const Cancelled: React.FC<TabProps> = ({badgeCountRef}) => {
+  return <FetchBooking status="cancelled" badgeCountRef={badgeCountRef} />;
 };
 
-const InProgress: React.FC<TabProps> = ({badgeCountRef}) => {
-  return <FetchBooking status="in_progress" badgeCountRef={badgeCountRef} />;
+const Refunded: React.FC<TabProps> = ({badgeCountRef}) => {
+  return <FetchBooking status="refunded" badgeCountRef={badgeCountRef} />;
 };

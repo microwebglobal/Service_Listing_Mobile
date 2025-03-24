@@ -1,5 +1,5 @@
 import {View, Text, TouchableOpacity, FlatList, Image} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {Service, ServiceItem} from '../screens/category/ServiceTypeScreen';
 import {instance} from '../api/instance';
@@ -15,17 +15,19 @@ import {useAppSelector} from '../redux';
 export const RenderService = ({service}: {service: Service}) => {
   const dispatch = useDispatch();
   const LocalCart = useAppSelector(state => state.cart.cart);
-  const [isItemClicked, setIsItemClicked] = useState<boolean>(false);
+  const [isItemClicked, setIsItemClicked] = useState<boolean>(true);
   const [serviceItemData, setServiceItemData] = useState<ServiceItem[]>();
 
-  const fetchServiceItem = async (serviceId: string) => {
-    try {
-      const response = await instance.get(`items/service/${serviceId}`);
-      return response.data;
-    } catch (e) {
-      console.log('Error ', e);
-    }
-  };
+  useEffect(() => {
+    instance
+      .get(`items/service/${service.service_id}`)
+      .then(res => {
+        setServiceItemData(res.data);
+      })
+      .catch(function (e) {
+        console.log(e.message);
+      });
+  }, [service.service_id]);
 
   function addItemToCart(item: ServiceItem) {
     dispatch(
@@ -128,8 +130,6 @@ export const RenderService = ({service}: {service: Service}) => {
     <View className="mb-5">
       <TouchableOpacity
         onPress={async () => {
-          let serviceItem = await fetchServiceItem(service.service_id);
-          setServiceItemData(serviceItem);
           setIsItemClicked(!isItemClicked);
         }}>
         <View className="flex-row items-center bg-white">

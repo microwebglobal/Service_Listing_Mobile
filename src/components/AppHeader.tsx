@@ -17,13 +17,13 @@ const AppHeader = ({back, title, cartVisible}: AppHeaderProps) => {
   const localCart = useAppSelector(state => state.cart.cart) || [];
 
   return (
-    <View className="flex-row items-center py-5 bg-white">
+    <View className="flex-row items-center py-5 bg-white shadow-sm shadow-black">
       <View className="basis-1/6 items-center">
         {back && (
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <MaterialIcons
               name="arrow-back-ios-new"
-              size={24}
+              size={20}
               color={Colors.Black}
             />
           </TouchableOpacity>
@@ -31,7 +31,7 @@ const AppHeader = ({back, title, cartVisible}: AppHeaderProps) => {
       </View>
       {title && (
         <View className="basis-2/3 items-center">
-          <Text className="text-xl text-dark font-medium">{title}</Text>
+          <Text className="text-lg text-black font-medium">{title}</Text>
         </View>
       )}
       <View className="basis-1/6 items-center">

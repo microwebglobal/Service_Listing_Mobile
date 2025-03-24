@@ -23,9 +23,9 @@ const Tab = createBottomTabNavigator();
 export const TabNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName="HomeTab"
+      initialRouteName="Home"
       screenOptions={({route}) => ({
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
         tabBarLabelStyle: styles.tabBarLabelStyle,
         tabBarHideOnKeyboard: true,
         tabBarActiveTintColor: Colors.Primary,
@@ -41,19 +41,19 @@ export const TabNavigator = () => {
         tabBarIcon: ({focused, color}) => {
           let iconName;
 
-          if (route.name === 'HomeTab') {
+          if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Ticket') {
             iconName = focused ? 'ticket' : 'ticket-outline';
-          } else if (route.name === 'CategoryTab') {
+          } else if (route.name === 'Category') {
             iconName = focused ? 'duplicate' : 'duplicate-outline';
-          } else if (route.name === 'ProfileTab') {
+          } else if (route.name === 'Account') {
             return focused ? (
               <FontAwesome name={'user'} size={30} color={color} />
             ) : (
               <FontAwesome name={'user-o'} size={26} color={color} />
             );
-          } else if (route.name === 'BookingTab') {
+          } else if (route.name === 'Booking') {
             iconName = focused ? 'receipt' : 'receipt-outline';
           }
 
@@ -66,17 +66,17 @@ export const TabNavigator = () => {
           );
         },
       })}>
-      <Tab.Screen name={'HomeTab'} component={HomeNavigator} />
+      <Tab.Screen name={'Home'} component={HomeNavigator} />
       <Tab.Screen name={'Ticket'} component={TicketScreen} />
       <Tab.Screen
-        name={'CategoryTab'}
+        name={'Category'}
         component={CategoryNavigator}
         options={{
           headerShown: false,
         }}
       />
-      <Tab.Screen name={'BookingTab'} component={BookingNavigator} />
-      <Tab.Screen name={'ProfileTab'} component={ProfileNavigator} />
+      <Tab.Screen name={'Booking'} component={BookingNavigator} />
+      <Tab.Screen name={'Account'} component={ProfileNavigator} />
     </Tab.Navigator>
   );
 };
@@ -95,6 +95,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   tabBarIconStyle: {
-    marginTop: RPH(1),
+    marginVertical: 3,
   },
 });
