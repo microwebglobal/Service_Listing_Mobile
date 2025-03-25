@@ -31,6 +31,8 @@ import {AddressDetailsScreen} from '../screens/address/AddressDetailsScreen';
 import {AddressSelectionScreen} from '../screens/address/AddressSelectionScreen';
 import {BookingHistoryScreen} from '../screens/booking/BookingHistoryScreen';
 import {AccountScreen} from '../screens/profile/AccountScreen';
+import {TermsScreen} from '../screens/profile/TermsScreen';
+import {AboutUsScreen} from '../screens/profile/AboutUsScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -89,7 +91,9 @@ export const RootNavigator: React.FC = () => {
     <NavigationContainer
       linking={linking}
       fallback={<ActivityIndicator animating />}>
-      <Stack.Navigator initialRouteName="Splash" screenOptions={screenOptions}>
+      <Stack.Navigator
+        initialRouteName="TabNavigator"
+        screenOptions={screenOptions}>
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
@@ -114,6 +118,8 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="SelectedItems" component={SelectedItemsScreen} />
         <Stack.Screen name="Payment" component={PaymentScreen} />
         <Stack.Screen name="BookingHistory" component={BookingHistoryScreen} />
+        <Stack.Screen name="Terms" component={TermsScreen} />
+        <Stack.Screen name="AboutUs" component={AboutUsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

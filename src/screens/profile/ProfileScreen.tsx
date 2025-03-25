@@ -7,18 +7,19 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useCallback} from 'react';
-import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import AppHeader from '../../components/AppHeader';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Colors} from '../../utils/Colors';
-import {instance} from '../../api/instance';
-import {useAppSelector} from '../../redux';
 import {useDispatch} from 'react-redux';
+import {Colors} from '../../utils/Colors';
+import {useAppSelector} from '../../redux';
+import {instance} from '../../api/instance';
 import {setId} from '../../redux/user/user.slice';
 import {useNav} from '../../navigation/RootNavigation';
 import {useFocusEffect} from '@react-navigation/native';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AppHeader from '../../components/AppHeader';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-interface UserData {
+export interface UserData {
   u_id: number;
   name: string;
   email: string;
@@ -39,7 +40,6 @@ const RPW = (percentage: number) => {
 
 export const ProfileScreen = () => {
   const navigation = useNav();
-  // const navigation = useNavigation();
   const dispatch = useDispatch();
   const tabBarHeight = useBottomTabBarHeight();
   const [userData, setUserData] = React.useState<UserData>();
@@ -56,23 +56,27 @@ export const ProfileScreen = () => {
 
   const profileInfoItem = (
     title: string,
-    value: string,
     edit: boolean,
     icon_name: string,
+    value?: string,
   ) => {
     return (
-      <View style={{paddingHorizontal: RPW(6)}}>
+      <View>
         <TouchableOpacity
           onPress={() =>
-            title !== 'Locations'
-              ? navigation.navigate('EditProfile', {itemName: title})
-              : navigation.navigate('EditLocation')
+            title === 'Locations'
+              ? navigation.navigate('EditLocation')
+              : title === 'Terms and Conditions' ||
+                title === 'Privacy' ||
+                title === 'About QProz'
+              ? navigation.navigate('Terms')
+              : navigation.navigate('EditProfile', {itemName: title})
           }>
           <View className="flex-row items-center justify-between">
             <View className="my-3 flex-row items-center space-x-3">
               <MaterialCommunityIcons
                 name={icon_name}
-                size={25}
+                size={22}
                 color={Colors.Gray}
               />
               <View>
@@ -82,8 +86,7 @@ export const ProfileScreen = () => {
                     <Text className="text-base text-gray">{value}</Text>
                     {/* Check whether email or mobile verified */}
                     {userData !== undefined ? (
-                      (title === 'Contact Number' &&
-                        userData?.mobile_verified) ||
+                      (title === 'Mobile' && userData?.mobile_verified) ||
                       (title === 'Email' && userData?.email_verified) ? (
                         <View className="w-3 h-3 rounded-full bg-green-500 items-center">
                           <MaterialCommunityIcons
@@ -102,7 +105,7 @@ export const ProfileScreen = () => {
               <View className="-mr-2">
                 <MaterialCommunityIcons
                   name="chevron-right"
-                  size={30}
+                  size={22}
                   color={Colors.Gray}
                 />
               </View>
@@ -115,75 +118,99 @@ export const ProfileScreen = () => {
 
   return (
     <SafeAreaView className="flex-1">
-      <AppHeader title="Your Profile" back={false} />
-      <View className="h-5 bg-white" />
+      <AppHeader back={true} title="Your Profile" />
       <ScrollView
-        className="flex-grow bg-lightGrey"
+        className="flex-grow"
         showsVerticalScrollIndicator={false}
         style={{marginBottom: tabBarHeight}}>
+        <View className="py-3 bg-lightGrey" style={{paddingHorizontal: RPW(5)}}>
+          <Text className="text-black text-sm">
+            {
+              'Additional information you give will help us provide you a more personalized experience.'
+            }
+          </Text>
+          <View className="my-3 flex-row items-center">
+            <View className="basis-10/12 h-1 bg-primary rounded-full" />
+            <View className="basis-2/12 h-1 bg-white rounded-full" />
+          </View>
+          <View className="flex-row justify-between">
+            <Text className="text-black">
+              8 of 10 <Text className="text-primary">complete</Text>
+            </Text>
+            <View className="flex-row items-center space-x-1">
+              <Text className="text-primary">Your information is secure</Text>
+              <MaterialIcons
+                name="verified-user"
+                size={20}
+                color={Colors.Primary}
+              />
+            </View>
+          </View>
+        </View>
+
         {/* Your Information Section */}
-        <View>
-          <Text
-            className="my-3 text-sm font-medium text-primary uppercase tracking-wider"
-            style={{paddingHorizontal: RPW(6)}}>
+        <View
+          className="mt-1 pb-5 bg-white"
+          style={{paddingHorizontal: RPW(5)}}>
+          <Text className="my-3 text-base font-medium text-primary tracking-wider">
             Your Information
           </Text>
 
           <View className="bg-white">
             {profileInfoItem(
-              'Name',
-              userData?.name ?? '',
+              'Full Name',
               true,
               'account-outline',
+              userData?.name,
             )}
             {profileInfoItem(
-              'Email',
-              userData?.email ?? '',
-              true,
-              'email-outline',
-            )}
-            {profileInfoItem('Password', '', true, 'lock-outline')}
-            {profileInfoItem(
-              'Contact Number',
-              userData?.mobile ?? '',
+              'Mobile',
               true,
               'phone-in-talk-outline',
+              userData?.mobile,
             )}
+            {profileInfoItem('Email', true, 'email-outline', userData?.email)}
             {profileInfoItem(
-              'Locations',
-              '',
+              'Gender',
               true,
-              'map-marker-account-outline',
+              'gender-male-female',
+              userData?.gender,
             )}
+            {profileInfoItem('Locations', true, 'map-marker-account-outline')}
           </View>
         </View>
 
         {/* General Section */}
-        <View>
-          <Text
-            className="my-3 text-sm font-medium text-primary uppercase tracking-wider"
-            style={{paddingHorizontal: RPW(6)}}>
-            General
+        <View
+          className="mt-1 pb-5 bg-white"
+          style={{paddingHorizontal: RPW(5)}}>
+          <Text className="my-3 text-base font-medium text-primary tracking-wider">
+            Your preferences
           </Text>
 
           <View className="bg-white">
-            {profileInfoItem('App Language', '', true, 'earth')}
-            {profileInfoItem('Notifications', '', true, 'bell-outline')}
-            {profileInfoItem('Support', '', true, 'help-circle-outline')}
-            {profileInfoItem('Rate Us', '', true, 'star-outline')}
+            {profileInfoItem('App Language', true, 'earth')}
+            {profileInfoItem('Notification', true, 'bell-outline')}
           </View>
         </View>
 
         {/* About App Section */}
-        <View className="mb-5">
-          <Text
-            className="my-3 text-sm font-medium text-primary uppercase tracking-wider"
-            style={{paddingHorizontal: RPW(6)}}>
-            About App
+        <View
+          className="mt-1 pb-5 bg-white"
+          style={{paddingHorizontal: RPW(5)}}>
+          <Text className="my-3 text-base font-medium text-primary tracking-wider">
+            General
           </Text>
 
-          <View className="bg-white">
-            {profileInfoItem('Privacy Policy', '', true, 'shield-outline')}
+          <View>
+            {profileInfoItem('Support', true, 'help-circle-outline')}
+            {profileInfoItem('Rate Us', true, 'star-outline')}
+            {profileInfoItem('Privacy', true, 'security')}
+            {profileInfoItem(
+              'Terms and Conditions',
+              true,
+              'file-document-outline',
+            )}
           </View>
         </View>
       </ScrollView>

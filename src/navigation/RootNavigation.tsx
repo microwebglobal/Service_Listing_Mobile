@@ -30,6 +30,9 @@ export type RootStackParamList = {
   BookingScreen: undefined;
   BookingDetails: {booking: any};
   BookingHistory: undefined;
+  AboutUs: undefined;
+  Terms: undefined;
+  Privacy: undefined;
 };
 
 export type NavigationHookType = NativeStackNavigationProp<RootStackParamList>;
