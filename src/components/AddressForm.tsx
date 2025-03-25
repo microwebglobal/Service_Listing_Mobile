@@ -230,7 +230,7 @@ export const AddressForm = ({bottomSheetRef}: AddressFormProps) => {
 
 const styles = StyleSheet.create({
   contentContainer: {
-    marginHorizontal: RPW(6),
+    paddingHorizontal: RPW(5),
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderColor: Colors.Gray,

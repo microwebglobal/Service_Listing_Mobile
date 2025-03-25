@@ -89,11 +89,11 @@ export const SignUpScreen = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{
-          marginHorizontal: RPW(8),
-          marginTop: RPH(5),
+          marginHorizontal: RPW(5),
+          paddingVertical: RPH(5),
         }}>
         {/* Image selection */}
-        <View className="mt-3 items-center justify-center">
+        <View className="items-center justify-center">
           {imageURI && (
             <Image
               source={{uri: imageURI}}
@@ -234,37 +234,31 @@ export const SignUpScreen = () => {
             )}
           </View>
         </View>
-      </ScrollView>
+        <View>
+          <View className="my-5">
+            <Button
+              loading={false}
+              title={'Continue'}
+              onPress={(Keyboard.dismiss(), handleSubmit(submit))}
+              primary
+            />
+          </View>
 
-      <View
-        style={{
-          marginHorizontal: RPW(8),
-          marginBottom: RPH(3),
-        }}>
-        {/* Button */}
-        <View className="my-5">
-          <Button
-            loading={false}
-            title={'Continue'}
-            onPress={(Keyboard.dismiss(), handleSubmit(submit))}
-            primary
-          />
-        </View>
-
-        <View className="flex-row justify-center">
-          <Text className="text-base font-normal text-dark">
-            Already have an account?{'  '}
-          </Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('SignIn');
-            }}>
-            <Text className="text-base font-medium text-primary underline">
-              Sign In
+          <View className="flex-row justify-center">
+            <Text className="text-base font-normal text-dark">
+              Already have an account?{'  '}
             </Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('SignIn');
+              }}>
+              <Text className="text-base font-medium text-primary underline">
+                Sign In
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };

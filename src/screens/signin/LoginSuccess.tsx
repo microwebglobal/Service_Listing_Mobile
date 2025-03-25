@@ -20,7 +20,7 @@ export const LoginSuccessScreen: Screen<'LoginSuccess'> = () => {
   }, [addressList, navigation, user.id]);
 
   return (
-    <View className="items-center justify-center flex-1 bg-primaryWhite">
+    <View className="items-center justify-center flex-1 bg-white">
       <LottieView
         source={require('../../assets/animations/animation.json')}
         autoPlay

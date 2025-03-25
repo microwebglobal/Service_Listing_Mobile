@@ -9,17 +9,20 @@ export const SplashScreen: Screen<'Splash'> = () => {
 
   useEffect(() => {
     const handleToken = async () => {
-      const result = await refreshTokens();
+      // const result = await refreshTokens();
+      setTimeout(() => {
+        navigation.navigate('Onboarding');
+      }, 1000);
 
-      if (result?.success) {
-        setTimeout(() => {
-          navigation.navigate('TabNavigator');
-        }, 1000);
-      } else {
-        setTimeout(() => {
-          navigation.navigate('Onboarding');
-        }, 1000);
-      }
+      // if (result?.success) {
+      //   setTimeout(() => {
+      //     navigation.navigate('TabNavigator');
+      //   }, 1000);
+      // } else {
+      //   setTimeout(() => {
+      //     navigation.navigate('Onboarding');
+      //   }, 1000);
+      // }
     };
 
     handleToken();

@@ -7,11 +7,9 @@ import classNames from 'classnames';
 import {FONT_FAMILY} from '../../../App';
 import {Button} from '@rneui/themed';
 
-// Get screen dimension
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
 
-// RPH ans RPW are functions to set responsive width and height
 const RPH = (percentage: number) => {
   return (percentage / 100) * screenHeight;
 };
@@ -26,11 +24,12 @@ const color = (isLight: boolean) => backgroundColor(!isLight);
 const Done = ({isLight, ...props}: any) => (
   <Button
     title={'Done'}
+    size="md"
     buttonStyle={{
       backgroundColor: backgroundColor(isLight),
     }}
     containerStyle={{
-      marginHorizontal: RPW(10),
+      marginHorizontal: RPW(8),
       width: RPW(23),
     }}
     titleStyle={{color: color(isLight)}}
@@ -41,11 +40,12 @@ const Done = ({isLight, ...props}: any) => (
 const Next = ({isLight, nextLabel, ...props}: any) => (
   <Button
     title={'Next'}
+    size="md"
     buttonStyle={{
       backgroundColor: backgroundColor(isLight),
     }}
     containerStyle={{
-      marginHorizontal: RPW(10),
+      marginHorizontal: RPW(8),
       width: RPW(23),
     }}
     titleStyle={{color: color(isLight)}}
@@ -57,15 +57,13 @@ const Next = ({isLight, nextLabel, ...props}: any) => (
 const Skip = ({skipLabel, ...props}: any) => (
   <Button
     title={'Skip'}
-    // eslint-disable-next-line react-native/no-inline-styles
+    size="md"
     buttonStyle={{
-      borderWidth: 1,
       borderColor: Colors.Gray,
       backgroundColor: Colors.White,
     }}
-    // eslint-disable-next-line react-native/no-inline-styles
     containerStyle={{
-      marginHorizontal: RPW(10),
+      marginHorizontal: RPW(8),
       width: RPW(23),
     }}
     titleStyle={{color: Colors.Gray}}

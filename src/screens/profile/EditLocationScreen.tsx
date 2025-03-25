@@ -142,7 +142,7 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        <View className="pt-10" style={{paddingHorizontal: RPW(6)}}>
+        <View className="pt-10" style={{paddingHorizontal: RPW(5)}}>
           <Text className="text-3xl text-black font-semibold">Location</Text>
           <View className="flex-1 mt-8">
             {addLocationType('Home', 'home')}

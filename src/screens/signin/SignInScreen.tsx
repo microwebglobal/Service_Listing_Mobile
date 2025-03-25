@@ -90,8 +90,8 @@ export const SignInScreen = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{
-          marginHorizontal: RPW(8),
-          marginTop: RPH(10),
+          marginHorizontal: RPW(5),
+          paddingTop: RPH(10),
         }}>
         <View className="my-8 items-center">
           <Text className="text-2xl font-medium text-black">

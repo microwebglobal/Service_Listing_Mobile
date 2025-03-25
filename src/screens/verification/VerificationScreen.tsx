@@ -83,8 +83,8 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{
-          marginHorizontal: RPW(8),
-          marginTop: RPH(5),
+          marginHorizontal: RPW(5),
+          paddingTop: RPH(5),
         }}>
         <View>
           <View className="items-center mb-5">
