@@ -10,6 +10,7 @@ import React from 'react';
 import {SafeAreaView} from 'react-native';
 import {Colors} from '../../utils/Colors';
 import AppHeader from '../../components/AppHeader';
+import { useNav } from '../../navigation/RootNavigation';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const screenWidth = Dimensions.get('window').width;
@@ -17,7 +18,41 @@ const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
 
+interface sectionItemProps {
+  title: string;
+  edit: boolean;
+  onPress: () => void;
+}
+
 export const AboutUsScreen = () => {
+  const navigation = useNav();
+
+  const sectionItem = (data: sectionItemProps) => {
+    return (
+      <View className="border-t border-lightGrey">
+        <TouchableOpacity
+          onPress={() => {
+            data.onPress();
+          }}>
+          <View className="flex-row my-3 items-center justify-between">
+            <Text className="text-dark text-base font-medium">
+              {data.title}
+            </Text>
+            {data.edit && (
+              <View className="-mr-2">
+                <MaterialCommunityIcons
+                  name="chevron-right"
+                  size={22}
+                  color={Colors.Gray}
+                />
+              </View>
+            )}
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <AppHeader back={true} title="About Us" />
@@ -61,7 +96,22 @@ export const AboutUsScreen = () => {
           </Text>
         </View>
 
-        <View className="my-3 flex-row items-center space-x-3">
+        {sectionItem({
+          title: 'Terms & Conditions',
+          edit: true,
+          onPress: () => {
+            navigation.navigate('Terms');
+          },
+        })}
+        {sectionItem({
+          title: 'Privacy Policy',
+          edit: true,
+          onPress: () => {
+            navigation.navigate('Terms');
+          },
+        })}
+
+        <View className="py-3 flex-row items-center space-x-3 border-t border-lightGrey">
           <Text className="text-dark text-base font-medium">Follow Us</Text>
           <View className="flex-row items-center space-x-3">
             <TouchableOpacity onPress={() => {}}>

@@ -7,31 +7,39 @@ import {
   StyleSheet,
   Image,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {Dialog} from '@rneui/base';
 import {useDispatch} from 'react-redux';
 import {UserData} from './ProfileScreen';
+import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
 import {instance} from '../../api/instance';
 import {Button} from '../../components/rneui';
 import {useNav} from '../../navigation/RootNavigation';
 import {useFocusEffect} from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
+import {userLogout} from '../../redux/user/user.action';
 import ImagePicker from 'react-native-image-crop-picker';
 import {logOut, setId} from '../../redux/user/user.slice';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {Colors} from '../../utils/Colors';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
+
+interface sectionItemProps {
+  title: string;
+  edit: boolean;
+  icon_name: string;
+  onPress?: () => void;
+}
 
 export const AccountScreen = () => {
   const navigation = useNav();
@@ -39,6 +47,7 @@ export const AccountScreen = () => {
   const tabBarHeight = useBottomTabBarHeight();
   const [imageURI, setImageURI] = useState<string>();
   const [visible, setVisible] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userData, setUserData] = React.useState<UserData>();
   const user = useAppSelector(state => state.user.user);
 
@@ -47,6 +56,7 @@ export const AccountScreen = () => {
       instance.get(`/customer-profiles/user/${user?.id}`).then(response => {
         setUserData(response.data);
         dispatch(setId(response.data.u_id));
+        setIsLoading(false);
       });
     }, [dispatch, user?.id]),
   );
@@ -64,6 +74,7 @@ export const AccountScreen = () => {
         routes: [{name: 'SignIn'}],
       });
       dispatch(logOut());
+      userLogout();
     });
   };
 
@@ -77,6 +88,45 @@ export const AccountScreen = () => {
     });
   };
 
+  const sectionItem = (data: sectionItemProps) => {
+    return (
+      <View className="border-b border-lightGrey">
+        <TouchableOpacity onPress={() => (data.onPress ? data.onPress() : {})}>
+          <View className="flex-row items-center justify-between">
+            <View className="my-3 flex-row items-center space-x-3">
+              <MaterialCommunityIcons
+                name={data.icon_name}
+                size={22}
+                color={Colors.Dark}
+              />
+              <View>
+                <Text className="text-dark text-base font-medium">
+                  {data.title}
+                </Text>
+              </View>
+            </View>
+            {data.edit && (
+              <View className="-mr-2">
+                <MaterialCommunityIcons
+                  name="chevron-right"
+                  size={22}
+                  color={Colors.Gray}
+                />
+              </View>
+            )}
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <View className="items-center justify-center flex-1 bg-white">
+        <ActivityIndicator size="large" color={Colors.Black} />
+      </View>
+    );
+  }
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView
@@ -110,7 +160,7 @@ export const AccountScreen = () => {
               className="flex-row items-center space-x-1"
               onPress={() => navigation.navigate('Profile')}>
               <Text className="text-black text-lg font-medium">
-                {userData?.name}
+                {userData?.name ? userData.name : 'Your Name'}
               </Text>
               <MaterialIcons
                 name="keyboard-arrow-right"
@@ -160,29 +210,22 @@ export const AccountScreen = () => {
             </Text>
           </View>
 
-          <TouchableOpacity onPress={() => {}}>
-            <View className="my-3 flex-row items-center space-x-3">
-              <Ionicons name="wallet-outline" size={22} color={Colors.Gray} />
-              <View>
-                <Text className="text-dark text-base font-medium">Payment</Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => navigation.navigate('AboutUs')}>
-            <View className="my-3 flex-row items-center space-x-3">
-              <MaterialCommunityIcons
-                name="alert-circle-outline"
-                size={22}
-                color={Colors.Gray}
-              />
-              <View>
-                <Text className="text-dark text-base font-medium">
-                  About Us
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
+          {sectionItem({
+            title: 'Help and Support',
+            edit: true,
+            icon_name: 'help-circle-outline',
+          })}
+          {sectionItem({
+            title: 'Payment',
+            edit: true,
+            icon_name: 'wallet-outline',
+          })}
+          {sectionItem({
+            title: 'About Us',
+            edit: true,
+            icon_name: 'alert-circle-outline',
+            onPress: () => navigation.navigate('AboutUs'),
+          })}
 
           <TouchableOpacity
             className="mt-3 flex-row items-center space-x-3"

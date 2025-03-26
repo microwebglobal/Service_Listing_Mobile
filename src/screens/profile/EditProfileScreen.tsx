@@ -14,7 +14,7 @@ import InputField from '../../components/InputFeild';
 import {Button} from '../../components/rneui';
 import {useNavigation} from '@react-navigation/native';
 import {instance} from '../../api/instance';
-import { useAppSelector } from '../../redux';
+import {useAppSelector} from '../../redux';
 
 interface ProfileData {
   firstName: string;
@@ -42,7 +42,7 @@ export const EditProfileScreen: Screen<'EditProfile'> = ({route}) => {
   const submit = async (data: ProfileData) => {
     try {
       const response =
-        itemName === 'Name'
+        itemName === 'Full Name'
           ? await instance.put(`users/profile/${user?.id}`, {
               name: `${data.firstName} ${data.lastName}`,
             })
@@ -65,7 +65,7 @@ export const EditProfileScreen: Screen<'EditProfile'> = ({route}) => {
         style={{paddingHorizontal: RPW(6)}}>
         {/*  */}
         <View className="mt-10">
-          {itemName === 'Name' && (
+          {itemName === 'Full Name' && (
             <View>
               <Text className="text-3xl text-black font-semibold">
                 {itemName}
@@ -175,7 +175,7 @@ export const EditProfileScreen: Screen<'EditProfile'> = ({route}) => {
         <View>{itemName === 'Password' && <Text>{itemName}</Text>}</View>
         {/*  */}
         <View>
-          {itemName === 'Contact Number' && (
+          {itemName === 'Mobile' && (
             <View>
               <Text className="text-3xl text-black font-semibold">
                 {itemName}

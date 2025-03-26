@@ -7,6 +7,15 @@ const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
 
+const section = (title: string, paragraph: string) => {
+  return (
+    <View className="mt-5">
+      <Text className="text-base text-black font-medium">{title}</Text>
+      <Text className="mt-2 text-sm text-black text-justify">{paragraph}</Text>
+    </View>
+  );
+};
+
 export const TermsScreen = () => {
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -22,66 +31,35 @@ export const TermsScreen = () => {
             }
           </Text>
         </View>
-        <View className="mt-5">
-          <Text className="text-base text-black font-medium">
-            1. Acceptance of Terms
-          </Text>
-          <Text className="mt-2 text-sm text-black text-justify">
-            {
-              'By accessing or using our website, you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use our website.'
-            }
-          </Text>
-        </View>
-        <View className="mt-5">
-          <Text className="text-base text-black font-medium">
-            2. Use of the Website
-          </Text>
-          <Text className="mt-2 text-sm text-black text-justify">
-            {
-              'The content of the pages of this website is for your general information and use only. It is subject to change without notice'
-            }
-          </Text>
-        </View>
-        <View className="mt-5">
-          <Text className="text-base text-black font-medium">
-            3. Intellectual Property
-          </Text>
-          <Text className="mt-2 text-sm text-black text-justify">
-            {
-              'This website contains material which is owned by or licensed to us. This material includes, but is not limited to, the design, layout, look, appearance, and graphics. Reproduction is prohibited other than in accordance with the copyright notice, which forms part of these terms and conditions.'
-            }
-          </Text>
-        </View>
-        <View>
-          <Text className="text-base text-black font-medium">
-            4. Limitation of Liability
-          </Text>
-          <Text className="mt-2 text-sm text-black text-justify">
-            {
-              'Your use of any information or materials on this website is entirely at your own risk, for which we shall not be liable. It shall be your own responsibility to ensure that any products, services, or information available through this website meet your specific requirements.'
-            }
-          </Text>
-        </View>
-        <View className="mt-5">
-          <Text className="text-base text-black font-medium">
-            5. Changes to Terms
-          </Text>
-          <Text className="mt-2 text-sm text-black text-justify">
-            {
-              'We reserve the right to modify these terms and conditions at any time. By using this website, you agree to be bound by the current version of these Terms and Conditions.'
-            }
-          </Text>
-        </View>
-        <View className="mt-5">
-          <Text className="text-base text-black font-medium">
-            6. Governing Law
-          </Text>
-          <Text className="mt-2 text-sm text-black text-justify">
-            {
-              'Your use of this website and any dispute arising out of such use is subject to the laws of your country or region.'
-            }
-          </Text>
-        </View>
+        {section(
+          '1. Acceptance of Terms',
+          'By accessing or using our website, you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use our website.',
+        )}
+        {section(
+          '2. Use of the Website',
+          'The content of the pages of this website is for your general information and use only. It is subject to change without notice.',
+        )}
+        {section(
+          '3. Intellectual Property',
+          'This website contains material which is owned by or licensed to us. This material includes, but is not limited to, the design, layout, look, appearance, and graphics. Reproduction is prohibited other than in accordance with the copyright notice, which forms part of these terms and conditions.',
+        )}
+        {section(
+          '4. Limitation of Liability',
+          'Your use of any information or materials on this website is entirely at your own risk, for which we shall not be liable. It shall be your own responsibility to ensure that any products, services, or information available through this website meet your specific requirements.',
+        )}
+        {section(
+          '5. Changes to Terms',
+          'We reserve the right to modify these terms and conditions at any time. By using this website, you agree to be bound by the current version of these Terms and Conditions.',
+        )}
+        {section(
+          '6. Governing Law',
+          'Your use of this website and any dispute arising out of such use is subject to the laws of your country or region.',
+        )}
+        {section(
+          '6. Governing Law',
+          'Your use of this website and any dispute arising out of such use is subject to the laws of your country or region.',
+        )}
+
         <View className="mt-5 mb-20">
           <Text className="text-base text-black font-medium">
             7. Contact Us
