@@ -39,7 +39,7 @@ export const FeaturedCard = ({featuredData}: FeatureCardProps) => {
     return (
       <View className="mr-5">
         <TouchableOpacity
-          className="pb-5 bg-white rounded-xl"
+          className="pb-5 bg-white rounded-xl shadow-sm shadow-black"
           onPress={() => {}}>
           <View className="overflow-hidden">
             <Image
@@ -82,23 +82,22 @@ export const FeaturedCard = ({featuredData}: FeatureCardProps) => {
   };
 
   return (
-    <View className="py-3 bg-lightGrey">
+    <View className="py-3">
       <View>
         <View
           className="my-2 flex-row justify-between items-center"
-          style={{marginHorizontal: RPW(6)}}>
-          <Text className="text-lg font-medium text-dark">Featured</Text>
+          style={{marginHorizontal: RPW(5)}}>
+          <Text className="text-lg font-medium text-black">Featured</Text>
           <TouchableOpacity>
             <Text className="text-dark">View All</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Render Featured cards horizontal list */}
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <View className="flex items-center">
             <FlatList
               className="mt-2"
-              style={{paddingHorizontal: RPW(6)}}
+              style={{paddingHorizontal: RPW(5)}}
               horizontal={true}
               scrollEnabled={false}
               showsHorizontalScrollIndicator={false}

@@ -1,4 +1,4 @@
-const OfferCardImages = [
+const CarouselImages = [
   {
     id: '1',
     imageLink: require('../assets/app-images/slider-image1.jpg'),
@@ -11,6 +11,10 @@ const OfferCardImages = [
     id: '3',
     imageLink: require('../assets/app-images/slider-image3.jpg'),
   },
+  {
+    id: '4',
+    imageLink: require('../assets/app-images/slider-image4.jpg'),
+  },
 ];
 
-export default OfferCardImages;
+export default CarouselImages;

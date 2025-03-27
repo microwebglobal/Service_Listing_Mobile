@@ -6,24 +6,27 @@ import {
   TouchableOpacity,
   Dimensions,
   StyleSheet,
-  Image,
   FlatList,
   RefreshControl,
   ActivityIndicator,
   Animated,
+  Alert,
 } from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
 import {instance} from '../../api/instance';
 import offerCardData from '../../data/offerList';
 import featuredData from '../../data/featuredData';
-import {Address} from '../category/CategoryScreen';
+import {Address, Category, City} from '../category/CategoryScreen';
 import {useNav} from '../../navigation/RootNavigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {FeaturedCard} from '../../components/FeaturedCard';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import {Carousel} from '../../components/Carousel';
+import {SERVER_BASE} from '@env';
+import {Image} from '@rneui/themed';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -40,6 +43,7 @@ export const HomeScreen = () => {
   const user = useAppSelector(state => state.user.user);
   const [hour, setHour] = useState<number>(0);
   const [userName, setUserName] = useState<string>();
+  const [categories, setCategories] = useState<Array<Category>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [primaryAddress, setPrimaryAddress] = useState<Address>();
@@ -69,8 +73,11 @@ export const HomeScreen = () => {
           }),
         );
       })
-      .catch(e => {
-        console.log('Error ', e);
+      .catch(() => {
+        Alert.alert(
+          'No internet connection',
+          'Please check your internet connection and try again',
+        );
       })
       .finally(() => {
         setIsLoading(false);
@@ -87,6 +94,19 @@ export const HomeScreen = () => {
     BackHandler.exitApp();
     return true;
   };
+
+  useEffect(() => {
+    instance
+      .get('/cities')
+      .then(response => {
+        response.data.map((city: City) => {
+          setCategories([...city.serviceCategories]);
+        });
+      })
+      .catch(e => {
+        console.log('Error ', e);
+      });
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -130,6 +150,32 @@ export const HomeScreen = () => {
     );
   };
 
+  const _renderCategoryItem = ({item}: any) => {
+    return (
+      <View className="flex-wrap basis-[35] mt-3">
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('TabNavigator', {
+              screen: 'Service',
+            });
+          }}>
+          <View className="flex-1">
+            <Image
+              source={{uri: `${SERVER_BASE}${item.icon_url}`}}
+              containerStyle={styles.categoryImage}
+            />
+            <Text
+              numberOfLines={2}
+              ellipsizeMode="tail"
+              className="my-1 text-sm text-center text-black">
+              {item.name}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   if (isLoading) {
     return (
       <View className="items-center justify-center flex-1 bg-white">
@@ -156,30 +202,27 @@ export const HomeScreen = () => {
               {userName?.split(' ')[0]}!
             </Text>
 
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('SelectAddress', {prevScreen: 'Home'});
-              }}>
-              <View className="flex-row items-center basis-5/6 space-x-2">
-                <Text
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  className="basis-5/6 text-base text-dark font-normal">
-                  {primaryAddress?.line2
-                    ? primaryAddress.line1 +
-                      ' ' +
-                      primaryAddress?.line2 +
-                      ', ' +
-                      primaryAddress.city
-                    : primaryAddress?.line1 + ', ' + primaryAddress?.city}
-                </Text>
-                {/* <MaterialCommunityIcons
-                  name="chevron-down"
-                  size={25}
-                  color={Colors.Dark}
-                /> */}
-              </View>
-            </TouchableOpacity>
+            {primaryAddress && (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('SelectAddress', {prevScreen: 'Home'});
+                }}>
+                <View className="flex-row items-center basis-5/6 space-x-2">
+                  <Text
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    className="basis-5/6 text-base text-dark font-normal">
+                    {primaryAddress?.line2
+                      ? primaryAddress.line1 +
+                        ' ' +
+                        primaryAddress?.line2 +
+                        ', ' +
+                        primaryAddress.city
+                      : primaryAddress?.line1 + ', ' + primaryAddress?.city}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
 
           <View className="basis-1/4 flex-row justify-end items-center space-x-5">
@@ -228,9 +271,30 @@ export const HomeScreen = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        <View className="mt-20">
-          <FeaturedCard featuredData={featuredData} />
+        <View className="mt-24">
+          <Carousel />
         </View>
+
+        <View style={{marginHorizontal: RPW(5)}}>
+          <Text className="text-lg text-black font-medium">
+            Explore all services
+          </Text>
+          <View className="flex-1 justify-between">
+            <FlatList
+              horizontal={false}
+              numColumns={3}
+              scrollEnabled={false}
+              showsHorizontalScrollIndicator={false}
+              data={categories}
+              keyExtractor={(item: any) => item.category_id}
+              renderItem={_renderCategoryItem}
+            />
+          </View>
+        </View>
+
+        <View className="my-4 h-2 bg-lightGrey" />
+        <FeaturedCard featuredData={featuredData} />
+        <View className="my-4 h-2 bg-lightGrey" />
 
         <View className="my-8" style={{marginHorizontal: RPW(5)}}>
           <FlatList
@@ -252,5 +316,11 @@ const styles = StyleSheet.create({
     width: RPW(88),
     height: RPH(20),
     resizeMode: 'cover',
+  },
+  categoryImage: {
+    width: 100,
+    height: 80,
+    borderRadius: 8,
+    resizeMode: 'contain',
   },
 });

@@ -64,7 +64,7 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
         style={{paddingHorizontal: RPW(6)}}
         className="my-2 flex-row flex-wrap bg-lightGrey items-center justify-between">
         <TouchableOpacity
-          className="py-5"
+          className="flex-1 py-5"
           onPress={() => {
             const selectedAddress: string = address.line2
               ? address.line1 +
@@ -85,16 +85,19 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
             {address.type === 'work' ? (
               <MaterialIcons
                 name="work-outline"
-                size={18}
-                color={Colors.Primary}
+                size={20}
+                color={Colors.Black}
               />
             ) : address.type === 'home' ? (
-              <AntDesign name="home" size={20} color={Colors.Primary} />
+              <AntDesign name="home" size={22} color={Colors.Black} />
             ) : (
-              <Octicons name="location" size={20} color={Colors.Primary} />
+              <Octicons name="location" size={22} color={Colors.Black} />
             )}
             {address.line2 ? (
-              <Text className="basis-3/4 text-base text-dark">
+              <Text
+                numberOfLines={2}
+                ellipsizeMode="tail"
+                className="basis-3/4 text-base text-black">
                 {address.line1 +
                   ' ' +
                   address.line2 +
@@ -104,7 +107,10 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
                   address.state}
               </Text>
             ) : (
-              <Text className="basis-3/4 text-base text-dark">
+              <Text
+                numberOfLines={2}
+                ellipsizeMode="tail"
+                className="basis-3/4 text-base text-black">
                 {address.line1 + ', ' + address.city + ', ' + address.state}
               </Text>
             )}
@@ -114,7 +120,7 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
           onPress={() => {
             navigation.navigate('AddressDetails', {address: address});
           }}>
-          <MaterialIcons name="edit" size={18} color={Colors.Gray} />
+          <MaterialIcons name="edit" size={18} color={Colors.Dark} />
         </TouchableOpacity>
       </View>
     );
@@ -124,9 +130,9 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
     <ScrollView className="bg-white" showsVerticalScrollIndicator={false}>
       <AppHeader title={'Addresses'} back={true} />
       <View className="my-5">
-        <View style={{paddingHorizontal: RPW(6)}}>
+        <View style={{paddingHorizontal: RPW(5)}}>
           <SearchBarComponent
-            placeholder={'Search for an address'}
+            placeholder={'Search for your location'}
             iconName={'search'}
             onSearch={(text: string) => {
               prevScreen === 'Home'
@@ -134,10 +140,27 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
                 : navigation.navigate('ServiceSchedule', {address: text});
             }}
           />
-          <Text className="mt-5 mb-2 text-lg text-black">
-            Available Addresses
-          </Text>
+
+          <TouchableOpacity
+            className="my-5 flex-row items-center gap-x-3"
+            onPress={() => {}}>
+            <MaterialIcons
+              name="my-location"
+              size={20}
+              color={Colors.Primary}
+            />
+            <Text className="text-base text-primary font-medium">
+              Use current location
+            </Text>
+          </TouchableOpacity>
         </View>
+        <View className="h-2 bg-lightGrey" />
+
+        <Text
+          className="mt-5 mb-2 text-lg text-black"
+          style={{paddingHorizontal: RPW(5)}}>
+          Available Addresses
+        </Text>
 
         <FlatList
           horizontal={false}
