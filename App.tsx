@@ -1,15 +1,15 @@
 import React, {useEffect} from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {RootNavigator} from './src/navigation/RootNavigator';
-import {ButtonProps, createTheme, ThemeProvider} from '@rneui/themed';
 import {Platform, StatusBar, StyleSheet} from 'react-native';
 import {Provider} from 'react-redux';
+import {Colors} from './src/utils/Colors';
 import {useColorScheme} from 'nativewind';
 import {persistor, store} from './src/redux';
-import {Colors} from './src/utils/Colors';
 import messaging from '@react-native-firebase/messaging';
 import {PersistGate} from 'redux-persist/integration/react';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {ButtonProps, createTheme, ThemeProvider} from '@rneui/themed';
 import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
 import PushNotification, {Importance} from 'react-native-push-notification';
 
