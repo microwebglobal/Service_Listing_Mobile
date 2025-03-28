@@ -24,6 +24,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import { styled } from 'nativewind';
 
 export interface BookingItem {
   id: number;
@@ -77,6 +78,13 @@ const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
 
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledImage = styled(Image);
+const StyledScrollView = styled(ScrollView);
+const StyledSafeAreaView = styled(SafeAreaView);
+const StyledTouchableOpacity = styled(TouchableOpacity);
+
 export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
   const {booking} = route.params;
   const [employee, setEmployee] = useState<Employee>();
@@ -125,76 +133,84 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <StyledSafeAreaView className="flex-1 bg-white">
       <AppHeader back={true} title="Booking Details" />
-      <ScrollView className="flex-grow" showsVerticalScrollIndicator={false}>
+      <StyledScrollView
+        className="flex-grow"
+        showsVerticalScrollIndicator={false}>
         {booking.status === 'completed' && (
           <>
-            <View
+            <StyledView
               className="my-6 flex-row justify-start items-center"
               style={{paddingHorizontal: RPW(4)}}>
-              <Image
+              <StyledImage
                 source={require('../../assets/app-images/task_complete.png')}
                 className="w-16 h-16"
               />
-              <View>
-                <Text className="text-lg text-black font-medium">
+              <StyledView>
+                <StyledText className="text-lg text-black font-medium">
                   Job Complete
-                </Text>
-                <Text className="text-base text-dark">
+                </StyledText>
+                <StyledText className="text-base text-dark">
                   Thanks for taking service from us.
-                </Text>
-              </View>
-            </View>
+                </StyledText>
+              </StyledView>
+            </StyledView>
           </>
         )}
 
         {booking.status === 'cancelled' && (
           <>
-            <View
+            <StyledView
               className="my-6 flex-row justify-start items-center space-x-5"
               style={{paddingHorizontal: RPW(4)}}>
-              <Image
+              <StyledImage
                 source={require('../../assets/app-images/task_cancel.png')}
                 className="w-12 h-12"
               />
-              <View>
-                <Text className="text-lg text-black font-medium">
+              <StyledView>
+                <StyledText className="text-lg text-black font-medium">
                   Booking cancelled
-                </Text>
-                <Text className="text-base text-dark">
+                </StyledText>
+                <StyledText className="text-base text-dark">
                   We hope to see you again in the future.
-                </Text>
-              </View>
-            </View>
+                </StyledText>
+              </StyledView>
+            </StyledView>
           </>
         )}
 
         {booking.status !== 'completed' && booking.status !== 'cancelled' && (
           <>
-            <View
+            <StyledView
               className="my-5 flex-row justify-between items-center"
               style={{paddingHorizontal: RPW(4)}}>
-              <View className="space-y-1">
-                <View className="flex-row items-center space-x-1">
-                  <Text className="text-base text-dark">Booking ID:</Text>
-                  <Text className="text-base text-black font-medium">
+              <StyledView className="space-y-1">
+                <StyledView className="flex-row items-center space-x-1">
+                  <StyledText className="text-base text-dark">
+                    Booking ID:
+                  </StyledText>
+                  <StyledText className="text-base text-black font-medium">
                     {booking.booking_id}
-                  </Text>
-                </View>
-                <View className="flex-row items-center space-x-1">
-                  <Text className="text-base text-dark">Booking status:</Text>
-                  <Text className="text-base text-primary font-medium first-letter:capitalize">
+                  </StyledText>
+                </StyledView>
+                <StyledView className="flex-row items-center space-x-1">
+                  <StyledText className="text-base text-dark">
+                    Booking status:
+                  </StyledText>
+                  <StyledText className="text-base text-primary font-medium first-letter:capitalize">
                     {booking.status === 'payment_pending'
                       ? 'Confirmed'
                       : booking.status === 'in_progress'
                       ? 'In Progress'
                       : booking.status}
-                  </Text>
-                </View>
-                <View className="flex-row items-center space-x-1">
-                  <Text className="text-base text-dark">Payment status:</Text>
-                  <View
+                  </StyledText>
+                </StyledView>
+                <StyledView className="flex-row items-center space-x-1">
+                  <StyledText className="text-base text-dark">
+                    Payment status:
+                  </StyledText>
+                  <StyledView
                     className={classNames(
                       `px-2 , ${
                         booking.BookingPayment.payment_status === 'completed'
@@ -207,62 +223,64 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                           : 'bg-red-100'
                       }`,
                     )}>
-                    <Text className="text-base text-black first-letter:capitalize">
+                    <StyledText className="text-base text-black first-letter:capitalize">
                       {booking.BookingPayment.payment_status ===
                       'advance_only_paid'
                         ? 'Advance Paid'
                         : booking.BookingPayment.payment_status}
-                    </Text>
-                  </View>
-                </View>
-              </View>
+                    </StyledText>
+                  </StyledView>
+                </StyledView>
+              </StyledView>
 
-              <View>
+              <StyledView>
                 {(booking.status === 'payment_pending' ||
                   booking.status === 'confirmed' ||
                   booking.status === 'accepted' ||
                   booking.status === 'assigned' ||
                   booking.status === 'in_progress') && (
-                  <View>
+                  <StyledView>
                     <Button size="sm" title="Cancel" />
-                  </View>
+                  </StyledView>
                 )}
-              </View>
-            </View>
+              </StyledView>
+            </StyledView>
           </>
         )}
-        <View className="h-1 bg-lightGrey" />
+        <StyledView className="h-1 bg-lightGrey" />
 
         {booking.provider && (
-          <View className="my-5">
-            <View
+          <StyledView className="my-5">
+            <StyledView
               className="flex-row space-x-2 items-center"
               style={{paddingHorizontal: RPW(4)}}>
               <Feather name="user-check" size={18} color={Colors.Primary} />
-              <Text className="text-base text-black font-medium">
+              <StyledText className="text-base text-black font-medium">
                 Provider Details
-              </Text>
-            </View>
+              </StyledText>
+            </StyledView>
             {booking.provider.business_type === 'business' ? (
               <>
-                <View className="mt-3" style={{paddingHorizontal: RPW(4)}}>
-                  <View className="space-y-1">
-                    {/* <View className="flex-row items-center space-x-2">
+                <StyledView
+                  className="mt-3"
+                  style={{paddingHorizontal: RPW(4)}}>
+                  <StyledView className="space-y-1">
+                    {/* <StyledView className="flex-row items-center space-x-2">
                       <Text className="text-base text-dark">
                         Business Name:{' '}
                       </Text>
                       <Text className="text-base text-black">
                         {booking.provider.business_name}
                       </Text>
-                    </View>
-                    <View className="flex-row items-center space-x-2">
+                    </StyledView>
+                    <StyledView className="flex-row items-center space-x-2">
                       <Text className="text-base text-dark">Whatsapp:</Text>
                       <Text className="text-base text-black">
                         {booking.provider.whatsapp_number}
                       </Text>
-                    </View> */}
+                    </StyledView> */}
 
-                    <View>
+                    <StyledView>
                       {/* <TouchableOpacity
                         className="flex-row space-x-2"
                         onPress={() => {
@@ -270,51 +288,51 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                         }}>
                         {booking.employee_id !== null && !isChecked && (
                           <Text className="text-base text-primary">
-                            View more...
+                            StyledView more...
                           </Text>
                         )}
                       </TouchableOpacity> */}
 
                       {booking.employee_id !== null &&
                         employee !== undefined && (
-                          <View>
-                            <View className="flex-row items-center space-x-4">
-                              <View>
+                          <StyledView>
+                            <StyledView className="flex-row items-center space-x-4">
+                              <StyledView>
                                 {employee.User.photo !== null ? (
-                                  <Image
+                                  <StyledImage
                                     source={{
                                       uri: `${SERVER_BASE}${booking.employee.User.photo}`,
                                     }}
                                     className="w-16 h-16"
                                   />
                                 ) : (
-                                  <Image
+                                  <StyledImage
                                     source={require('../../assets/app-images/emptyProfile.png')}
                                     className="w-16 h-16"
                                   />
                                 )}
-                              </View>
+                              </StyledView>
 
-                              <View className="flex-1 space-y-1">
-                                <View className="flex-row items-center space-x-2">
-                                  <Text className="text-base text-black">
+                              <StyledView className="flex-1 space-y-1">
+                                <StyledView className="flex-row items-center space-x-2">
+                                  <StyledText className="text-base text-black">
                                     {employee.User.name}
-                                  </Text>
-                                </View>
-                                <View className="flex-row items-center space-x-2">
-                                  <Text className="text-base text-black">
+                                  </StyledText>
+                                </StyledView>
+                                <StyledView className="flex-row items-center space-x-2">
+                                  <StyledText className="text-base text-black">
                                     {booking.provider.business_name}
-                                  </Text>
-                                </View>
+                                  </StyledText>
+                                </StyledView>
 
-                                <View className="flex-row items-center justify-between">
-                                  <View>
-                                    <Text className="text-base text-dark">
+                                <StyledView className="flex-row items-center justify-between">
+                                  <StyledView>
+                                    <StyledText className="text-base text-dark">
                                       {employee.User.mobile}
-                                    </Text>
-                                  </View>
-                                  <View className="mr-1">
-                                    <TouchableOpacity
+                                    </StyledText>
+                                  </StyledView>
+                                  <StyledView className="mr-1">
+                                    <StyledTouchableOpacity
                                       onPress={() =>
                                         makeCall(employee.User.mobile)
                                       }>
@@ -323,61 +341,67 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                                         size={20}
                                         color={Colors.Primary}
                                       />
-                                    </TouchableOpacity>
-                                  </View>
-                                </View>
-                              </View>
-                            </View>
+                                    </StyledTouchableOpacity>
+                                  </StyledView>
+                                </StyledView>
+                              </StyledView>
+                            </StyledView>
                             {/* <TouchableOpacity
                               onPress={() => {
                                 setIsChecked(!isChecked);
                               }}>
                               <Text className="mt-2 text-base text-primary">
-                                View less
+                                StyledView less
                               </Text>
                             </TouchableOpacity> */}
-                          </View>
+                          </StyledView>
                         )}
-                    </View>
-                  </View>
-                </View>
+                    </StyledView>
+                  </StyledView>
+                </StyledView>
               </>
             ) : (
-              <View className="mt-3 mb-2" style={{paddingHorizontal: RPW(4)}}>
-                <View className="p-2 rounded-lg space-y-1 border border-primaryBlackRGBA">
-                  <View className="flex-row items-center space-x-2">
-                    <Text className="text-base text-dark">Name: </Text>
-                    <Text className="text-base text-black">
+              <StyledView
+                className="mt-3 mb-2"
+                style={{paddingHorizontal: RPW(4)}}>
+                <StyledView className="p-2 rounded-lg space-y-1 border border-primaryBlackRGBA">
+                  <StyledView className="flex-row items-center space-x-2">
+                    <StyledText className="text-base text-dark">
+                      Name:{' '}
+                    </StyledText>
+                    <StyledText className="text-base text-black">
                       {booking.provider.User.name}
-                    </Text>
-                  </View>
-                  <View className="flex-row items-center space-x-2">
-                    <Text className="text-base text-dark">Mobile:</Text>
-                    <Text className="text-base text-black">
+                    </StyledText>
+                  </StyledView>
+                  <StyledView className="flex-row items-center space-x-2">
+                    <StyledText className="text-base text-dark">
+                      Mobile:
+                    </StyledText>
+                    <StyledText className="text-base text-black">
                       {booking.provider.User.mobile}
-                    </Text>
-                  </View>
-                </View>
-              </View>
+                    </StyledText>
+                  </StyledView>
+                </StyledView>
+              </StyledView>
             )}
-          </View>
+          </StyledView>
         )}
-        <View className="h-1 bg-lightGrey" />
+        <StyledView className="h-1 bg-lightGrey" />
 
-        <View className="my-5">
-          <View className="space-y-3" style={{paddingHorizontal: RPW(4)}}>
-            <View className="flex-row items-baseline space-x-2">
+        <StyledView className="my-5">
+          <StyledView className="space-y-3" style={{paddingHorizontal: RPW(4)}}>
+            <StyledView className="flex-row items-baseline space-x-2">
               <Icon name="clock" size={16} color={Colors.Primary} />
-              <View>
-                <Text className="text-base text-black">
+              <StyledView>
+                <StyledText className="text-base text-black">
                   {new Date(booking.booking_date).toLocaleString('en-us', {
                     weekday: 'long',
                     month: 'short',
                     day: 'numeric',
                     year: 'numeric',
                   })}
-                </Text>
-                <Text className="text-base text-dark">
+                </StyledText>
+                <StyledText className="text-base text-dark">
                   {'Started on '}
                   {new Date(booking.booking_date).toLocaleString('en-us', {
                     weekday: 'short',
@@ -386,109 +410,111 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                   {convertTo12HourFormat(booking.start_time)}
                   {' . Ended  on '}
                   {convertTo12HourFormat(booking.end_time)}
-                </Text>
-              </View>
-            </View>
+                </StyledText>
+              </StyledView>
+            </StyledView>
 
-            <View className="flex-row items-center space-x-2">
+            <StyledView className="flex-row items-center space-x-2">
               <SimpleLineIcons
                 name="location-pin"
                 size={18}
                 color={Colors.Primary}
               />
-              <Text className="text-base text-black">
+              <StyledText className="text-base text-black">
                 {booking.service_address}
-              </Text>
-            </View>
+              </StyledText>
+            </StyledView>
 
             {booking.customer_notes !== '' &&
               booking.customer_notes !== null && (
-                <View className="flex-row items-center space-x-2 flex-wrap">
-                  <View className="flex-row items-center space-x-2">
+                <StyledView className="flex-row items-center space-x-2 flex-wrap">
+                  <StyledView className="flex-row items-center space-x-2">
                     <AntDesign
                       name="filetext1"
                       size={20}
                       color={Colors.Primary}
                     />
-                    <Text className="text-base text-black">Special Note:</Text>
-                  </View>
-                  <Text className="pl-5 text-base text-dark">
+                    <StyledText className="text-base text-black">
+                      Special Note:
+                    </StyledText>
+                  </StyledView>
+                  <StyledText className="pl-5 text-base text-dark">
                     {booking.customer_notes}
-                  </Text>
-                </View>
+                  </StyledText>
+                </StyledView>
               )}
-          </View>
-        </View>
-        <View className="h-1 bg-lightGrey" />
+          </StyledView>
+        </StyledView>
+        <StyledView className="h-1 bg-lightGrey" />
 
-        <View className="my-5">
-          <View
+        <StyledView className="my-5">
+          <StyledView
             className="flex-row space-x-2 items-baseline"
             style={{paddingHorizontal: RPW(4)}}>
             <FontAwesome5 name="tasks" size={16} color={Colors.Primary} />
-            <Text className="mb-2 text-base text-black font-medium">
+            <StyledText className="mb-2 text-base text-black font-medium">
               Service Details
-            </Text>
-          </View>
+            </StyledText>
+          </StyledView>
 
-          <View style={{paddingHorizontal: RPW(4)}}>
-            <View className="p-2 space-y-1">
+          <StyledView style={{paddingHorizontal: RPW(4)}}>
+            <StyledView className="p-2 space-y-1">
               {booking.BookingItems.map(
                 (bookingItem: BookingItem, index: number) =>
                   bookingItem.serviceItem ? (
-                    <View
+                    <StyledView
                       key={index}
                       className="mb-1 flex-row justify-between items-center">
-                      <View className="flex-[0.9]">
-                        <Text
+                      <StyledView className="flex-[0.9]">
+                        <StyledText
                           numberOfLines={2}
                           ellipsizeMode="tail"
                           className="text-base text-black">
                           {bookingItem.serviceItem.name}
-                          <Text className="text-sm text-gray">
+                          <StyledText className="text-sm text-gray">
                             {'  '}
                             {'(x '}
                             {bookingItem.quantity}
                             {')'}
-                          </Text>
-                        </Text>
-                      </View>
-                      <Text className="text-base text-black">
+                          </StyledText>
+                        </StyledText>
+                      </StyledView>
+                      <StyledText className="text-base text-black">
                         {'₹'}
                         {bookingItem.total_price}
-                      </Text>
-                    </View>
+                      </StyledText>
+                    </StyledView>
                   ) : (
-                    <View
+                    <StyledView
                       key={index}
                       className="my-2 flex-row justify-between items-center">
-                      <View>
-                        <Text className="text-base text-black">
+                      <StyledView>
+                        <StyledText className="text-base text-black">
                           {bookingItem.packageItem.name}
-                          <Text className="text-sm text-gray">
+                          <StyledText className="text-sm text-gray">
                             {'  '}
                             {'(x '}
                             {bookingItem.quantity}
                             {')'}
-                          </Text>
-                        </Text>
-                      </View>
-                      <Text className="text-base text-black">
+                          </StyledText>
+                        </StyledText>
+                      </StyledView>
+                      <StyledText className="text-base text-black">
                         {'₹'}
                         {bookingItem.packageItem.price}
-                      </Text>
-                    </View>
+                      </StyledText>
+                    </StyledView>
                   ),
               )}
-            </View>
-          </View>
-        </View>
+            </StyledView>
+          </StyledView>
+        </StyledView>
 
         {booking.status !== 'cancelled' && (
           <>
-            <View className="h-1 bg-lightGrey" />
-            <View className="my-5">
-              <View
+            <StyledView className="h-1 bg-lightGrey" />
+            <StyledView className="my-5">
+              <StyledView
                 className="flex-row items-center"
                 style={{paddingHorizontal: RPW(4)}}>
                 <MaterialIcons
@@ -496,89 +522,90 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                   size={20}
                   color={Colors.Primary}
                 />
-                <Text className="text-base text-black font-medium">
+                <StyledText className="text-base text-black font-medium">
                   Payment Summary
-                </Text>
-              </View>
-              <View style={{paddingHorizontal: RPW(4)}}>
-                <View className="my-3 p-2">
-                  <View className="mb-1 flex-row justify-between items-center">
-                    <Text className="text-base text-dark">Subtotal</Text>
-                    <Text className="text-base text-black">
+                </StyledText>
+              </StyledView>
+              <StyledView style={{paddingHorizontal: RPW(4)}}>
+                <StyledView className="my-3 p-2">
+                  <StyledView className="mb-1 flex-row justify-between items-center">
+                    <StyledText className="text-base text-dark">
+                      Subtotal
+                    </StyledText>
+                    <StyledText className="text-base text-black">
                       {'₹'}
                       {booking.BookingPayment.subtotal}
-                    </Text>
-                  </View>
-                  <View className="mb-1 flex-row justify-between items-center">
-                    <Text className="text-base text-dark">
+                    </StyledText>
+                  </StyledView>
+                  <StyledView className="mb-1 flex-row justify-between items-center">
+                    <StyledText className="text-base text-dark">
                       Taxes and Fee (18%)
-                    </Text>
-                    <Text className="text-base text-black">
+                    </StyledText>
+                    <StyledText className="text-base text-black">
                       {'₹'}
                       {booking.BookingPayment.tax_amount}
-                    </Text>
-                  </View>
-                  <View className="mb-1 flex-row justify-between items-center">
-                    <Text className="text-base text-dark">Discount</Text>
-                    <Text className="text-base text-black">
+                    </StyledText>
+                  </StyledView>
+                  <StyledView className="mb-1 flex-row justify-between items-center">
+                    <StyledText className="text-base text-dark">
+                      Discount
+                    </StyledText>
+                    <StyledText className="text-base text-black">
                       {'₹'}
                       {booking.BookingPayment.discount_amount}
-                    </Text>
-                  </View>
-                  <View className="mb-1 flex-row justify-between">
-                    <View>
-                      <Text className="text-base text-black font-medium">
+                    </StyledText>
+                  </StyledView>
+                  <StyledView className="mb-1 flex-row justify-between">
+                    <StyledView>
+                      <StyledText className="text-base text-black font-medium">
                         Amount paid
-                      </Text>
-                    </View>
-                    <Text className="text-base text-black font-medium">
+                      </StyledText>
+                    </StyledView>
+                    <StyledText className="text-base text-black font-medium">
                       {'₹'}
                       {booking.BookingPayment.advance_payment}
-                    </Text>
-                  </View>
-                  <View>
-                    <Text
+                    </StyledText>
+                  </StyledView>
+                  <StyledView>
+                    <StyledText
                       numberOfLines={1}
                       ellipsizeMode="clip"
-                      className="text-lightGrey">
-                      {
-                        '-------------------------------------------------------------------------------------------------------'
-                      }
-                    </Text>
-                  </View>
-                  <View className="mb-1 flex-row justify-between">
-                    <View>
-                      <Text className="text-base text-black font-bold">
+                      className="mt-2 h-3 border-dashed border-t border-gray"
+                    />
+                  </StyledView>
+                  <StyledView className="mb-1 flex-row justify-between">
+                    <StyledView>
+                      <StyledText className="text-base text-black font-bold">
                         Total
-                      </Text>
-                    </View>
-                    <Text className="text-base text-black font-bold">
+                      </StyledText>
+                    </StyledView>
+                    <StyledText className="text-base text-black font-bold">
                       {'₹'}
                       {(
                         parseFloat(booking.BookingPayment.total_amount) -
                         parseFloat(booking.BookingPayment.advance_payment)
                       ).toFixed(2)}
-                    </Text>
-                  </View>
-                  <View className="my-3 h-0.5 bg-lightGrey" />
-                  <View className="mb-1 flex-row items-center justify-between">
-                    <Text className="text-base text-black font-medium">
+                    </StyledText>
+                  </StyledView>
+                  <StyledView className="my-3 h-0.5 bg-lightGrey" />
+                  <StyledView className="mb-1 flex-row items-center justify-between">
+                    <StyledText className="text-base text-black font-medium">
                       Payment mode
-                    </Text>
-                    <Text className="text-base text-black first-letter:capitalize">
+                    </StyledText>
+                    <StyledText className="text-base text-black first-letter:capitalize">
                       {booking.BookingPayment.payment_method === 'net_banking'
                         ? 'Net Banking'
                         : booking.BookingPayment.payment_method}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </View>
+                    </StyledText>
+                  </StyledView>
+                </StyledView>
+              </StyledView>
+            </StyledView>
           </>
         )}
 
-        {booking.status === 'cancelled' && <View className="mb-10" />}
-      </ScrollView>
-    </SafeAreaView>
+        {booking.status === 'cancelled' && <StyledView className="mb-10" />}
+      </StyledScrollView>
+    </StyledSafeAreaView>
   );
 };

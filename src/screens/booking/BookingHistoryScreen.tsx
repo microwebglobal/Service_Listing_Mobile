@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  ActivityIndicator,
   Dimensions,
   FlatList,
   SafeAreaView,
@@ -9,13 +8,14 @@ import {
   Image,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Booking} from './types';
+import {styled} from 'nativewind';
 import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
 import AppHeader from '../../components/AppHeader';
 import {useFocusEffect} from '@react-navigation/native';
-import {BookingCard} from '../../components/BookingCard';
+import {Booking, BookingCard} from '../../components/BookingCard';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import LottieView from 'lottie-react-native';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -25,6 +25,12 @@ const RPW = (percentage: number) => {
 const RPH = (percentage: number) => {
   return (percentage / 100) * screenHeight;
 };
+
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledImage = styled(Image);
+const StyledScrollView = styled(ScrollView);
+const StyledSafeAreaView = styled(SafeAreaView);
 const Tab = createMaterialTopTabNavigator();
 
 export const BookingHistoryScreen = () => {
@@ -58,11 +64,11 @@ export const BookingHistoryScreen = () => {
     return (
       <>
         {badgeCountRef.current > 0 && (
-          <View className="z-10 bg-primary w-5 h-5 rounded-full items-center justify-center absolute top-2 right-2">
-            <Text className="text-sm text-white font-normal">
+          <StyledView className="z-10 bg-primary w-5 h-5 rounded-full items-center justify-center absolute top-2 right-2">
+            <StyledText className="text-sm text-white font-normal">
               {badgeCountRef.current}
-            </Text>
-          </View>
+            </StyledText>
+          </StyledView>
         )}
       </>
     );
@@ -86,7 +92,7 @@ export const BookingHistoryScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <StyledSafeAreaView className="flex-1 bg-white">
       <AppHeader back={true} title="Booking History" />
       <Tab.Navigator initialRouteName="Completed" screenOptions={screenOptions}>
         <Tab.Screen
@@ -111,7 +117,7 @@ export const BookingHistoryScreen = () => {
           }}
         />
       </Tab.Navigator>
-    </SafeAreaView>
+    </StyledSafeAreaView>
   );
 };
 
@@ -154,30 +160,35 @@ const FetchBooking: React.FC<FetchBookingProps> = ({status, badgeCountRef}) => {
 
   if (isLoading) {
     return (
-      <View className="items-center justify-center flex-1 bg-white">
-        <ActivityIndicator size="large" color={Colors.Black} />
-      </View>
+      <StyledView className="items-center justify-center flex-1 bg-white">
+        <LottieView
+          source={require('../../assets/animations/loading.json')}
+          autoPlay
+          loop
+          style={{width: '60%', height: '10%'}}
+        />
+      </StyledView>
     );
   }
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <ScrollView
+    <StyledSafeAreaView className="flex-1 bg-white">
+      <StyledScrollView
         className="flex-grow py-1"
         showsVerticalScrollIndicator={false}
         style={{marginHorizontal: RPW(4)}}>
-        <View className="mb-5">
+        <StyledView className="mb-5">
           {bookings.length === 0 ? (
-            <View className="justify-center" style={{height: RPH(50)}}>
-              <View className="items-center">
-                <Image
+            <StyledView className="justify-center" style={{height: RPH(50)}}>
+              <StyledView className="items-center">
+                <StyledImage
                   source={require('../../assets/app-images/no_booking.png')}
                   className="w-12 h-12"
                 />
-                <Text className="mt-1 text-base text-gray">
+                <StyledText className="mt-1 text-base text-gray">
                   No booking found.
-                </Text>
-              </View>
-            </View>
+                </StyledText>
+              </StyledView>
+            </StyledView>
           ) : (
             <FlatList
               data={bookings}
@@ -187,14 +198,19 @@ const FetchBooking: React.FC<FetchBookingProps> = ({status, badgeCountRef}) => {
               renderItem={({item}) => _renderBookings(item)}
               ListFooterComponent={
                 isLoading ? (
-                  <ActivityIndicator size={'small'} color={Colors.Primary} />
+                  <LottieView
+                    source={require('../../assets/animations/loading.json')}
+                    autoPlay
+                    loop
+                    style={{width: '60%', height: '10%'}}
+                  />
                 ) : null
               }
             />
           )}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </StyledView>
+      </StyledScrollView>
+    </StyledSafeAreaView>
   );
 };
 

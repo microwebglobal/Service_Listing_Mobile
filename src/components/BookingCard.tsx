@@ -1,10 +1,11 @@
 import {View, Text, Image, TouchableOpacity} from 'react-native';
-import React, {} from 'react';
+import React from 'react';
 import {SERVER_BASE} from '@env';
+import {styled} from 'nativewind';
 import classNames from 'classnames';
 import {useNav} from '../navigation/RootNavigation';
-import { BookingItem } from '../screens/booking/BookingDetailsScreen';
-import { BookingPayment } from '../screens/booking/types';
+import {BookingPayment} from '../screens/booking/types';
+import {BookingItem} from '../screens/booking/BookingDetailsScreen';
 
 export interface Booking {
   booking_id: string;
@@ -21,6 +22,11 @@ export interface Booking {
   BookingItems: Array<BookingItem>;
   BookingPayment: BookingPayment;
 }
+
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledImage = styled(Image);
+const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
   const navigation = useNav();
@@ -43,39 +49,39 @@ export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
     booking.status === 'in_progress'
   ) {
     return (
-      <View className="my-1 mx-1 bg-white rounded-lg border border-lightGrey shadow-sm shadow-black">
-        <TouchableOpacity
+      <StyledView className="my-1 mx-1 bg-white rounded-lg border border-lightGrey shadow-sm shadow-black">
+        <StyledTouchableOpacity
           onPress={() => {
             navigation.navigate('BookingDetails', {booking});
           }}>
-          <View className="p-3 rounded-lg">
-            <View className="">
-              <View className="flex-row items-center space-x-4">
-                <View className="bg-lightGrey rounded-lg">
+          <StyledView className="p-3 rounded-lg">
+            <StyledView className="">
+              <StyledView className="flex-row items-center space-x-4">
+                <StyledView className="bg-lightGrey rounded-lg">
                   {booking.BookingItems[0]?.serviceItem ? (
-                    <Image
+                    <StyledImage
                       source={{
                         uri: `${SERVER_BASE}${booking.BookingItems[0].serviceItem.icon_url}`,
                       }}
                       className="w-12 h-12 rounded-lg"
                     />
                   ) : (
-                    <Image
+                    <StyledImage
                       source={{
                         uri: `${SERVER_BASE}${booking.BookingItems[0].packageItem.icon_url}`,
                       }}
                       className="w-12 h-12 rounded-lg"
                     />
                   )}
-                </View>
-                <View>
-                  <Text
+                </StyledView>
+                <StyledView>
+                  <StyledText
                     numberOfLines={1}
                     className="text-base text-black font-medium">
                     Saloon for women
-                  </Text>
+                  </StyledText>
 
-                  <Text className="text-sm text-dark">
+                  <StyledText className="text-sm text-dark">
                     {new Date(booking.booking_date).toLocaleString('en-us', {
                       weekday: 'short',
                       month: 'short',
@@ -83,13 +89,15 @@ export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
                     })}{' '}
                     {' at '}
                     {convertTo12HourFormat(booking.start_time)}
-                  </Text>
-                </View>
-              </View>
+                  </StyledText>
+                </StyledView>
+              </StyledView>
 
-              <View className="mt-1 flex-row justify-between items-center">
-                <Text className="text-sm text-black">Payment status</Text>
-                <View
+              <StyledView className="mt-1 flex-row justify-between items-center">
+                <StyledText className="text-sm text-black">
+                  Payment status
+                </StyledText>
+                <StyledView
                   className={classNames(
                     `px-2 , ${
                       booking.BookingPayment.payment_status === 'completed'
@@ -102,63 +110,63 @@ export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
                         : 'bg-red-100'
                     }`,
                   )}>
-                  <Text className="text-sm text-black first-letter:capitalize">
+                  <StyledText className="text-sm text-black first-letter:capitalize">
                     {booking.BookingPayment.payment_status ===
                     'advance_only_paid'
                       ? 'Advance Paid'
                       : booking.BookingPayment.payment_status}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
+                  </StyledText>
+                </StyledView>
+              </StyledView>
+            </StyledView>
+          </StyledView>
+        </StyledTouchableOpacity>
+      </StyledView>
     );
   } else {
     // Booking Card for cancelled, completed, refunded, rejected
     return (
-      <View className="my-1 mx-1 bg-white rounded-lg border border-lightGrey shadow-sm shadow-black">
-        <TouchableOpacity
+      <StyledView className="my-1 mx-1 bg-white rounded-lg border border-lightGrey shadow-sm shadow-black">
+        <StyledTouchableOpacity
           onPress={() => {
             navigation.navigate('BookingDetails', {booking});
           }}>
-          <View className="p-3 rounded-lg">
-            <View className="flex-row items-center space-x-4">
-              <View className="bg-lightGrey rounded-lg">
-                <Image
+          <StyledView className="p-3 rounded-lg">
+            <StyledView className="flex-row items-center space-x-4">
+              <StyledView className="bg-lightGrey rounded-lg">
+                <StyledImage
                   source={{
                     uri: `${SERVER_BASE}${booking.BookingItems[0].serviceItem.icon_url}`,
                   }}
                   className="w-12 h-12 rounded-lg"
                 />
-              </View>
-              <View className="basis-3/4 space-y-1">
-                <Text
+              </StyledView>
+              <StyledView className="basis-3/4 space-y-1">
+                <StyledText
                   numberOfLines={1}
                   ellipsizeMode="tail"
                   className="text-base text-black font-medium">
                   {booking.BookingItems[0].serviceItem.name}
-                </Text>
+                </StyledText>
 
-                <View className="flex-row items-center">
-                  <Text className="text-base text-dark first-letter:capitalize">
+                <StyledView className="flex-row items-center">
+                  <StyledText className="text-base text-dark first-letter:capitalize">
                     {booking.status}
                     {' . '}
-                  </Text>
-                  <Text className="text-base text-dark">
+                  </StyledText>
+                  <StyledText className="text-base text-dark">
                     {new Date(booking.booking_date).toLocaleString('en-us', {
                       month: 'short',
                       day: 'numeric',
                       year: 'numeric',
                     })}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </View>
+                  </StyledText>
+                </StyledView>
+              </StyledView>
+            </StyledView>
+          </StyledView>
+        </StyledTouchableOpacity>
+      </StyledView>
     );
   }
 };
