@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
+import {styled} from 'nativewind';
+import {Colors} from '../utils/Colors';
 import {SearchBar} from '@rneui/themed';
 import {StyleSheet, View} from 'react-native';
-import {Colors} from '../utils/Colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface SearchBarProps {
@@ -10,19 +11,23 @@ interface SearchBarProps {
   onSearch: (text: string) => void;
 }
 
-export const SearchBarComponent = ({placeholder, iconName, onSearch}: SearchBarProps) => {
+const StyledView = styled(View);
+
+export const SearchBarComponent = ({
+  placeholder,
+  iconName,
+  onSearch,
+}: SearchBarProps) => {
   const [searchText, setSearchText] = useState<string>();
   const updateSearch = (text: string) => {
     setSearchText(text);
   };
 
-  const icon = (
-    <Ionicons name={iconName} size={20} color={Colors.Dark} />
-  );
+  const icon = <Ionicons name={iconName} size={20} color={Colors.Dark} />;
 
   return (
-    <View className="flex-row items-center">
-      <View className="flex-1 w-auto">
+    <StyledView className="flex-row items-center">
+      <StyledView className="flex-1 w-auto">
         <SearchBar
           placeholder={placeholder}
           placeholderTextColor={Colors.Gray}
@@ -40,8 +45,8 @@ export const SearchBarComponent = ({placeholder, iconName, onSearch}: SearchBarP
           }}
           returnKeyType="search"
         />
-      </View>
-    </View>
+      </StyledView>
+    </StyledView>
   );
 };
 

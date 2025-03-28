@@ -7,8 +7,9 @@ import {
   Image,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import OfferCardImages from '../data/carousel';
+import {styled} from 'nativewind';
 import classNames from 'classnames';
+import OfferCardImages from '../data/carousel';
 
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
@@ -24,6 +25,10 @@ interface CarouselProps {
   id: string;
   imageLink: string;
 }
+
+const StyledView = styled(View);
+const StyledImage = styled(Image);
+const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const Carousel = () => {
   let flatListRef = useRef<FlatList<CarouselProps> | null>();
@@ -63,7 +68,7 @@ export const Carousel = () => {
   });
 
   return (
-    <View>
+    <StyledView>
       <FlatList
         className="mt-4 bg-white"
         showsHorizontalScrollIndicator={false}
@@ -74,7 +79,7 @@ export const Carousel = () => {
         decelerationRate="normal"
         data={OfferCardImages}
         renderItem={({item}) => {
-          return <Image source={item.imageLink} style={styles.Image} />;
+          return <StyledImage source={item.imageLink} style={styles.Image} />;
         }}
         keyExtractor={(item, index) => index.toString()}
         ref={ref => {
@@ -85,9 +90,9 @@ export const Carousel = () => {
         onViewableItemsChanged={onViewRef.current}
       />
 
-      <View className="flex-row justify-center my-5">
+      <StyledView className="flex-row justify-center my-5">
         {OfferCardImages.map(({}, index: number) => (
-          <TouchableOpacity
+          <StyledTouchableOpacity
             className={classNames('w-2 h-1 mx-[1] bg-lightGrey rounded-lg', {
               'bg-black': index === currentIndex,
             })}
@@ -95,8 +100,8 @@ export const Carousel = () => {
             onPress={() => scrollToIndex(index)}
           />
         ))}
-      </View>
-    </View>
+      </StyledView>
+    </StyledView>
   );
 };
 

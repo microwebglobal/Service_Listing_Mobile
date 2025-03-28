@@ -3,8 +3,9 @@ import React from 'react';
 import RNDateTimePicker, {
   DateTimePickerAndroid,
 } from '@react-native-community/datetimepicker';
-import Feather from 'react-native-vector-icons/Feather';
+import { styled } from 'nativewind';
 import {Colors} from '../utils/Colors';
+import Feather from 'react-native-vector-icons/Feather';
 
 interface Props {
   mode: string;
@@ -21,6 +22,9 @@ export default function DateTimePicker(props: Props) {
   }
   return null;
 }
+
+const StyledView = styled(View);
+const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const AndroidDateTimePicker: React.FC<Props> = ({
   mode,
@@ -41,15 +45,15 @@ export const AndroidDateTimePicker: React.FC<Props> = ({
   };
 
   return (
-    <View className="p-2 items-center justify-between">
-      <TouchableOpacity onPress={showDateTimePicker}>
+    <StyledView className="p-2 items-center justify-between">
+      <StyledTouchableOpacity onPress={showDateTimePicker}>
         {mode === 'date' ? (
           <Feather name="calendar" size={26} color={Colors.Dark} />
         ) : (
           <Feather name="clock" size={26} color={Colors.Dark} />
         )}
-      </TouchableOpacity>
-    </View>
+      </StyledTouchableOpacity>
+    </StyledView>
   );
 };
 

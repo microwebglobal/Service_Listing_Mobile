@@ -1,16 +1,21 @@
 import {View, Text, TouchableOpacity, FlatList, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
+import {Button} from './rneui';
+import {SERVER_BASE} from '@env';
+import classNames from 'classnames';
+import { styled } from 'nativewind';
+import {Colors} from '../utils/Colors';
+import {useAppSelector} from '../redux';
+import {useDispatch} from 'react-redux';
+import {instance} from '../api/instance';
+import Toast from 'react-native-toast-message';
+import {addItem} from '../redux/cart/cart.slice';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {Service, ServiceItem} from '../screens/category/ServiceTypeScreen';
-import {instance} from '../api/instance';
-import {Button} from './rneui';
-import classNames from 'classnames';
-import {Colors} from '../utils/Colors';
-import {useDispatch} from 'react-redux';
-import {addItem} from '../redux/cart/cart.slice';
-import Toast from 'react-native-toast-message';
-import {SERVER_BASE} from '@env';
-import {useAppSelector} from '../redux';
+
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledImage = styled(Image);
 
 export const RenderService = ({service}: {service: Service}) => {
   const dispatch = useDispatch();
@@ -78,38 +83,38 @@ export const RenderService = ({service}: {service: Service}) => {
 
   const _renderServiceItem = ({item}: {item: ServiceItem}) => {
     return (
-      <View className="rounded-lg shadow-sm shadow-black">
-        <View className="bg-white rounded-lg p-2">
-          <View className="flex-row justify-between space-x-2">
-            <View className="w-2/3">
-              <Text className="text-base text-black font-medium first-letter:capitalize">
+      <StyledView className="rounded-lg shadow-sm shadow-black">
+        <StyledView className="bg-white rounded-lg p-2">
+          <StyledView className="flex-row justify-between space-x-2">
+            <StyledView className="w-2/3">
+              <StyledText className="text-base text-black font-medium first-letter:capitalize">
                 {item.name}
-              </Text>
-              <Text className="my-1 text-base text-black font-bold">
+              </StyledText>
+              <StyledText className="my-1 text-base text-black font-bold">
                 {'₹'}
                 {item.base_price}
-              </Text>
+              </StyledText>
               {parseInt(item.advance_percentage, 10) !== 0 && (
-                <Text className="my-1 text-sm text-error">
+                <StyledText className="my-1 text-sm text-error">
                   {item.advance_percentage}
                   {'% Advanced Payment Required'}
-                </Text>
+                </StyledText>
               )}
-              <Text className="text-sm text-black overflow-clip">
+              <StyledText className="text-sm text-black overflow-clip">
                 {item.description}
-              </Text>
+              </StyledText>
               {item.is_home_visit && (
-                <Text className="my-2 text-sm text-error">
+                <StyledText className="my-2 text-sm text-error">
                   You need to visit service provider to get an service
-                </Text>
+                </StyledText>
               )}
-            </View>
-            <View className="items-center">
-              <Image
+            </StyledView>
+            <StyledView className="items-center">
+              <StyledImage
                 source={{uri: `${SERVER_BASE}${item.icon_url}`}}
                 style={{width: 90, height: 90, borderRadius: 8}}
               />
-              <View className="relative -mt-5 w-20 bg-black rounded-xl shadow-md shadow-black">
+              <StyledView className="relative -mt-5 w-20 bg-black rounded-xl shadow-md shadow-black">
                 <Button
                   secondary
                   title="Add"
@@ -118,23 +123,23 @@ export const RenderService = ({service}: {service: Service}) => {
                     showToast(item);
                   }}
                 />
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
+              </StyledView>
+            </StyledView>
+          </StyledView>
+        </StyledView>
+      </StyledView>
     );
   };
 
   return (
-    <View className="mb-5">
+    <StyledView className="mb-5">
       <TouchableOpacity
         onPress={async () => {
           setIsItemClicked(!isItemClicked);
         }}>
-        <View className="flex-row items-center bg-white">
+        <StyledView className="flex-row items-center bg-white">
           <SimpleLineIcons name={'wrench'} size={15} color={Colors.Black} />
-          <Text
+          <StyledText
             className={
               (classNames('first-letter:capitalize'),
               isItemClicked
@@ -142,8 +147,8 @@ export const RenderService = ({service}: {service: Service}) => {
                 : 'text-dark text-base font-medium ml-2')
             }>
             {service.name}
-          </Text>
-        </View>
+          </StyledText>
+        </StyledView>
       </TouchableOpacity>
       {isItemClicked && serviceItemData && (
         <FlatList
@@ -157,6 +162,6 @@ export const RenderService = ({service}: {service: Service}) => {
           renderItem={_renderServiceItem}
         />
       )}
-    </View>
+    </StyledView>
   );
 };

@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import React from 'react';
 import {StarRatingDisplay} from 'react-native-star-rating-widget';
+import {styled} from 'nativewind';
 
-// Get screen dimension
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 const RPW = (percentage: number) => {
@@ -20,6 +20,13 @@ const RPW = (percentage: number) => {
 const RPH = (percentage: number) => {
   return (percentage / 100) * screenHeight;
 };
+
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledImage = styled(Image);
+const StyledTouchableOpacity = styled(TouchableOpacity);
+const StyledFlatList = styled(FlatList);
+const StyledScrollView = styled(ScrollView);
 
 interface CardItem {
   id: string;
@@ -37,65 +44,71 @@ interface FeatureCardProps {
 export const FeaturedCard = ({featuredData}: FeatureCardProps) => {
   const _renderFeaturedItem = ({item}: any) => {
     return (
-      <View className="mr-5">
-        <TouchableOpacity
+      <StyledView className="mr-5">
+        <StyledTouchableOpacity
           className="pb-5 bg-white rounded-xl shadow-sm shadow-black"
           onPress={() => {}}>
-          <View className="overflow-hidden">
-            <Image
+          <StyledView className="overflow-hidden">
+            <StyledImage
               className="rounded-t-xl"
               source={item.imageURI}
               style={styles.Image}
             />
-          </View>
-          <View className="flex-row">
-            <View className="relative -top-40 left-5 px-3 py-1 basis-1/4 rounded-full bg-white">
-              <Text className="text-sm uppercase font-medium text-primary">
+          </StyledView>
+          <StyledView className="flex-row">
+            <StyledView className="relative -top-40 left-5 px-3 py-1 basis-1/4 rounded-full bg-white">
+              <StyledText className="text-sm uppercase font-medium text-primary">
                 {item.category}
-              </Text>
-            </View>
-          </View>
-          <View className="flex-row justify-end">
-            <View className="relative -top-10 right-5 px-3 py-1 basis-1/4 rounded-full bg-primary border-2 border-white">
-              <Text className="text-sm uppercase font-medium text-white">
+              </StyledText>
+            </StyledView>
+          </StyledView>
+          <StyledView className="flex-row justify-end">
+            <StyledView className="relative -top-10 right-5 px-3 py-1 basis-1/4 rounded-full bg-primary border-2 border-white">
+              <StyledText className="text-sm uppercase font-medium text-white">
                 ${item.price}
-              </Text>
-            </View>
-          </View>
-          <View className="-mt-10 ml-5 bg-white">
-            <View className="flex-row items-center gap-3">
+              </StyledText>
+            </StyledView>
+          </StyledView>
+          <StyledView className="-mt-10 ml-5 bg-white">
+            <StyledView className="flex-row items-center gap-3">
               <StarRatingDisplay
                 maxStars={5}
                 starSize={20}
                 rating={item.rating}
               />
-              <Text className="text-base font-medium">{item.rating}</Text>
-            </View>
-            <Text className="mt-2 text-xl font-medium text-black">
+              <StyledText className="text-base font-medium">
+                {item.rating}
+              </StyledText>
+            </StyledView>
+            <StyledText className="mt-2 text-xl font-medium text-black">
               {item.title}
               {'...'}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+            </StyledText>
+          </StyledView>
+        </StyledTouchableOpacity>
+      </StyledView>
     );
   };
 
   return (
-    <View className="py-3">
-      <View>
-        <View
+    <StyledView className="py-3">
+      <StyledView>
+        <StyledView
           className="my-2 flex-row justify-between items-center"
           style={{marginHorizontal: RPW(5)}}>
-          <Text className="text-lg font-medium text-black">Featured</Text>
+          <StyledText className="text-lg font-medium text-black">
+            Featured
+          </StyledText>
           <TouchableOpacity>
-            <Text className="text-dark">View All</Text>
+            <StyledText className="text-dark">View All</StyledText>
           </TouchableOpacity>
-        </View>
+        </StyledView>
 
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <View className="flex items-center">
-            <FlatList
+        <StyledScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}>
+          <StyledView className="flex items-center">
+            <StyledFlatList
               className="mt-2"
               style={{paddingHorizontal: RPW(5)}}
               horizontal={true}
@@ -105,10 +118,10 @@ export const FeaturedCard = ({featuredData}: FeatureCardProps) => {
               keyExtractor={(item: any) => item.id}
               renderItem={_renderFeaturedItem}
             />
-          </View>
-        </ScrollView>
-      </View>
-    </View>
+          </StyledView>
+        </StyledScrollView>
+      </StyledView>
+    </StyledView>
   );
 };
 

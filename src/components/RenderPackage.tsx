@@ -1,14 +1,16 @@
-import {View, Text, FlatList, ActivityIndicator} from 'react-native';
+import {View, Text, FlatList} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import {instance} from '../api/instance';
 import {Button} from './rneui';
-import {RenderPackageItem} from './RenderPackageItem';
-import {useDispatch} from 'react-redux';
-import {addMultipleItems} from '../redux/cart/cart.slice';
-import {ItemEntity} from '../redux/cart/cart.entity';
-import Toast from 'react-native-toast-message';
-import Feather from 'react-native-vector-icons/Feather';
+import {styled} from 'nativewind';
 import {Colors} from '../utils/Colors';
+import {useDispatch} from 'react-redux';
+import {instance} from '../api/instance';
+import LottieView from 'lottie-react-native';
+import Toast from 'react-native-toast-message';
+import {ItemEntity} from '../redux/cart/cart.entity';
+import {RenderPackageItem} from './RenderPackageItem';
+import Feather from 'react-native-vector-icons/Feather';
+import {addMultipleItems} from '../redux/cart/cart.slice';
 
 export interface PackageItem {
   item_id: string;
@@ -48,6 +50,9 @@ export interface Package {
   PackageSections: Array<PackageSections>;
   default_price: number;
 }
+
+const StyledView = styled(View);
+const StyledText = styled(Text);
 
 export const RenderPackage = ({typeId}: {typeId: string}) => {
   const dispatch = useDispatch();
@@ -121,34 +126,34 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
 
   const _renderPackage = ({item}: {item: Package}) => {
     return (
-      <View className="rounded-lg shadow-sm shadow-black">
-        <View className="bg-white rounded-lg p-2">
+      <StyledView className="rounded-lg shadow-sm shadow-black">
+        <StyledView className="bg-white rounded-lg p-2">
           {!isItemClicked && (
             <>
-              <Text className="text-base text-black font-medium first-letter:capitalize">
+              <StyledText className="text-base text-black font-medium first-letter:capitalize">
                 {item.name}
-              </Text>
-              <View className="flex-row justify-between items-center space-x-2">
-                <View className="w-1/2 align-top">
-                  <Text className="text-sm text-dark overflow-clip">
+              </StyledText>
+              <StyledView className="flex-row justify-between items-center space-x-2">
+                <StyledView className="w-1/2 align-top">
+                  <StyledText className="text-sm text-dark overflow-clip">
                     {item.description}
-                  </Text>
-                  <View className="flex-row items-center space-x-2">
-                    <Text className="text-sm text-dark overflow-clip">
+                  </StyledText>
+                  <StyledView className="flex-row items-center space-x-2">
+                    <StyledText className="text-sm text-dark overflow-clip">
                       {'Service Duration: '}
-                    </Text>
-                    <Text className="text-sm text-dark overflow-clip">
+                    </StyledText>
+                    <StyledText className="text-sm text-dark overflow-clip">
                       {item.duration_hours} {'h'} {item.duration_minutes} {'m'}
-                    </Text>
-                  </View>
-                </View>
+                    </StyledText>
+                  </StyledView>
+                </StyledView>
 
-                <View className="items-end">
-                  <Text className="text-base text-black font-bold shadow-sm">
+                <StyledView className="items-end">
+                  <StyledText className="text-base text-black font-bold shadow-sm">
                     {'₹'}
                     {calculateDefaultPrice(item)}
-                  </Text>
-                  <View className="my-2 bg-black rounded-xl shadow-md shadow-black">
+                  </StyledText>
+                  <StyledView className="my-2 bg-black rounded-xl shadow-md shadow-black">
                     <Button
                       secondary
                       title="Customize"
@@ -158,9 +163,9 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
                         addDefaultItemsToCart();
                       }}
                     />
-                  </View>
-                </View>
-              </View>
+                  </StyledView>
+                </StyledView>
+              </StyledView>
             </>
           )}
 
@@ -169,34 +174,34 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
             <>
               {item.PackageSections.map((section: PackageSections) => {
                 return (
-                  <View key={section.section_id} className="mb-2">
-                    <View className="mb-2">
-                      <Text className="mb-1 text-base text-black font-medium first-letter:capitalize">
+                  <StyledView key={section.section_id} className="mb-2">
+                    <StyledView className="mb-2">
+                      <StyledText className="mb-1 text-base text-black font-medium first-letter:capitalize">
                         {section.name}
-                      </Text>
-                      <Text className="text-sm text-black overflow-clip">
+                      </StyledText>
+                      <StyledText className="text-sm text-black overflow-clip">
                         {section.description}
-                      </Text>
-                    </View>
+                      </StyledText>
+                    </StyledView>
 
                     <RenderPackageItem
                       packageItems={section.PackageItems}
                       cartItems={cartItems}
                       onPress={() => calculatePackagePrice()}
                     />
-                    <View className="my-4 h-0.5 bg-lightGrey" />
-                  </View>
+                    <StyledView className="my-4 h-0.5 bg-lightGrey" />
+                  </StyledView>
                 );
               })}
 
-              <View className="flex-row justify-between">
-                <Text className="text-base text-black">Total</Text>
-                <Text className="text-base text-black font-bold">
+              <StyledView className="flex-row justify-between">
+                <StyledText className="text-base text-black">Total</StyledText>
+                <StyledText className="text-base text-black font-bold">
                   {'₹'}
                   {packagePrice}
-                </Text>
-              </View>
-              <View className="mb-2 mt-3 bg-black rounded-xl shadow-sm shadow-black">
+                </StyledText>
+              </StyledView>
+              <StyledView className="mb-2 mt-3 bg-black rounded-xl shadow-sm shadow-black">
                 <Button
                   primary
                   title="Add to Cart"
@@ -207,32 +212,37 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
                     showToast(item.name);
                   }}
                 />
-              </View>
+              </StyledView>
             </>
           )}
-        </View>
-      </View>
+        </StyledView>
+      </StyledView>
     );
   };
 
   if (isLoading) {
     return (
-      <View className="items-center justify-center flex-1 bg-white">
-        <ActivityIndicator size="large" color={Colors.Black} />
-      </View>
+      <StyledView className="items-center justify-center flex-1 bg-white">
+        <LottieView
+          source={require('../assets/animations/loading.json')}
+          autoPlay
+          loop
+          style={{width: '60%', height: '10%'}}
+        />
+      </StyledView>
     );
   }
   return (
-    <View>
+    <StyledView>
       {packageData?.length !== 0 && (
-        <View className="mb-1 flex-row items-center bg-white space-x-2">
-          <View className="bg-lightGrey rounded-lg">
+        <StyledView className="mb-1 flex-row items-center bg-white space-x-2">
+          <StyledView className="bg-lightGrey rounded-lg">
             <Feather name={'package'} size={15} color={Colors.Black} />
-          </View>
-          <Text className="text-base text-dark font-medium">
+          </StyledView>
+          <StyledText className="text-base text-dark font-medium">
             Available Packages
-          </Text>
-        </View>
+          </StyledText>
+        </StyledView>
       )}
 
       <FlatList
@@ -245,6 +255,6 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
         keyExtractor={(item: Package) => item.type_id}
         renderItem={_renderPackage}
       />
-    </View>
+    </StyledView>
   );
 };
