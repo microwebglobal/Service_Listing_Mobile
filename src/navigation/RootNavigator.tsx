@@ -9,7 +9,7 @@ import {OnboardingScreen} from '../screens/splash/OnBoardingScreen';
 import {VerificationScreen} from '../screens/verification/VerificationScreen';
 import {LoginSuccessScreen} from '../screens/signin/LoginSuccess';
 import {SignUpScreen} from '../screens/signup/SignUpScreen';
-import {SelectLocation} from '../screens/location/SelectLocation';
+import {SelectLocation} from '../screens/signup/SelectLocation';
 import {TabNavigator} from './TabNavigator';
 import {ProfileScreen} from '../screens/profile/ProfileScreen';
 import {SubCategoryScreen} from '../screens/category/SubCategoryScreen';
@@ -72,8 +72,6 @@ export const ProfileNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen name="AccountScreen" component={AccountScreen} />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
     </Stack.Navigator>
   );
 };
@@ -91,9 +89,7 @@ export const RootNavigator: React.FC = () => {
     <NavigationContainer
       linking={linking}
       fallback={<ActivityIndicator animating />}>
-      <Stack.Navigator
-        initialRouteName="TabNavigator"
-        screenOptions={screenOptions}>
+      <Stack.Navigator initialRouteName="Splash" screenOptions={screenOptions}>
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
@@ -120,6 +116,8 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="BookingHistory" component={BookingHistoryScreen} />
         <Stack.Screen name="Terms" component={TermsScreen} />
         <Stack.Screen name="AboutUs" component={AboutUsScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

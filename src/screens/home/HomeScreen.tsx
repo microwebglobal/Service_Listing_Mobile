@@ -1,32 +1,33 @@
 import {
   View,
   Text,
-  BackHandler,
-  SafeAreaView,
-  TouchableOpacity,
+  Alert,
+  Image,
+  FlatList,
+  Animated,
   Dimensions,
   StyleSheet,
-  FlatList,
+  BackHandler,
+  SafeAreaView,
   RefreshControl,
-  ActivityIndicator,
-  Animated,
-  Alert,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {useFocusEffect} from '@react-navigation/native';
+import {SERVER_BASE} from '@env';
+import {styled} from 'nativewind';
 import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
 import {instance} from '../../api/instance';
 import offerCardData from '../../data/offerList';
 import featuredData from '../../data/featuredData';
-import {Address, Category, City} from '../category/CategoryScreen';
+import {Carousel} from '../../components/Carousel';
 import {useNav} from '../../navigation/RootNavigation';
+import {useFocusEffect} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {FeaturedCard} from '../../components/FeaturedCard';
+import {LoadingIndicator} from '../../components/LoadingIndicator';
+import {Address, Category, City} from '../category/CategoryScreen';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import {Carousel} from '../../components/Carousel';
-import {SERVER_BASE} from '@env';
-import {Image} from '@rneui/themed';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -36,6 +37,15 @@ const RPW = (percentage: number) => {
 const RPH = (percentage: number) => {
   return (percentage / 100) * screenHeight;
 };
+
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledImage = styled(Image);
+const StyledFlatList = styled(FlatList);
+const StyledSafeAreaView = styled(SafeAreaView);
+const StyledAnimatedView = styled(Animated.View);
+const StyledTouchableOpacity = styled(TouchableOpacity);
+const StyledAnimatedScrollView = styled(Animated.ScrollView);
 
 export const HomeScreen = () => {
   const navigation = useNav();
@@ -50,9 +60,9 @@ export const HomeScreen = () => {
   const localCart = useAppSelector(state => state.cart.cart) || [];
   // Animated scroll
   const scrolling = useRef(new Animated.Value(0)).current;
-  const diffClamp = Animated.diffClamp(scrolling, 10, 200);
+  const diffClamp = Animated.diffClamp(scrolling, 0, 200);
   const translation = diffClamp.interpolate({
-    inputRange: [10, 200],
+    inputRange: [0, 200],
     outputRange: [0, -100],
     extrapolate: 'clamp',
   });
@@ -129,89 +139,85 @@ export const HomeScreen = () => {
 
   const _renderOfferItem = ({item}: any) => {
     return (
-      <View className="mb-5">
-        <TouchableOpacity
+      <StyledView className="mb-5">
+        <StyledTouchableOpacity
           className="pb-5 bg-lightGrey rounded-xl"
           onPress={() => {}}>
-          <View className="overflow-hidden">
-            <Image
+          <StyledView className="overflow-hidden">
+            <StyledImage
               className="rounded-t-xl "
               source={item.imageURI}
               style={styles.Image}
             />
-          </View>
-          <View className="mt-2 ml-5">
-            <Text className="mt-2 text-xl font-medium text-dark first-letter:capitalize">
+          </StyledView>
+          <StyledView className="mt-2 ml-5">
+            <StyledText className="mt-2 text-xl font-medium text-dark first-letter:capitalize">
               {item.description}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+            </StyledText>
+          </StyledView>
+        </StyledTouchableOpacity>
+      </StyledView>
     );
   };
 
   const _renderCategoryItem = ({item}: any) => {
     return (
-      <View className="flex-wrap basis-[35] mt-3">
-        <TouchableOpacity
+      <StyledView className="flex-wrap basis-[35] mt-3">
+        <StyledTouchableOpacity
           onPress={() => {
             navigation.navigate('TabNavigator', {
               screen: 'Service',
             });
           }}>
-          <View className="flex-1">
-            <Image
+          <StyledView className="flex-1">
+            <StyledImage
               source={{uri: `${SERVER_BASE}${item.icon_url}`}}
-              containerStyle={styles.categoryImage}
+              style={styles.categoryImage}
             />
-            <Text
+            <StyledText
               numberOfLines={2}
               ellipsizeMode="tail"
               className="my-1 text-sm text-center text-black">
               {item.name}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+            </StyledText>
+          </StyledView>
+        </StyledTouchableOpacity>
+      </StyledView>
     );
   };
 
   if (isLoading) {
-    return (
-      <View className="items-center justify-center flex-1 bg-white">
-        <ActivityIndicator size="large" color={Colors.Black} />
-      </View>
-    );
+    return <LoadingIndicator />;
   }
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <StyledSafeAreaView className="flex-1 bg-white">
       {/* Header bar */}
-      <Animated.View
-        className="absolute top-0 right-0 left-0 z-10 bg-white shadow-md shadow-black"
+      <StyledAnimatedView
+        className="absolute top-4 right-0 left-0 z-10 bg-white shadow-md shadow-black"
         style={{
           transform: [{translateY: translation}],
           paddingHorizontal: RPW(4),
         }}>
-        <View className="flex-row items-center justify-between py-4">
-          <View className="basis-3/4">
-            <Text
+        <StyledView className="flex-row items-center justify-between py-4">
+          <StyledView className="">
+            <StyledText
               numberOfLines={1}
               ellipsizeMode="tail"
-              className="mb-1 text-lg font-medium text-black">
+              className="mb-1 text-lg font-PoppinsMedium text-black">
               {hour < 12 ? 'Good Morning,' : 'Good evening,'}{' '}
               {userName?.split(' ')[0]}!
-            </Text>
+            </StyledText>
 
             {primaryAddress && (
-              <TouchableOpacity
+              <StyledTouchableOpacity
                 onPress={() => {
                   navigation.navigate('SelectAddress', {prevScreen: 'Home'});
                 }}>
-                <View className="flex-row items-center basis-5/6 space-x-2">
-                  <Text
+                <StyledView className="flex-row items-center space-x-2">
+                  <StyledText
                     numberOfLines={1}
                     ellipsizeMode="tail"
-                    className="basis-5/6 text-base text-dark font-normal">
+                    className="text-sm text-dark font-PoppinsMedium">
                     {primaryAddress?.line2
                       ? primaryAddress.line1 +
                         ' ' +
@@ -219,24 +225,24 @@ export const HomeScreen = () => {
                         ', ' +
                         primaryAddress.city
                       : primaryAddress?.line1 + ', ' + primaryAddress?.city}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+                  </StyledText>
+                </StyledView>
+              </StyledTouchableOpacity>
             )}
-          </View>
+          </StyledView>
 
-          <View className="basis-1/4 flex-row justify-end items-center space-x-5">
-            <TouchableOpacity
+          <StyledView className="basis-1/4 flex-row justify-end items-center space-x-5">
+            <StyledTouchableOpacity
               onPress={() => {
                 navigation.navigate('SelectedItems');
               }}>
-              <View>
+              <StyledView>
                 {localCart?.length > 0 && (
-                  <View className="z-10 bg-primary w-5 h-5 rounded-full items-center justify-center absolute -top-2 -right-2">
-                    <Text className="text-sm text-white font-normal">
+                  <StyledView className="z-10 bg-primary w-5 h-5 rounded-full items-center justify-center absolute -top-2 -right-2">
+                    <StyledText className="text-sm text-white font-normal">
                       {localCart?.length}
-                    </Text>
-                  </View>
+                    </StyledText>
+                  </StyledView>
                 )}
 
                 <Ionicons
@@ -244,9 +250,9 @@ export const HomeScreen = () => {
                   size={26}
                   color={Colors.Black}
                 />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
+              </StyledView>
+            </StyledTouchableOpacity>
+            <StyledTouchableOpacity
               onPress={() => {
                 navigation.navigate('Notification');
               }}>
@@ -255,12 +261,12 @@ export const HomeScreen = () => {
                 size={25}
                 color={Colors.Black}
               />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Animated.View>
+            </StyledTouchableOpacity>
+          </StyledView>
+        </StyledView>
+      </StyledAnimatedView>
 
-      <Animated.ScrollView
+      <StyledAnimatedScrollView
         showsVerticalScrollIndicator={false}
         style={{marginBottom: tabBarHeight}}
         onScroll={Animated.event(
@@ -271,16 +277,16 @@ export const HomeScreen = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        <View className="mt-24">
+        <StyledView className="mt-28">
           <Carousel />
-        </View>
+        </StyledView>
 
-        <View style={{marginHorizontal: RPW(5)}}>
-          <Text className="text-lg text-black font-medium">
+        <StyledView style={{marginHorizontal: RPW(5)}}>
+          <StyledText className="text-lg text-black font-medium">
             Explore all services
-          </Text>
-          <View className="flex-1 justify-between">
-            <FlatList
+          </StyledText>
+          <StyledView className="flex-1 justify-between">
+            <StyledFlatList
               horizontal={false}
               numColumns={3}
               scrollEnabled={false}
@@ -289,15 +295,15 @@ export const HomeScreen = () => {
               keyExtractor={(item: any) => item.category_id}
               renderItem={_renderCategoryItem}
             />
-          </View>
-        </View>
+          </StyledView>
+        </StyledView>
 
-        <View className="my-4 h-2 bg-lightGrey" />
+        <StyledView className="my-4 h-2 bg-lightGrey" />
         <FeaturedCard featuredData={featuredData} />
-        <View className="my-4 h-2 bg-lightGrey" />
+        <StyledView className="my-4 h-2 bg-lightGrey" />
 
-        <View className="my-8" style={{marginHorizontal: RPW(5)}}>
-          <FlatList
+        <StyledView className="my-8" style={{marginHorizontal: RPW(5)}}>
+          <StyledFlatList
             horizontal={false}
             scrollEnabled={false}
             showsHorizontalScrollIndicator={false}
@@ -305,9 +311,9 @@ export const HomeScreen = () => {
             keyExtractor={(item: any) => item.id}
             renderItem={_renderOfferItem}
           />
-        </View>
-      </Animated.ScrollView>
-    </SafeAreaView>
+        </StyledView>
+      </StyledAnimatedScrollView>
+    </StyledSafeAreaView>
   );
 };
 
