@@ -2,14 +2,15 @@ import React, {useEffect} from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {RootNavigator} from './src/navigation/RootNavigator';
 import {ButtonProps, createTheme, ThemeProvider} from '@rneui/themed';
-import {Platform, StyleSheet} from 'react-native';
+import {Platform, StatusBar, StyleSheet} from 'react-native';
 import {Provider} from 'react-redux';
+import {useColorScheme} from 'nativewind';
 import {persistor, store} from './src/redux';
+import {Colors} from './src/utils/Colors';
+import messaging from '@react-native-firebase/messaging';
 import {PersistGate} from 'redux-persist/integration/react';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
-import {Colors} from './src/utils/Colors';
-import messaging from '@react-native-firebase/messaging';
 import PushNotification, {Importance} from 'react-native-push-notification';
 
 export const FONT_FAMILY = 'Poppins';
@@ -76,7 +77,7 @@ const theme = createTheme({
     grey0: '#788AA5',
     white: '#FFFFFF',
     black: '#000000',
-    error: '#C62B3B',
+    error: '#d33646',
   },
   darkColors: {
     primary: '#5f60b9',
@@ -84,7 +85,7 @@ const theme = createTheme({
     grey0: '#788AA5',
     white: '#FFFFFF',
     black: '#000000',
-    error: '#C62B3B',
+    error: '#d33646',
   },
   mode: 'light',
   components: {
@@ -118,7 +119,7 @@ const theme = createTheme({
       },
       buttonStyle: {
         borderRadius: props.size === 'sm' ? 8 : 10,
-        borderWidth: props.error || props.success ? 0 : 1,
+        borderWidth: props.error || props.success || props.secondary ? 0 : 1,
         borderColor: props.black
           ? themeColor.colors.black
           : props.primary
@@ -158,10 +159,19 @@ const toastConfig = {
 };
 
 function App(): React.JSX.Element {
+  const {colorScheme, setColorScheme} = useColorScheme();
+
   useEffect(() => {
+    StatusBar.setBarStyle(
+      colorScheme === 'light' ? 'dark-content' : 'light-content',
+    );
+    if (Platform.OS === 'android') {
+      StatusBar.setBackgroundColor(colorScheme === 'light' ? '#fff' : '#000');
+      StatusBar.setTranslucent(true);
+    }
     checkPermission();
     handleNotification();
-  }, []);
+  }, [colorScheme]);
 
   return (
     <Provider store={store}>
