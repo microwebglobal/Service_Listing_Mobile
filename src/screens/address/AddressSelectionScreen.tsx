@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useCallback, useState} from 'react';
-import {Screen, useNav} from '../../navigation/RootNavigation';
+import {styled} from 'nativewind';
 import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
 import AppHeader from '../../components/AppHeader';
@@ -16,6 +16,8 @@ import {useFocusEffect} from '@react-navigation/native';
 import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {SearchBarComponent} from '../../components/Searchbar';
+import {Screen, useNav} from '../../navigation/RootNavigation';
+import {LoadingIndicator} from '../../components/LoadingIndicator';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const screenWidth = Dimensions.get('window').width;
@@ -23,9 +25,15 @@ const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
 
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledScrollView = styled(ScrollView);
+const StyledTouchableOpacity = styled(TouchableOpacity);
+
 export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
   const navigation = useNav();
-  const {prevScreen} = route.params;
+  const {prevScreen, date, time} = route.params;
+  const [isLoading, setIsLoading] = useState(true);
   const [addressList, setAddressList] = useState<Array<Address>>([]);
 
   const fetchAddress = useCallback(() => {
@@ -35,6 +43,8 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
       });
     } catch (e) {
       console.log('Error ', e);
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -59,11 +69,11 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
 
   const _renderAddress = (address: Address) => {
     return (
-      <View
+      <StyledView
         key={address.id}
         style={{paddingHorizontal: RPW(6)}}
-        className="my-2 flex-row flex-wrap bg-lightGrey items-center justify-between">
-        <TouchableOpacity
+        className="flex-row flex-wrap border-b border-lightGrey items-center justify-between">
+        <StyledTouchableOpacity
           className="flex-1 py-5"
           onPress={() => {
             const selectedAddress: string = address.line2
@@ -77,11 +87,13 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
               : address.line1 + ', ' + address.city + ', ' + address.state;
             prevScreen === 'Home'
               ? setPrimaryAddress(address.id)
-              : navigation.navigate('ServiceSchedule', {
+              : navigation.replace('ServiceSchedule', {
                   address: selectedAddress,
+                  date: date,
+                  time: time,
                 });
           }}>
-          <View className="flex-row items-center gap-x-5 overflow-hidden">
+          <StyledView className="flex-row items-center gap-x-5 overflow-hidden">
             {address.type === 'work' ? (
               <MaterialIcons
                 name="work-outline"
@@ -94,7 +106,7 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
               <Octicons name="location" size={22} color={Colors.Black} />
             )}
             {address.line2 ? (
-              <Text
+              <StyledText
                 numberOfLines={2}
                 ellipsizeMode="tail"
                 className="basis-3/4 text-base text-black">
@@ -105,43 +117,50 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
                   address.city +
                   ', ' +
                   address.state}
-              </Text>
+              </StyledText>
             ) : (
-              <Text
+              <StyledText
                 numberOfLines={2}
                 ellipsizeMode="tail"
                 className="basis-3/4 text-base text-black">
                 {address.line1 + ', ' + address.city + ', ' + address.state}
-              </Text>
+              </StyledText>
             )}
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
+          </StyledView>
+        </StyledTouchableOpacity>
+        <StyledTouchableOpacity
           onPress={() => {
             navigation.navigate('AddressDetails', {address: address});
           }}>
           <MaterialIcons name="edit" size={18} color={Colors.Dark} />
-        </TouchableOpacity>
-      </View>
+        </StyledTouchableOpacity>
+      </StyledView>
     );
   };
 
+  if (isLoading) {
+    return <LoadingIndicator />;
+  }
   return (
-    <ScrollView className="bg-white" showsVerticalScrollIndicator={false}>
+    <StyledScrollView className="bg-white" showsVerticalScrollIndicator={false}>
       <AppHeader title={'Addresses'} back={true} />
-      <View className="my-5">
-        <View style={{paddingHorizontal: RPW(5)}}>
+      <StyledView className="my-5">
+        <StyledView style={{paddingHorizontal: RPW(5)}}>
           <SearchBarComponent
             placeholder={'Search for your location'}
             iconName={'search'}
             onSearch={(text: string) => {
               prevScreen === 'Home'
                 ? navigation.pop()
-                : navigation.navigate('ServiceSchedule', {address: text});
+                : navigation.replace('ServiceSchedule', {
+                    address: text,
+                    date,
+                    time,
+                  });
             }}
           />
 
-          <TouchableOpacity
+          <StyledTouchableOpacity
             className="my-5 flex-row items-center gap-x-3"
             onPress={() => {}}>
             <MaterialIcons
@@ -149,18 +168,18 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
               size={20}
               color={Colors.Primary}
             />
-            <Text className="text-base text-primary font-medium">
+            <StyledText className="text-base text-primary font-medium">
               Use current location
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View className="h-2 bg-lightGrey" />
+            </StyledText>
+          </StyledTouchableOpacity>
+        </StyledView>
+        <StyledView className="h-2 bg-lightGrey" />
 
-        <Text
+        <StyledText
           className="mt-5 mb-2 text-lg text-black"
           style={{paddingHorizontal: RPW(5)}}>
           Available Addresses
-        </Text>
+        </StyledText>
 
         <FlatList
           horizontal={false}
@@ -170,7 +189,7 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
           keyExtractor={item => item.id.toString()}
           renderItem={({item}) => _renderAddress(item)}
         />
-      </View>
-    </ScrollView>
+      </StyledView>
+    </StyledScrollView>
   );
 };
