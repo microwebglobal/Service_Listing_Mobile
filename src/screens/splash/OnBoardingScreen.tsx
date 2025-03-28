@@ -1,11 +1,12 @@
 import React from 'react';
 import {Dimensions, StyleSheet, Image, View} from 'react-native';
-import Onboarding from 'react-native-onboarding-swiper';
-import {useNav} from '../../navigation/RootNavigation';
-import {Colors} from '../../utils/Colors';
+import {styled} from 'nativewind';
 import classNames from 'classnames';
-import {FONT_FAMILY} from '../../../App';
 import {Button} from '@rneui/themed';
+import {FONT_FAMILY} from '../../../App';
+import {Colors} from '../../utils/Colors';
+import {useNav} from '../../navigation/RootNavigation';
+import Onboarding from 'react-native-onboarding-swiper';
 
 const screenHeight = Dimensions.get('window').height;
 const screenWidth = Dimensions.get('window').width;
@@ -16,6 +17,8 @@ const RPH = (percentage: number) => {
 const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
+
+const StyledView = styled(View);
 
 const backgroundColor = (isLight: boolean) =>
   isLight ? Colors.Primary : Colors.White;
@@ -74,7 +77,7 @@ const Skip = ({skipLabel, ...props}: any) => (
 
 const Dots = ({selected}: any) => {
   return (
-    <View
+    <StyledView
       className={classNames('h-2 w-2 mx-1 rounded-full bg-slate-400', {
         'bg-black': selected,
       })}
@@ -92,12 +95,10 @@ export const OnboardingScreen = () => {
       bottomBarColor={Colors.White}
       bottomBarHeight={RPH(15)}
       bottomBarHighlight={true}
-      // Custom Components Properties
       DoneButtonComponent={Done}
       SkipButtonComponent={Skip}
       NextButtonComponent={Next}
       DotComponent={Dots}
-      // Page Styles
       containerStyles={styles.ContainerStyle}
       //imageContainerStyles={styles.ImageContainerStyles}
       titleStyles={styles.TitleStyles}

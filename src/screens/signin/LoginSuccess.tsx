@@ -1,9 +1,13 @@
 import {View, Text} from 'react-native';
 import React, {useEffect} from 'react';
-import LottieView from 'lottie-react-native';
-import {Screen, useNav} from '../../navigation/RootNavigation';
-import {addressUpdate} from '../../redux/user/user.action';
+import {styled} from 'nativewind';
 import {useAppSelector} from '../../redux';
+import LottieView from 'lottie-react-native';
+import {addressUpdate} from '../../redux/user/user.action';
+import {Screen, useNav} from '../../navigation/RootNavigation';
+
+const StyledView = styled(View);
+const StyledText = styled(Text);
 
 export const LoginSuccessScreen: Screen<'LoginSuccess'> = () => {
   const navigation = useNav();
@@ -20,21 +24,21 @@ export const LoginSuccessScreen: Screen<'LoginSuccess'> = () => {
   }, [addressList, navigation, user.id]);
 
   return (
-    <View className="items-center justify-center flex-1 bg-white">
+    <StyledView className="items-center justify-center flex-1 bg-white">
       <LottieView
         source={require('../../assets/animations/animation.json')}
         autoPlay
         style={{width: '80%', height: '40%'}}
         speed={0.6}
       />
-      <View className="mx-10">
-        <Text className="text-2xl text-dark font-semibold text-center">
+      <StyledView className="mx-10">
+        <StyledText className="text-2xl text-dark font-semibold text-center">
           Congratulations!
-        </Text>
-        <Text className="mt-2 text-lg text-center">
+        </StyledText>
+        <StyledText className="mt-2 text-lg text-center">
           You have successfully logged in.
-        </Text>
-      </View>
-    </View>
+        </StyledText>
+      </StyledView>
+    </StyledView>
   );
 };

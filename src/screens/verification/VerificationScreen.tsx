@@ -1,35 +1,43 @@
 import {
-  Dimensions,
+  Text,
+  View,
   Keyboard,
-  KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
-  Text,
+  Dimensions,
+  SafeAreaView,
   TouchableOpacity,
-  View,
+  KeyboardAvoidingView,
 } from 'react-native';
 import React, {useState} from 'react';
-import {Screen, useNav} from '../../navigation/RootNavigation';
-import {Button} from '../../components/rneui';
-import {Colors} from '../../utils/Colors';
-import CountDown from 'react-native-countdown-component';
 import axios from 'axios';
 import {API_BASE} from '@env';
-import GoogleIcon from '../../assets/svgs/GoogleIcon';
+import {styled} from 'nativewind';
+import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
+import {Button} from '../../components/rneui';
 import AppHeader from '../../components/AppHeader';
-import {userLogin, userUpdate} from '../../redux/user/user.action';
+import GoogleIcon from '../../assets/svgs/GoogleIcon';
+import CountDown from 'react-native-countdown-component';
+import {Screen, useNav} from '../../navigation/RootNavigation';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
+import {userLogin, userUpdate} from '../../redux/user/user.action';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
-
 const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
 const RPH = (percentage: number) => {
   return (percentage / 100) * screenHeight;
 };
+
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledSafeAreaView = styled(SafeAreaView);
+const StyledScrollView = styled(ScrollView);
+const StyledKeyboardAvoidingView = styled(KeyboardAvoidingView);
+const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const VerificationScreen: Screen<'Verification'> = ({route}) => {
   const {phone} = route.params;
@@ -78,115 +86,123 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
   };
 
   return (
-    <KeyboardAvoidingView className="flex-1 bg-white">
-      <AppHeader back={true} />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={{
-          marginHorizontal: RPW(5),
-          paddingTop: RPH(5),
-        }}>
-        <View>
-          <View className="items-center mb-5">
-            <Text className="text-2xl text-black font-medium">Enter OTP</Text>
-            <Text className="mt-3 text-lg font-normal text-dark">
-              Enter the 6 Digit Code Sent To
-            </Text>
-            <Text className="mt-3 text-lg font-normal text-dark">
-              Your Phone
-            </Text>
-          </View>
+    <StyledSafeAreaView className="flex-1 bg-white">
+      <StyledKeyboardAvoidingView>
+        <AppHeader back={true} />
+        <StyledScrollView
+          showsVerticalScrollIndicator={false}
+          style={{
+            marginHorizontal: RPW(5),
+            paddingTop: RPH(5),
+          }}>
+          <StyledView>
+            <StyledView className="items-center mb-5">
+              <StyledText className="text-2xl text-black font-medium">
+                Enter OTP
+              </StyledText>
+              <StyledText className="mt-3 text-lg font-normal text-dark">
+                Enter the 6 Digit Code Sent To
+              </StyledText>
+              <StyledText className="mt-3 text-lg font-normal text-dark">
+                Your Phone
+              </StyledText>
+            </StyledView>
 
-          {/* OTP input */}
-          <View className="flex-1 my-2 items-start">
-            <OTPInputView
-              pinCount={6}
-              autoFocusOnLoad={true}
-              keyboardType="number-pad"
-              editable={true}
-              codeInputFieldStyle={styles.InputStyleBase}
-              codeInputHighlightStyle={styles.InputStyleHighLighted}
-              onCodeChanged={() => {
-                setError(false);
-                setIsValid(false);
-              }}
-              onCodeFilled={code => {
-                setOtp(code);
-              }}
-            />
-            {error && (
-              <Text className="text-error text-start">
-                {'Verification code is only 6 digit number'}
-              </Text>
-            )}
-            {!error && isValid && (
-              <Text className="text-error">{'Invalid or expired OTP'}</Text>
-            )}
-          </View>
+            {/* OTP input */}
+            <StyledView className="flex-1 my-2 items-start">
+              <OTPInputView
+                pinCount={6}
+                autoFocusOnLoad={true}
+                keyboardType="number-pad"
+                editable={true}
+                codeInputFieldStyle={styles.InputStyleBase}
+                codeInputHighlightStyle={styles.InputStyleHighLighted}
+                onCodeChanged={() => {
+                  setError(false);
+                  setIsValid(false);
+                }}
+                onCodeFilled={code => {
+                  setOtp(code);
+                }}
+              />
+              {error && (
+                <StyledText className="text-error text-start">
+                  {'Verification code is only 6 digit number'}
+                </StyledText>
+              )}
+              {!error && isValid && (
+                <StyledText className="text-error">
+                  {'Invalid or expired OTP'}
+                </StyledText>
+              )}
+            </StyledView>
 
-          <View className="mt-3 flex-row items-center">
-            <Text className="text-base font-normal text-dark">
-              OTP will expire in
-            </Text>
-            <CountDown
-              until={count}
-              size={15}
-              style={{width: RPW(8), height: 40}}
-              digitStyle={{backgroundColor: Colors.White}}
-              digitTxtStyle={{
-                color: Colors.Primary,
-              }}
-              timeToShow={['S']}
-              timeLabels={{s: undefined}}
-              running={true}
-            />
-            <Text className="text-base font-normal text-dark">seconds</Text>
-          </View>
+            <StyledView className="mt-3 flex-row items-center">
+              <StyledText className="text-base font-normal text-dark">
+                OTP will expire in
+              </StyledText>
+              <CountDown
+                until={count}
+                size={15}
+                style={{width: RPW(8), height: 40}}
+                digitStyle={{backgroundColor: Colors.White}}
+                digitTxtStyle={{
+                  color: Colors.Primary,
+                }}
+                timeToShow={['S']}
+                timeLabels={{s: undefined}}
+                running={true}
+              />
+              <StyledText className="text-base font-normal text-dark">
+                seconds
+              </StyledText>
+            </StyledView>
 
-          {/* Button */}
-          <View className="my-5">
-            <Button
-              loading={loading}
-              title={'Login'}
-              onPress={(Keyboard.dismiss(), submit)}
-              primary
-            />
-          </View>
+            {/* Button */}
+            <StyledView className="my-5">
+              <Button
+                loading={loading}
+                title={'Login'}
+                onPress={(Keyboard.dismiss(), submit)}
+                primary
+              />
+            </StyledView>
 
-          <View className="flex-row justify-center">
-            <Text className="mb-2 text-base font-normal text-dark">
-              Didn't receive the SMS?{'  '}
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                setCount(count + count * 0.0001);
-                resendOTP();
-              }}>
-              <Text className="mb-2 text-base font-medium text-primary underline">
-                Resend it
-              </Text>
-            </TouchableOpacity>
-          </View>
+            <StyledView className="flex-row justify-center">
+              <StyledText className="mb-2 text-base font-normal text-dark">
+                Didn't receive the SMS?{'  '}
+              </StyledText>
+              <StyledTouchableOpacity
+                onPress={() => {
+                  setCount(count + count * 0.0001);
+                  resendOTP();
+                }}>
+                <StyledText className="mb-2 text-base font-medium text-primary underline">
+                  Resend it
+                </StyledText>
+              </StyledTouchableOpacity>
+            </StyledView>
 
-          <View className="mt-12 justify-center items-center">
-            <View className="flex-row items-baseline">
-              <View className="w-full h-0.5 bg-slate-300" />
-              <View className="mx-3">
-                <Text className="mb-5 text-base font-medium">
-                  Or continue with
-                </Text>
-              </View>
-              <View className="w-full h-0.5 bg-slate-300" />
-            </View>
-            <TouchableOpacity
-              className="p-1 bg-lightGrey rounded-full"
-              onPress={() => {}}>
-              <GoogleIcon />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <StyledView className="mt-12 justify-center items-center">
+              <StyledView className="flex-row items-baseline">
+                <StyledView className="w-full h-0.5 bg-slate-300" />
+                <StyledView className="mx-3">
+                  <StyledText className="mb-5 text-base font-medium">
+                    Or continue with
+                  </StyledText>
+                </StyledView>
+                <StyledView className="w-full h-0.5 bg-slate-300" />
+              </StyledView>
+              <StyledTouchableOpacity
+                className="p-1 bg-lightGrey rounded-full"
+                onPress={() => {}}>
+                <GoogleIcon />
+              </StyledTouchableOpacity>
+            </StyledView>
+          </StyledView>
+        </StyledScrollView>
+      </StyledKeyboardAvoidingView>
+    </StyledSafeAreaView>
   );
 };
 

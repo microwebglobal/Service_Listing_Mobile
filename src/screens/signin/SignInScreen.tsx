@@ -1,19 +1,21 @@
 import {
-  Dimensions,
-  Keyboard,
-  KeyboardAvoidingView,
-  ScrollView,
   Text,
-  TouchableOpacity,
   View,
+  Keyboard,
+  Dimensions,
+  ScrollView,
+  SafeAreaView,
+  TouchableOpacity,
+  KeyboardAvoidingView,
 } from 'react-native';
 import React, {useState} from 'react';
-import {Controller, useForm} from 'react-hook-form';
-import {Button} from '../../components/rneui';
 import axios from 'axios';
 import {API_BASE} from '@env';
-import GoogleIcon from '../../assets/svgs/GoogleIcon';
+import {styled} from 'nativewind';
+import {Button} from '../../components/rneui';
+import {Controller, useForm} from 'react-hook-form';
 import InputField from '../../components/InputFeild';
+import GoogleIcon from '../../assets/svgs/GoogleIcon';
 import {useNav} from '../../navigation/RootNavigation';
 // import auth from '@react-native-firebase/auth';
 // import {GoogleSignin} from '@react-native-google-signin/google-signin';
@@ -24,13 +26,18 @@ interface SignInData {
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
-
 const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
 const RPH = (percentage: number) => {
   return (percentage / 100) * screenHeight;
 };
+
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledSafeAreaView = styled(SafeAreaView);
+const StyledScrollView = styled(ScrollView);
+const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const SignInScreen = () => {
   const navigation = useNav();
@@ -86,90 +93,92 @@ export const SignInScreen = () => {
   // }
 
   return (
-    <KeyboardAvoidingView className="flex-1 bg-white">
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={{
-          marginHorizontal: RPW(5),
-          paddingTop: RPH(10),
-        }}>
-        <View className="my-8 items-center">
-          <Text className="text-2xl font-medium text-black">
-            {'Welcome back'}!
-          </Text>
-          <Text className="mt-3 text-lg font-normal text-dark">
-            {'Enter Your Contact Number To '}
-          </Text>
-          <Text className="mt-3 text-lg font-normal text-dark">
-            {'Sign In'}
-          </Text>
-        </View>
+    <StyledSafeAreaView className="flex-1 bg-white">
+      <KeyboardAvoidingView>
+        <StyledScrollView
+          showsVerticalScrollIndicator={false}
+          style={{
+            marginHorizontal: RPW(5),
+            paddingTop: RPH(10),
+          }}>
+          <StyledView className="my-8 items-center">
+            <StyledText className="text-2xl font-medium text-black">
+              {'Welcome back'}!
+            </StyledText>
+            <StyledText className="mt-3 text-lg font-normal text-dark">
+              {'Enter Your Contact Number To '}
+            </StyledText>
+            <StyledText className="mt-3 text-lg font-normal text-dark">
+              {'Sign In'}
+            </StyledText>
+          </StyledView>
 
-        <View className="gap-5 mb-3">
-          <View>
-            <Controller
-              name="phone"
-              control={control}
-              render={({field: {onChange, onBlur, value}}) => (
-                <InputField
-                  placeHolder={'Contact number'}
-                  value={value}
-                  secure={false}
-                  inputMode={'numeric'}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                />
+          <StyledView className="gap-5 mb-3">
+            <StyledView>
+              <Controller
+                name="phone"
+                control={control}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <InputField
+                    placeHolder={'Contact number'}
+                    value={value}
+                    secure={false}
+                    inputMode={'numeric'}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                  />
+                )}
+                rules={{required: true, minLength: 10, maxLength: 10}}
+              />
+              {errors.phone && (
+                <StyledText className="text-error">
+                  {'Please enter valid mobile number'}
+                </StyledText>
               )}
-              rules={{required: true, minLength: 10, maxLength: 10}}
+            </StyledView>
+          </StyledView>
+
+          <StyledView className="my-5">
+            <Button
+              loading={loading}
+              title={'Send OTP'}
+              onPress={(Keyboard.dismiss(), handleSubmit(submit))}
+              primary
             />
-            {errors.phone && (
-              <Text className="text-error">
-                {'Please enter valid mobile number'}
-              </Text>
-            )}
-          </View>
-        </View>
+          </StyledView>
 
-        <View className="my-5">
-          <Button
-            loading={loading}
-            title={'Send OTP'}
-            onPress={(Keyboard.dismiss(), handleSubmit(submit))}
-            primary
-          />
-        </View>
+          <StyledView className="flex-row justify-center">
+            <StyledText className="mb-2 text-base font-normal text-dark">
+              Don't have an account?{'  '}
+            </StyledText>
+            <StyledTouchableOpacity
+              onPress={() => {
+                navigation.navigate('SignUp');
+              }}>
+              <StyledText className="mb-2 text-base font-medium text-primary underline">
+                Sign Up
+              </StyledText>
+            </StyledTouchableOpacity>
+          </StyledView>
 
-        <View className="flex-row justify-center">
-          <Text className="mb-2 text-base font-normal text-dark">
-            Don't have an account?{'  '}
-          </Text>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('SignUp');
-            }}>
-            <Text className="mb-2 text-base font-medium text-primary underline">
-              Sign Up
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <View className="mt-12 justify-center items-center">
-          <View className="flex-row items-baseline">
-            <View className="w-full h-0.5 bg-slate-300" />
-            <View className="mx-3">
-              <Text className="mb-5 text-base font-medium">
-                Or continue with
-              </Text>
-            </View>
-            <View className="w-full h-0.5 bg-slate-300" />
-          </View>
-          <TouchableOpacity
-            className="p-1 bg-lightGrey rounded-full"
-            onPress={() => {}}>
-            <GoogleIcon />
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          <StyledView className="mt-12 justify-center items-center">
+            <StyledView className="flex-row items-baseline">
+              <StyledView className="w-full h-0.5 bg-slate-300" />
+              <StyledView className="mx-3">
+                <StyledText className="mb-5 text-base font-medium">
+                  Or continue with
+                </StyledText>
+              </StyledView>
+              <StyledView className="w-full h-0.5 bg-slate-300" />
+            </StyledView>
+            <StyledTouchableOpacity
+              className="p-1 bg-lightGrey rounded-full"
+              onPress={() => {}}>
+              <GoogleIcon />
+            </StyledTouchableOpacity>
+          </StyledView>
+        </StyledScrollView>
+      </KeyboardAvoidingView>
+    </StyledSafeAreaView>
   );
 };
