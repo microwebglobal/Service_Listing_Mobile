@@ -1,34 +1,34 @@
 import {
   Text,
-  Dimensions,
-  ScrollView,
   View,
-  KeyboardAvoidingView,
-  TouchableOpacity,
   Keyboard,
   TextInput,
+  Dimensions,
+  ScrollView,
+  SafeAreaView,
+  TouchableOpacity,
 } from 'react-native';
+import {useState} from 'react';
+import React from 'react';
+import {styled} from 'nativewind';
+import {useDispatch} from 'react-redux';
+import {Colors} from '../../utils/Colors';
+import {useAppSelector} from '../../redux';
+import {instance} from '../../api/instance';
 import {Button} from '../../components/rneui';
 import {Calendar} from 'react-native-calendars';
-import {useState} from 'react';
-import {Colors} from '../../utils/Colors';
-import Icon from 'react-native-vector-icons/FontAwesome6';
-import Arrow from 'react-native-vector-icons/MaterialIcons';
-import {Screen, useNav} from '../../navigation/RootNavigation';
-import React from 'react';
-import Feather from 'react-native-vector-icons/Feather';
+import AppHeader from '../../components/AppHeader';
 import {Controller, useForm} from 'react-hook-form';
 import InputField from '../../components/InputFeild';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import AppHeader from '../../components/AppHeader';
-import {useAppSelector} from '../../redux';
-import {useDispatch} from 'react-redux';
-import {instance} from '../../api/instance';
 import {clearCart} from '../../redux/cart/cart.slice';
-import {styled} from 'nativewind';
 import {StackActions} from '@react-navigation/native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Feather from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/FontAwesome6';
+import Arrow from 'react-native-vector-icons/MaterialIcons';
 import DateTimePicker from '../../components/DateTimePicker';
+import {Screen, useNav} from '../../navigation/RootNavigation';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface ServiceForm {
   date: string;
@@ -52,23 +52,32 @@ const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
 
-const StyledInput = styled(TextInput);
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledTextInput = styled(TextInput);
+const StyledScrollView = styled(ScrollView);
+const StyledSafeAreaView = styled(SafeAreaView);
 
 export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
   const navigation = useNav();
   const dispatch = useDispatch();
+  const {address, date, time} = route.params;
   const today = new Date();
   const todayDate = today.toISOString().split('T')[0];
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const [timeValue, onChangeTimeValue] = useState<string>('');
-  const [selectDate, setSelectDate] = useState<string>(todayDate);
-  const address = route.params?.address;
+  const [timeValue, onChangeTimeValue] = useState<string>(time ? time : '');
+  const [selectDate, setSelectDate] = useState<string>(date ? date : todayDate);
+
+  console.log(route.params);
+
   const {
     control,
     handleSubmit,
     formState: {errors},
-  } = useForm<ServiceForm>({defaultValues: {address: address}});
+  } = useForm<ServiceForm>({
+    defaultValues: {address: address},
+  });
   const cart = useAppSelector((state: any) => state.cart.cart);
   const cityId = useAppSelector((state: any) => state.address.cityId);
 
@@ -114,10 +123,10 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
   };
 
   return (
-    <KeyboardAvoidingView className="flex-1 bg-white">
-      <AppHeader back={false} title="Schedule Service" />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="mb-6">
+    <StyledSafeAreaView className="flex-1 bg-white">
+      <StyledScrollView showsVerticalScrollIndicator={false}>
+        <AppHeader back={false} title="Schedule Service" />
+        <StyledView className="mb-6">
           <Calendar
             theme={{
               dayTextColor: Colors.Black,
@@ -158,25 +167,25 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
             disableAllTouchEventsForDisabledDays={true}
             headerStyle={{color: Colors.White}}
           />
-        </View>
+        </StyledView>
 
         {/* Service Details Form */}
-        <View style={{marginHorizontal: RPW(6)}}>
-          <View className="gap-5 mb-3">
-            <View>
-              <View className="flex-row space-x-2 items-baseline">
+        <StyledView style={{marginHorizontal: RPW(6)}}>
+          <StyledView className="gap-5 mb-3">
+            <StyledView>
+              <StyledView className="flex-row space-x-2 items-baseline">
                 <Icon name="clock" size={18} color={Colors.Primary} />
-                <Text className="mb-2 text-base text-black font-medium first-letter:capitalize">
+                <StyledText className="mb-2 text-base text-black font-medium first-letter:capitalize">
                   {'Select time slot'}
-                </Text>
-              </View>
+                </StyledText>
+              </StyledView>
 
               <Controller
                 name="timeSlot"
                 control={control}
                 render={({field: {onChange, onBlur}}) => (
-                  <View className="flex-row overflow-auto">
-                    <View className="w-full">
+                  <StyledView className="flex-row overflow-auto">
+                    <StyledView className="w-full">
                       <InputField
                         placeHolder={'Choose a time'}
                         value={timeValue}
@@ -185,8 +194,8 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
                         onBlur={onBlur}
                         onChangeText={onChange}
                       />
-                    </View>
-                    <View className="-ml-12">
+                    </StyledView>
+                    <StyledView className="-ml-12">
                       <DateTimePicker
                         mode="time"
                         currentDate={new Date()}
@@ -194,41 +203,41 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
                           onChangeTimeValue(time.toLocaleTimeString());
                         }}
                       />
-                    </View>
-                  </View>
+                    </StyledView>
+                  </StyledView>
                 )}
                 rules={{required: timeValue ? false : true}}
               />
               {errors.timeSlot && (
-                <Text className="text-error">
+                <StyledText className="text-error">
                   {'Please fill out this field.'}
-                </Text>
+                </StyledText>
               )}
               {error && (
-                <Text className="text-error">
+                <StyledText className="text-error">
                   {'Please select a time between 11:00 AM and 8:30 PM.'}
-                </Text>
+                </StyledText>
               )}
-            </View>
+            </StyledView>
 
-            <View>
-              <View className="flex-row items-baseline space-x-2">
+            <StyledView>
+              <StyledView className="flex-row items-baseline space-x-2">
                 <SimpleLineIcons
                   name="location-pin"
                   size={18}
                   color={Colors.Primary}
                 />
-                <Text className="mb-2 text-base text-black font-medium">
+                <StyledText className="mb-2 text-base text-black font-medium">
                   Service Address
-                </Text>
-              </View>
+                </StyledText>
+              </StyledView>
 
               <Controller
                 name="address"
                 control={control}
                 render={({field: {onChange, onBlur, value}}) => (
-                  <View className="flex-row items-center justify-between border-[1.5px] border-gray rounded-md">
-                    <StyledInput
+                  <StyledView className="flex-row items-center justify-between border-[1.5px] border-gray rounded-md">
+                    <StyledTextInput
                       placeholder="Select address"
                       className="px-3 h-12 text-base text-black"
                       value={value}
@@ -240,6 +249,8 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
                       onPress={() => {
                         navigation.navigate('SelectAddress', {
                           prevScreen: 'ServiceSchedule',
+                          date: selectDate,
+                          time: timeValue,
                         });
                       }}>
                       <MaterialCommunityIcons
@@ -248,28 +259,28 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
                         color={Colors.Gray}
                       />
                     </TouchableOpacity>
-                  </View>
+                  </StyledView>
                 )}
                 rules={{required: true}}
               />
               {errors.address && (
-                <Text className="text-error">
+                <StyledText className="text-error">
                   {'Please fill out this field.'}
-                </Text>
+                </StyledText>
               )}
-            </View>
+            </StyledView>
 
-            <View>
-              <View className="flex-row items-center space-x-2 mb-1">
+            <StyledView>
+              <StyledView className="flex-row items-center space-x-2 mb-1">
                 <Feather
                   name="message-square"
                   size={18}
                   color={Colors.Primary}
                 />
-                <Text className="mb-2 text-base text-black font-medium">
+                <StyledText className="mb-2 text-base text-black font-medium">
                   Special Instructions
-                </Text>
-              </View>
+                </StyledText>
+              </StyledView>
 
               <Controller
                 name="note"
@@ -288,18 +299,18 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
                   />
                 )}
               />
-            </View>
-          </View>
-          <View className="my-5">
+            </StyledView>
+          </StyledView>
+          <StyledView className="my-5">
             <Button
               primary
               title={'Confirm Booking'}
               loading={loading}
               onPress={(Keyboard.dismiss(), handleSubmit(submit))}
             />
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          </StyledView>
+        </StyledView>
+      </StyledScrollView>
+    </StyledSafeAreaView>
   );
 };

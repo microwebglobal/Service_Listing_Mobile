@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import {SERVER_BASE} from '@env';
+import {styled} from 'nativewind';
 import {useDispatch} from 'react-redux';
 import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
@@ -29,6 +30,12 @@ const RPH = (percentage: number) => {
   return (percentage / 100) * screenHeight;
 };
 
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledImage = styled(Image);
+const StyledScrollView = styled(ScrollView);
+const StyledSafeAreaView = styled(SafeAreaView);
+
 export const SelectedItemsScreen = () => {
   const navigation = useNav();
   const dispatch = useDispatch();
@@ -44,70 +51,73 @@ export const SelectedItemsScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <ScrollView className="flex-grow" showsVerticalScrollIndicator={false}>
+    <StyledSafeAreaView className="flex-1 bg-white">
+      <StyledScrollView
+        className="flex-grow"
+        showsVerticalScrollIndicator={false}>
         <AppHeader back={true} title={'Selected Services'} />
-        <View className="flex-1 mt-5" style={{marginHorizontal: RPW(6)}}>
+        <StyledView className="flex-1 mt-5" style={{marginHorizontal: RPW(6)}}>
           {(LocalCart === null || LocalCart?.length === 0) && (
-            <View
+            <StyledView
               className="flex-1 justify-center items-center"
               style={{height: RPH(70)}}>
-              <Image source={require('../../assets/app-images/cart.png')} />
-              <Text className="mt-5 text-xl text-black text-center font-medium">
-                Add items to start a cart
-              </Text>
-              <Text className="mt-5 text-base text-dark text-center">
+              <StyledImage
+                source={require('../../assets/app-images/cart.png')}
+              />
+              <StyledText className="mt-5 text-xl text-black text-center font-medium">
+                Your cart is empty
+              </StyledText>
+              <StyledText className="mt-2 text-base text-dark text-center">
                 {
                   'Once you add items from a service, your cart will appear here.'
                 }
-              </Text>
+              </StyledText>
 
-              <View className="my-5">
+              <StyledView className="my-5">
                 <Button
-                  primary
                   size="md"
-                  title="Browse Services"
+                  title="Explore Services"
                   onPress={() => {
                     navigation.navigate('TabNavigator', {
                       screen: 'Service',
                     });
                   }}
                 />
-              </View>
-            </View>
+              </StyledView>
+            </StyledView>
           )}
 
           {/* Render local cart items */}
           {LocalCart?.map((item: ItemEntity, index: number) => {
             totalPrice += item.price * item.quantity;
             return (
-              <View
+              <StyledView
                 key={index}
                 className="flex-row justify-between items-center mb-7">
-                <View className="flex-row basis-2/4 items-center space-x-4">
-                  <View className="ml-1 bg-lightGrey rounded-lg">
-                    <Image
+                <StyledView className="flex-row basis-2/4 items-center space-x-4">
+                  <StyledView className="ml-1 bg-lightGrey rounded-lg">
+                    <StyledImage
+                      className="w-12 h-12 rounded-md"
                       source={{uri: `${SERVER_BASE}${item.icon_url}`}}
-                      style={{width: 50, height: 50, borderRadius: 8}}
                     />
-                  </View>
-                  <View>
-                    <Text className="text-base text-black font-normal text-clip">
+                  </StyledView>
+                  <StyledView>
+                    <StyledText className="text-base text-black font-normal text-clip">
                       {item.name}
-                    </Text>
-                    <Text className="text-base text-gray font-normal">
+                    </StyledText>
+                    <StyledText className="text-base text-gray font-normal">
                       {'Quantity: '}
                       {item.quantity}
-                    </Text>
-                  </View>
-                </View>
-                <View className="flex-row items-center space-x-2">
-                  <Text className="text-base text-black font-normal">
+                    </StyledText>
+                  </StyledView>
+                </StyledView>
+                <StyledView className="flex-row items-center space-x-2">
+                  <StyledText className="text-base text-black font-normal">
                     {'₹'}
                     {item.price}
                     {'.00'}
-                  </Text>
-                  <View className="py-1 px-2 bg-lightGrey rounded-full">
+                  </StyledText>
+                  <StyledView className="py-1 px-2 bg-lightGrey rounded-full">
                     <TouchableOpacity
                       onPress={() => {
                         showToast();
@@ -119,29 +129,29 @@ export const SelectedItemsScreen = () => {
                         color={Colors.Dark}
                       />
                     </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
+                  </StyledView>
+                </StyledView>
+              </StyledView>
             );
           })}
-        </View>
-      </ScrollView>
+        </StyledView>
+      </StyledScrollView>
 
       {LocalCart?.length > 0 && (
-        <View
+        <StyledView
           style={{
             marginHorizontal: RPW(6),
           }}>
-          <View className="my-5 h-1 bg-lightGrey" />
-          <View className="flex-row justify-between">
-            <Text className="text-base text-black">Total</Text>
-            <Text className="text-base text-black font-bold">
+          <StyledView className="my-5 h-1 bg-lightGrey" />
+          <StyledView className="flex-row justify-between">
+            <StyledText className="text-base text-black">Total</StyledText>
+            <StyledText className="text-base text-black font-bold">
               {'₹'}
               {totalPrice}
               {'.00'}
-            </Text>
-          </View>
-          <View className="my-5">
+            </StyledText>
+          </StyledView>
+          <StyledView className="my-5">
             <Button
               primary
               title="Proceed to booking"
@@ -149,9 +159,9 @@ export const SelectedItemsScreen = () => {
                 navigation.navigate('ServiceSchedule', {address: undefined});
               }}
             />
-          </View>
-        </View>
+          </StyledView>
+        </StyledView>
       )}
-    </SafeAreaView>
+    </StyledSafeAreaView>
   );
 };

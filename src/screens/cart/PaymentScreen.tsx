@@ -1,14 +1,13 @@
 import {
   View,
   Text,
-  SafeAreaView,
   ScrollView,
-  TouchableOpacity,
   Dimensions,
-  ActivityIndicator,
+  SafeAreaView,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {styled} from 'nativewind';
 import classNames from 'classnames';
 import {CheckBox} from '@rneui/themed';
 import {Booking} from '../booking/types';
@@ -18,11 +17,19 @@ import {Button} from '../../components/rneui';
 import AppHeader from '../../components/AppHeader';
 import {useNav} from '../../navigation/RootNavigation';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {LoadingIndicator} from '../../components/LoadingIndicator';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
+
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledScrollView = styled(ScrollView);
+const StyledSafeAreaView = styled(SafeAreaView);
+const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const PaymentScreen = ({route}: any) => {
   const {amount, bookingId} = route.params;
@@ -80,13 +87,13 @@ export const PaymentScreen = ({route}: any) => {
 
   const renderPaymentOptions = (method: string, index: number) => {
     return (
-      <TouchableOpacity
+      <StyledTouchableOpacity
         key={index}
         onPress={() => {
           //   setPaymentMethod(method);
           setIndex(index);
         }}>
-        <View className="flex-row border-0 rounded-lg items-center">
+        <StyledView className="flex-row border-0 rounded-lg items-center">
           <CheckBox
             checked={selectedIndex === index}
             onPress={() => setIndex(index)}
@@ -107,87 +114,93 @@ export const PaymentScreen = ({route}: any) => {
               color={Colors.Dark}
             />
           )}
-          <Text className="ml-3 text-base text-black">
-            <Text className="first-letter:capitalize">{method}</Text>
-          </Text>
-        </View>
-      </TouchableOpacity>
+          <StyledText className="ml-3 text-base text-black">
+            <StyledText className="first-letter:capitalize">
+              {method}
+            </StyledText>
+          </StyledText>
+        </StyledView>
+      </StyledTouchableOpacity>
     );
   };
 
   if (isLoading) {
-    return (
-      <View className="items-center justify-center flex-1 bg-white">
-        <ActivityIndicator size="large" color={Colors.Black} />
-      </View>
-    );
+    return <LoadingIndicator />;
   }
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <ScrollView className="flex-grow" showsVerticalScrollIndicator={false}>
+    <StyledSafeAreaView className="flex-1 bg-white">
+      <StyledScrollView
+        className="flex-grow"
+        showsVerticalScrollIndicator={false}>
         <AppHeader back={true} title={'Payment'} />
-        <View className="flex-1 my-5" style={{marginHorizontal: RPW(6)}}>
-          <Text className="text-xl text-center font-semibold text-black first-letter:capitalize">
+        <StyledView className="flex-1 my-5" style={{marginHorizontal: RPW(6)}}>
+          <StyledText className="text-xl text-center font-semibold text-black first-letter:capitalize">
             {'Choose payment method'}
-          </Text>
-          <View className="my-5 p-3 bg-lightGrey rounded-lg space-y-2">
-            <View className="flex-row justify-between">
-              <Text className="text-base text-black">{'Subtotal'}</Text>
-              <Text className="text-base text-black">
+          </StyledText>
+          <StyledView className="my-5 p-3 bg-lightGrey rounded-lg space-y-2">
+            <StyledView className="flex-row justify-between">
+              <StyledText className="text-base text-black">
+                {'Subtotal'}
+              </StyledText>
+              <StyledText className="text-base text-black">
                 {' ₹'}
                 {amount}
-              </Text>
-            </View>
-            <View className="flex-row justify-between">
-              <Text className="text-base text-black">{'Tax (18%)'}</Text>
-              <Text className="text-base text-black">
+              </StyledText>
+            </StyledView>
+            <StyledView className="flex-row justify-between">
+              <StyledText className="text-base text-black">
+                {'Tax (18%)'}
+              </StyledText>
+              <StyledText className="text-base text-black">
                 {' ₹'}
                 {booking?.BookingPayment.tax_amount}
-              </Text>
-            </View>
-            <View className="flex-row justify-between">
-              <Text className="text-base text-black font-bold">{'Total'}</Text>
-              <Text className="text-base text-black font-bold">
+              </StyledText>
+            </StyledView>
+            <StyledView className="flex-row justify-between">
+              <StyledText className="text-base text-black font-bold">
+                {'Total'}
+              </StyledText>
+              <StyledText className="text-base text-black font-bold">
                 {' ₹'}
                 {booking?.BookingPayment.total_amount}
-              </Text>
-            </View>
+              </StyledText>
+            </StyledView>
             {booking &&
               parseInt(booking.BookingPayment.advance_payment, 10) !== 0 && (
-                <View className="flex-row justify-between">
-                  <Text className="text-base text-black font-bold">
+                <StyledView className="flex-row justify-between">
+                  <StyledText className="text-base text-black font-bold">
                     {'Advance Amount'}
-                  </Text>
-                  <Text className="text-base text-black font-bold">
+                  </StyledText>
+                  <StyledText className="text-base text-black font-bold">
                     {' ₹'}
                     {booking?.BookingPayment.advance_payment}
-                  </Text>
-                </View>
+                  </StyledText>
+                </StyledView>
               )}
-          </View>
+          </StyledView>
 
           {booking &&
             parseInt(booking.BookingPayment.advance_payment, 10) !== 0 &&
             paymentType === 'advance' && (
-              <View className="flex-row items-center mb-2 space-x-2">
+              <StyledView className="flex-row items-center mb-2 space-x-2">
                 <AntDesign
                   name="exclamationcircleo"
                   size={18}
                   color={Colors.Error}
                 />
-                <Text className="flex-1 text-sm text-error">
+                <StyledText className="flex-1 text-sm text-error">
                   {`You should pay the remaining ${
                     parseFloat(booking.BookingPayment.total_amount) -
                     parseFloat(booking.BookingPayment.advance_payment)
                   } after completing the service.`}
-                </Text>
-              </View>
+                </StyledText>
+              </StyledView>
             )}
 
           {booking &&
             parseInt(booking.BookingPayment.advance_payment, 10) !== 0 && (
-              <View className="mb-2 flex-row space-x-5 justify-center">
-                <TouchableOpacity
+              <StyledView className="mb-2 flex-row space-x-5 justify-center">
+                <StyledTouchableOpacity
                   className={classNames(
                     `p-3 rounded-lg ${
                       paymentType === 'advance' ? 'bg-primary' : 'bg-lightGrey'
@@ -196,16 +209,16 @@ export const PaymentScreen = ({route}: any) => {
                   onPress={() => {
                     setPaymentType('advance');
                   }}>
-                  <Text
+                  <StyledText
                     className={classNames(
                       `text-base ${
                         paymentType === 'advance' ? 'text-white' : 'text-black'
                       }`,
                     )}>
                     Pay Advanced Only
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                  </StyledText>
+                </StyledTouchableOpacity>
+                <StyledTouchableOpacity
                   className={classNames(
                     `p-3 rounded-lg ${
                       paymentType === 'full' ? 'bg-primary' : 'bg-lightGrey'
@@ -214,16 +227,16 @@ export const PaymentScreen = ({route}: any) => {
                   onPress={() => {
                     setPaymentType('full');
                   }}>
-                  <Text
+                  <StyledText
                     className={classNames(
                       `text-base ${
                         paymentType === 'full' ? 'text-white' : 'text-black'
                       }`,
                     )}>
                     Pay Full Amount
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                  </StyledText>
+                </StyledTouchableOpacity>
+              </StyledView>
             )}
 
           {booking && parseInt(booking.BookingPayment.advance_payment, 10) !== 0
@@ -237,46 +250,52 @@ export const PaymentScreen = ({route}: any) => {
               })}
 
           {selectedIndex === 1 && (
-            <View className="bg-white border border-lightGrey shadow-sm shadow-black p-3 rounded-lg">
-              <View>
-                <Text className="text-lg text-black">Payment Information</Text>
-                <Text className="my-2 text-base text-black">
+            <StyledView className="bg-white border border-lightGrey shadow-sm shadow-black p-3 rounded-lg">
+              <StyledView>
+                <StyledText className="text-lg text-black">
+                  Payment Information
+                </StyledText>
+                <StyledText className="my-2 text-base text-black">
                   Please upload the payment slip after completing the payment.
-                </Text>
-                <Text className="text-base text-black font-bold">
+                </StyledText>
+                <StyledText className="text-base text-black font-bold">
                   {'Bank Details: '}
-                </Text>
-                <View className="flex-row mb-1">
-                  <Text className="text-base text-black font-bold">
+                </StyledText>
+                <StyledView className="flex-row mb-1">
+                  <StyledText className="text-base text-black font-bold">
                     {'Account No: '}
-                  </Text>
-                  <Text className="text-base text-black">123456789</Text>
-                </View>
-                <View className="flex-row mb-1">
-                  <Text className="text-base text-black font-bold">
+                  </StyledText>
+                  <StyledText className="text-base text-black">
+                    123456789
+                  </StyledText>
+                </StyledView>
+                <StyledView className="flex-row mb-1">
+                  <StyledText className="text-base text-black font-bold">
                     {'Name: '}
-                  </Text>
-                  <Text className="text-base text-black">ABC</Text>
-                </View>
-                <View className="flex-row mb-1">
-                  <Text className="text-base text-black font-bold">
+                  </StyledText>
+                  <StyledText className="text-base text-black">ABC</StyledText>
+                </StyledView>
+                <StyledView className="flex-row mb-1">
+                  <StyledText className="text-base text-black font-bold">
                     {'Branch: '}
-                  </Text>
-                  <Text className="text-base text-black">
+                  </StyledText>
+                  <StyledText className="text-base text-black">
                     Main Street SWIFT
-                  </Text>
-                </View>
-                <View className="flex-row mb-1">
-                  <Text className="text-base text-black font-bold">
+                  </StyledText>
+                </StyledView>
+                <StyledView className="flex-row mb-1">
+                  <StyledText className="text-base text-black font-bold">
                     {'Code: '}
-                  </Text>
-                  <Text className="text-base text-black">ABCD1234</Text>
-                </View>
-              </View>
-            </View>
+                  </StyledText>
+                  <StyledText className="text-base text-black">
+                    ABCD1234
+                  </StyledText>
+                </StyledView>
+              </StyledView>
+            </StyledView>
           )}
 
-          <View className="my-8">
+          <StyledView className="my-8">
             <Button
               loading={loading}
               primary
@@ -285,9 +304,9 @@ export const PaymentScreen = ({route}: any) => {
                 submit();
               }}
             />
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+          </StyledView>
+        </StyledView>
+      </StyledScrollView>
+    </StyledSafeAreaView>
   );
 };

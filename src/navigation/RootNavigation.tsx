@@ -21,10 +21,10 @@ export type RootStackParamList = {
   EditProfile: {itemName: string};
   EditLocation: undefined;
   AddressDetails: {address: Address};
-  SelectAddress: {prevScreen: string};
+  SelectAddress: {prevScreen: string, date?: string, time?: string};
   Notification: undefined;
   SelectedItems: undefined;
-  ServiceSchedule: {address?: string};
+  ServiceSchedule: {address?: string, date?: string, time?: string};
   Cart: undefined;
   Payment: {amount: string; bookingId: string};
   BookingScreen: undefined;
