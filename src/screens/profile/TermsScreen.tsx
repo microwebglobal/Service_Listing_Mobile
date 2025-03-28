@@ -1,5 +1,6 @@
 import {View, Text, SafeAreaView, ScrollView, Dimensions} from 'react-native';
 import React from 'react';
+import {styled} from 'nativewind';
 import AppHeader from '../../components/AppHeader';
 
 const screenWidth = Dimensions.get('window').width;
@@ -7,30 +8,39 @@ const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
 
-const section = (title: string, paragraph: string) => {
-  return (
-    <View className="mt-5">
-      <Text className="text-base text-black font-medium">{title}</Text>
-      <Text className="mt-2 text-sm text-black text-justify">{paragraph}</Text>
-    </View>
-  );
-};
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledScrollView = styled(ScrollView);
+const StyledSafeAreaView = styled(SafeAreaView);
 
 export const TermsScreen = () => {
+  const section = (title: string, paragraph: string) => {
+    return (
+      <StyledView className="mt-5">
+        <StyledText className="text-base text-black font-medium">
+          {title}
+        </StyledText>
+        <StyledText className="mt-2 text-sm text-black text-justify">
+          {paragraph}
+        </StyledText>
+      </StyledView>
+    );
+  };
+
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <StyledSafeAreaView className="flex-1 bg-white">
       <AppHeader back={true} title="Terms and Conditions" />
-      <ScrollView
+      <StyledScrollView
         className="flex-grow pt-5"
         showsVerticalScrollIndicator={false}
         style={{paddingHorizontal: RPW(5)}}>
-        <View>
-          <Text className="text-sm text-black text-justify">
+        <StyledView>
+          <StyledText className="text-sm text-black text-justify">
             {
               'Welcome to our website. If you continue to browse and use this website, you are agreeing to comply with and be bound by the following terms and conditions of use, which together with our privacy policy govern our relationship with you in relation to this website.'
             }
-          </Text>
-        </View>
+          </StyledText>
+        </StyledView>
         {section(
           '1. Acceptance of Terms',
           'By accessing or using our website, you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use our website.',
@@ -60,20 +70,20 @@ export const TermsScreen = () => {
           'Your use of this website and any dispute arising out of such use is subject to the laws of your country or region.',
         )}
 
-        <View className="mt-5 mb-20">
-          <Text className="text-base text-black font-medium">
+        <StyledView className="mt-5 mb-20">
+          <StyledText className="text-base text-black font-medium">
             7. Contact Us
-          </Text>
-          <Text className="mt-2 text-sm text-black text-justify">
+          </StyledText>
+          <StyledText className="mt-2 text-sm text-black text-justify">
             {
               'If you have any questions about these Terms and Conditions, please contact us at '
             }
-            <Text className="text-sm text-primary">
+            <StyledText className="text-sm text-primary">
               {'support@example.com.'}
-            </Text>
-          </Text>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+            </StyledText>
+          </StyledText>
+        </StyledView>
+      </StyledScrollView>
+    </StyledSafeAreaView>
   );
 };

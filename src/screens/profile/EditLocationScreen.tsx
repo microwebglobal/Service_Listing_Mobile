@@ -2,37 +2,54 @@ import {
   View,
   Text,
   ScrollView,
-  TouchableOpacity,
   Dimensions,
-  KeyboardAvoidingView,
-  ActivityIndicator,
+  SafeAreaView,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import AppHeader from '../../components/AppHeader';
-import {Screen, useNav} from '../../navigation/RootNavigation';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
+import {styled} from 'nativewind';
+import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
+import AppHeader from '../../components/AppHeader';
 import {Address} from '../category/CategoryScreen';
 import {FlatList} from 'react-native-gesture-handler';
-import {Colors} from '../../utils/Colors';
 import {AddressForm} from '../../components/AddressForm';
-import BottomSheet from '@gorhom/bottom-sheet';
 import {useFocusEffect} from '@react-navigation/native';
 import Octicons from 'react-native-vector-icons/Octicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import {Screen, useNav} from '../../navigation/RootNavigation';
+import {LoadingIndicator} from '../../components/LoadingIndicator';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet';
+import LottieView from 'lottie-react-native';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
 
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledScrollView = styled(ScrollView);
+const StyledSafeAreaView = styled(SafeAreaView);
+const StyledTouchableOpacity = styled(TouchableOpacity);
+
 export const EditLocationScreen: Screen<'EditLocation'> = () => {
   const navigation = useNav();
+  const snapPoints = useMemo(() => ['98%'], []);
   const [addressList, setAddressList] = useState<Array<Address>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [refreshing, setRefreshing] = useState<boolean>(false);
+
+  const handleClosePress = () => {
+    bottomSheetRef.current?.close();
+    fetchAddress();
+  };
 
   const fetchAddress = useCallback(() => {
     setIsLoading(true);
@@ -63,51 +80,56 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
 
   const addLocationType = (type: string, iconName: string) => {
     return (
-      <View className="flex-row items-center mb-8">
-        <TouchableOpacity
+      <StyledView className="flex-row items-center mb-8">
+        <StyledTouchableOpacity
           className="flex-row items-center"
           onPress={() => {
             bottomSheetRef.current?.expand();
           }}>
-          <View className="bg-lightGrey rounded-full p-2">
+          <StyledView className="bg-lightGrey rounded-full p-2">
             {type === 'Home' && (
-              <AntDesign name={iconName} size={18} color={Colors.Primary} />
+              <AntDesign name={iconName} size={18} color={Colors.Black} />
             )}
             {type === 'Work' && (
-              <MaterialIcons name={iconName} size={18} color={Colors.Primary} />
+              <MaterialIcons name={iconName} size={18} color={Colors.Black} />
             )}
-          </View>
-          <View className="space-y-1">
-            <Text className="text-base text-black ml-3">{type}</Text>
-            <Text className="text-sm text-gray ml-3">Add {type}</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+          </StyledView>
+          <StyledView className="space-y-1">
+            <StyledText className="text-base text-black ml-3">
+              {type}
+            </StyledText>
+            <StyledText className="text-sm text-gray ml-3">
+              Add {type}
+            </StyledText>
+          </StyledView>
+        </StyledTouchableOpacity>
+      </StyledView>
     );
   };
 
   const _renderAddress = (address: Address) => {
     return (
-      <View className="my-1 bg-lightGrey rounded-lg shadow-sm shadow-black">
-        <View
+      <StyledView className="my-1 border-b border-lightGrey">
+        <StyledView
           key={address.id}
-          className="px-2 py-4 rounded-lg flex-row flex-wrap items-center justify-between overflow-hidden">
-          <View className="flex-row items-center space-x-3 overflow-hidden">
+          style={{paddingHorizontal: RPW(0)}}
+          className="py-4 flex-row flex-wrap items-center justify-between overflow-hidden">
+          <StyledView className="flex-row items-center space-x-3 overflow-hidden">
             {address.type === 'work' && (
               <MaterialIcons
                 name="work-outline"
-                size={18}
-                color={Colors.Primary}
+                size={20}
+                color={Colors.Dark}
               />
             )}
             {address.type === 'home' && (
-              <AntDesign name="home" size={20} color={Colors.Primary} />
+              <AntDesign name="home" size={22} color={Colors.Dark} />
             )}
             {address.type === 'other' && (
-              <Octicons name="location" size={20} color={Colors.Primary} />
+              <Octicons name="location" size={22} color={Colors.Dark} />
             )}
             {address.line2 ? (
-              <Text className="basis-4/6 text-base text-dark">
+              <StyledText className="basis-4/6 text-base text-black">
                 {address.line1 +
                   ' ' +
                   address.line2 +
@@ -115,66 +137,92 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
                   address.city +
                   ', ' +
                   address.state}
-              </Text>
+              </StyledText>
             ) : (
-              <Text className="basis-4/6 text-base text-dark">
+              <StyledText className="basis-4/6 text-base text-black">
                 {address.line1 + ', ' + address.city + ', ' + address.state}
-              </Text>
+              </StyledText>
             )}
-          </View>
-          <TouchableOpacity
+          </StyledView>
+          <StyledTouchableOpacity
             className="basis-1/6 items-end mr-1"
             onPress={() => {
               navigation.navigate('AddressDetails', {address: address});
             }}>
-            <MaterialIcons name="edit" size={18} color={Colors.Gray} />
-          </TouchableOpacity>
-        </View>
-      </View>
+            <MaterialIcons name="edit" size={18} color={Colors.Dark} />
+          </StyledTouchableOpacity>
+        </StyledView>
+      </StyledView>
     );
   };
 
+  if (isLoading) {
+    return <LoadingIndicator />;
+  }
   return (
-    <KeyboardAvoidingView className="flex-1 bg-white">
+    <StyledSafeAreaView className="flex-1 bg-white">
       <AppHeader title="Your Location" back={true} />
-      <ScrollView
+      <StyledScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        <View className="pt-10" style={{paddingHorizontal: RPW(5)}}>
-          <Text className="text-3xl text-black font-semibold">Location</Text>
-          <View className="flex-1 mt-8">
-            {addLocationType('Home', 'home')}
-            {addLocationType('Work', 'work-outline')}
+        <StyledView className="pt-10">
+          <StyledView className="mb-3" style={{paddingHorizontal: RPW(5)}}>
+            <StyledText className="text-3xl text-black font-semibold">
+              Location
+            </StyledText>
+            <StyledView className="flex-1 mt-8">
+              {addLocationType('Home', 'home')}
+              {addLocationType('Work', 'work-outline')}
 
-            <Text className="text-lg text-black">Available Addresses</Text>
-            {isLoading && (
-              <View className="items-center justify-center flex-1 bg-white">
-                <ActivityIndicator size="small" color={Colors.Black} />
-              </View>
-            )}
+              <StyledText className="text-lg text-black font-medium">
+                Available Addresses
+              </StyledText>
+              {isLoading && (
+                <StyledView className="items-center justify-center flex-1 bg-white">
+                  <LottieView
+                    source={require('../../assets/animations/loading.json')}
+                    autoPlay
+                    loop
+                    style={{width: '60%', height: '10%'}}
+                  />
+                </StyledView>
+              )}
 
-            {addressList.length === 0 ? (
-              <View className="mt-20">
-                <Text className="text-base text-center text-dark">
-                  No address available
-                </Text>
-              </View>
-            ) : null}
-          </View>
+              {addressList.length === 0 ? (
+                <StyledView className="mt-20">
+                  <StyledText className="text-base text-center text-dark">
+                    No address available
+                  </StyledText>
+                </StyledView>
+              ) : null}
+            </StyledView>
 
-          <FlatList
-            horizontal={false}
-            scrollEnabled={false}
-            showsHorizontalScrollIndicator={false}
-            data={addressList}
-            keyExtractor={item => item.id.toString()}
-            renderItem={({item}) => _renderAddress(item)}
-          />
-        </View>
-      </ScrollView>
-      <AddressForm bottomSheetRef={bottomSheetRef} />
-    </KeyboardAvoidingView>
+            <FlatList
+              horizontal={false}
+              scrollEnabled={false}
+              showsHorizontalScrollIndicator={false}
+              data={addressList}
+              keyExtractor={item => item.id.toString()}
+              renderItem={({item}) => _renderAddress(item)}
+            />
+          </StyledView>
+        </StyledView>
+      </StyledScrollView>
+
+      <BottomSheet
+        index={-1}
+        ref={bottomSheetRef}
+        snapPoints={snapPoints}
+        enablePanDownToClose={true}
+        backdropComponent={backdropProps => (
+          <BottomSheetBackdrop {...backdropProps} enableTouchThrough={true} />
+        )}>
+        <BottomSheetView>
+          <AddressForm btnTitle="Save Address" onClose={handleClosePress} />
+        </BottomSheetView>
+      </BottomSheet>
+    </StyledSafeAreaView>
   );
 };

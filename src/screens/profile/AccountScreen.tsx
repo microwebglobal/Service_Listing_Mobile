@@ -1,15 +1,15 @@
 import {
   View,
   Text,
-  SafeAreaView,
-  ScrollView,
-  TouchableOpacity,
-  StyleSheet,
   Image,
   Dimensions,
-  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useCallback, useState} from 'react';
+import {styled} from 'nativewind';
 import {Dialog} from '@rneui/base';
 import {useDispatch} from 'react-redux';
 import {UserData} from './ProfileScreen';
@@ -27,6 +27,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import { LoadingIndicator } from '../../components/LoadingIndicator';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const screenWidth = Dimensions.get('window').width;
@@ -40,6 +41,13 @@ interface sectionItemProps {
   icon_name: string;
   onPress?: () => void;
 }
+
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledImage = styled(Image);
+const StyledScrollView = styled(ScrollView);
+const StyledSafeAreaView = styled(SafeAreaView);
+const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const AccountScreen = () => {
   const navigation = useNav();
@@ -90,125 +98,122 @@ export const AccountScreen = () => {
 
   const sectionItem = (data: sectionItemProps) => {
     return (
-      <View className="border-b border-lightGrey">
+      <StyledView className="border-b border-lightGrey">
         <TouchableOpacity onPress={() => (data.onPress ? data.onPress() : {})}>
-          <View className="flex-row items-center justify-between">
-            <View className="my-3 flex-row items-center space-x-3">
+          <StyledView className="flex-row items-center justify-between">
+            <StyledView className="my-3 flex-row items-center space-x-3">
               <MaterialCommunityIcons
                 name={data.icon_name}
                 size={22}
                 color={Colors.Dark}
               />
-              <View>
-                <Text className="text-dark text-base font-medium">
+              <StyledView>
+                <StyledText className="text-dark text-base font-medium">
                   {data.title}
-                </Text>
-              </View>
-            </View>
+                </StyledText>
+              </StyledView>
+            </StyledView>
             {data.edit && (
-              <View className="-mr-2">
+              <StyledView className="-mr-2">
                 <MaterialCommunityIcons
                   name="chevron-right"
                   size={22}
                   color={Colors.Gray}
                 />
-              </View>
+              </StyledView>
             )}
-          </View>
+          </StyledView>
         </TouchableOpacity>
-      </View>
+      </StyledView>
     );
   };
 
   if (isLoading) {
-    return (
-      <View className="items-center justify-center flex-1 bg-white">
-        <ActivityIndicator size="large" color={Colors.Black} />
-      </View>
-    );
+    return <LoadingIndicator />;
   }
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <ScrollView
+    <StyledSafeAreaView className="flex-1 bg-white">
+      <StyledScrollView
         className="flex-grow"
         showsVerticalScrollIndicator={false}
         style={{marginBottom: tabBarHeight}}>
-        <View
+        <StyledView
           className="pt-10 pb-5 bg-white"
           style={{paddingHorizontal: RPW(5)}}>
-          <View className="items-center justify-center">
+          <StyledView className="items-center justify-center">
             {imageURI && (
-              <Image
+              <StyledImage
                 source={{uri: imageURI}}
                 className="w-28 h-28 rounded-full"
               />
             )}
             {!imageURI && (
-              <View className="w-28 h-28 rounded-full bg-primary items-center justify-center">
+              <StyledView className="w-28 h-28 rounded-full bg-primary items-center justify-center">
                 <FontAwesome name="user-o" size={40} color={Colors.White} />
-              </View>
+              </StyledView>
             )}
-            <TouchableOpacity
+            <StyledTouchableOpacity
               className="p-2.5 bg-primary rounded-full relative left-8 -top-10 border-4 border-white"
               onPress={choosePhotoFromGallery}>
               <Feather name="camera" size={18} color={Colors.White} />
-            </TouchableOpacity>
-          </View>
+            </StyledTouchableOpacity>
+          </StyledView>
 
-          <View className="-mt-6 items-center justify-center">
-            <TouchableOpacity
+          <StyledView className="-mt-6 items-center justify-center">
+            <StyledTouchableOpacity
               className="flex-row items-center space-x-1"
               onPress={() => navigation.navigate('Profile')}>
-              <Text className="text-black text-lg font-medium">
+              <StyledText className="text-black text-lg font-medium">
                 {userData?.name ? userData.name : 'Your Name'}
-              </Text>
+              </StyledText>
               <MaterialIcons
                 name="keyboard-arrow-right"
                 size={25}
                 color={Colors.Dark}
               />
-            </TouchableOpacity>
-          </View>
+            </StyledTouchableOpacity>
+          </StyledView>
 
-          <View className="my-5 items-center">
+          <StyledView className="my-5 items-center">
             <Button
               size="sm"
               title="Premium Plus User"
               onPress={() => navigation.navigate('Profile')}
             />
-          </View>
+          </StyledView>
 
-          <View className="p-3 bg-lightGrey rounded-lg">
-            <View className="flex-row justify-between">
-              <Text className="text-black">
-                8 of 10 <Text className="text-primary">complete</Text>
-              </Text>
-              <Text className="text-primary">Complete now</Text>
-            </View>
-            <View className="my-3 flex-row items-center">
-              <View className="basis-10/12 h-1 bg-primary rounded-full" />
-              <View className="basis-2/12 h-1 bg-white rounded-full" />
-            </View>
-            <Text className="text-black text-sm">
+          <StyledView className="p-3 bg-lightGrey rounded-lg">
+            <StyledView className="flex-row justify-between">
+              <StyledText className="text-black">
+                8 of 10{' '}
+                <StyledText className="text-primary">complete</StyledText>
+              </StyledText>
+              <StyledText className="text-primary">Complete now</StyledText>
+            </StyledView>
+            <StyledView className="my-3 flex-row items-center">
+              <StyledView className="basis-10/12 h-1 bg-primary rounded-full" />
+              <StyledView className="basis-2/12 h-1 bg-white rounded-full" />
+            </StyledView>
+            <StyledText className="text-black text-sm">
               {
                 'Additional information you give will help us provide you a more personalized experience.'
               }
-            </Text>
-          </View>
+            </StyledText>
+          </StyledView>
 
-          <View className="my-5 p-3 bg-lightGrey rounded-lg">
-            <View className="flex-row justify-between items-center">
-              <Text className="basis-3/4 text-black text-base font-medium">
+          <StyledView className="my-5 p-3 bg-lightGrey rounded-lg">
+            <StyledView className="flex-row justify-between items-center">
+              <StyledText className="basis-3/4 text-black text-base font-medium">
                 {"Don't miss out your valuable promotions"}
-              </Text>
+              </StyledText>
               <FontAwesome6 name="tags" size={25} color={Colors.Dark} />
-            </View>
-            <Text className="mt-2 text-black text-sm">
+            </StyledView>
+            <StyledText className="mt-2 text-black text-sm">
               {
                 'Get the latest promotions and offers from your favorite brands and stores.'
               }
-            </Text>
-          </View>
+            </StyledText>
+          </StyledView>
 
           {sectionItem({
             title: 'Help and Support',
@@ -227,34 +232,36 @@ export const AccountScreen = () => {
             onPress: () => navigation.navigate('AboutUs'),
           })}
 
-          <TouchableOpacity
+          <StyledTouchableOpacity
             className="mt-3 flex-row items-center space-x-3"
             onPress={toggleDialog}>
             <Feather name="log-out" size={20} color={Colors.Error} />
-            <Text className="text-error text-base font-medium">Logout</Text>
-          </TouchableOpacity>
-        </View>
+            <StyledText className="text-error text-base font-medium">
+              Logout
+            </StyledText>
+          </StyledTouchableOpacity>
+        </StyledView>
 
         {/* Logout Dialog */}
         <Dialog
           isVisible={visible}
           onBackdropPress={toggleDialog}
           overlayStyle={styles.dialog}>
-          <Text className="mb-5 text-base text-black font-medium text-center">
+          <StyledText className="mb-5 text-base text-black font-medium text-center">
             Are you sure you want {'\n'}to logout?
-          </Text>
+          </StyledText>
 
-          <View className="space-y-5">
-            <View className="">
+          <StyledView className="space-y-5">
+            <StyledView className="">
               <Button error title="Logout" size="md" onPress={logout} />
-            </View>
-            <View className="">
+            </StyledView>
+            <StyledView className="">
               <Button title="Cancel" size="md" onPress={toggleDialog} />
-            </View>
-          </View>
+            </StyledView>
+          </StyledView>
         </Dialog>
-      </ScrollView>
-    </SafeAreaView>
+      </StyledScrollView>
+    </StyledSafeAreaView>
   );
 };
 

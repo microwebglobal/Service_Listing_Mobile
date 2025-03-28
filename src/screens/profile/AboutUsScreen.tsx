@@ -10,8 +10,9 @@ import React from 'react';
 import {SafeAreaView} from 'react-native';
 import {Colors} from '../../utils/Colors';
 import AppHeader from '../../components/AppHeader';
-import { useNav } from '../../navigation/RootNavigation';
+import {useNav} from '../../navigation/RootNavigation';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {styled} from 'nativewind';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -24,77 +25,87 @@ interface sectionItemProps {
   onPress: () => void;
 }
 
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledScrollView = styled(ScrollView);
+const StyledSafeAreaView = styled(SafeAreaView);
+const StyledTouchableOpacity = styled(TouchableOpacity);
+
 export const AboutUsScreen = () => {
   const navigation = useNav();
 
   const sectionItem = (data: sectionItemProps) => {
     return (
-      <View className="border-t border-lightGrey">
-        <TouchableOpacity
+      <StyledView className="border-t border-lightGrey">
+        <StyledTouchableOpacity
           onPress={() => {
             data.onPress();
           }}>
-          <View className="flex-row my-3 items-center justify-between">
-            <Text className="text-dark text-base font-medium">
+          <StyledView className="flex-row my-3 items-center justify-between">
+            <StyledText className="text-dark text-base font-medium">
               {data.title}
-            </Text>
+            </StyledText>
             {data.edit && (
-              <View className="-mr-2">
+              <StyledView className="-mr-2">
                 <MaterialCommunityIcons
                   name="chevron-right"
                   size={22}
                   color={Colors.Gray}
                 />
-              </View>
+              </StyledView>
             )}
-          </View>
-        </TouchableOpacity>
-      </View>
+          </StyledView>
+        </StyledTouchableOpacity>
+      </StyledView>
     );
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <StyledSafeAreaView className="flex-1 bg-white">
       <AppHeader back={true} title="About Us" />
-      <ScrollView style={{paddingHorizontal: RPW(5)}}>
-        <Text className="my-5 text-xl font-medium text-primary text-center">
+      <StyledScrollView style={{paddingHorizontal: RPW(5)}}>
+        <StyledText className="my-5 text-xl font-medium text-primary text-center">
           QProz
-        </Text>
-        <View className="">
-          <Text className="text-base text-black text-justify">
+        </StyledText>
+        <StyledView className="">
+          <StyledText className="text-base text-black text-justify">
             Your trusted partner for seamless and efficient solutions. We
             specialize in delivering high-quality services tailored to your
             needs.
-          </Text>
-        </View>
+          </StyledText>
+        </StyledView>
 
-        <View className="mt-5">
-          <View className="my-2 flex-row items-center space-x-3">
-            <Text className="text-base text-black font-medium">
+        <StyledView className="mt-5">
+          <StyledView className="my-2 flex-row items-center space-x-3">
+            <StyledText className="text-base text-black font-medium">
               Support Customer
-            </Text>
-            <Text className="text-base text-primary">0114765334</Text>
-          </View>
-          <View className="my-2 flex-row items-center space-x-3">
-            <Text className="text-base text-black font-medium">Website</Text>
-            <TouchableOpacity
+            </StyledText>
+            <StyledText className="text-base text-primary">
+              0114765334
+            </StyledText>
+          </StyledView>
+          <StyledView className="my-2 flex-row items-center space-x-3">
+            <StyledText className="text-base text-black font-medium">
+              Website
+            </StyledText>
+            <StyledTouchableOpacity
               onPress={() =>
                 Linking.openURL('https://qp.microwebstudios.com/')
               }>
-              <Text className="text-base text-primary">
+              <StyledText className="text-base text-primary">
                 https://qp.microwebstudios.com
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+              </StyledText>
+            </StyledTouchableOpacity>
+          </StyledView>
+        </StyledView>
 
-        <View className="my-5">
-          <Text className="text-base text-black text-justify">
+        <StyledView className="my-5">
+          <StyledText className="text-base text-black text-justify">
             Your trusted partner for seamless and efficient solutions. We
             specialize in delivering high-quality services tailored to your
             needs.
-          </Text>
-        </View>
+          </StyledText>
+        </StyledView>
 
         {sectionItem({
           title: 'Terms & Conditions',
@@ -111,27 +122,29 @@ export const AboutUsScreen = () => {
           },
         })}
 
-        <View className="py-3 flex-row items-center space-x-3 border-t border-lightGrey">
-          <Text className="text-dark text-base font-medium">Follow Us</Text>
-          <View className="flex-row items-center space-x-3">
-            <TouchableOpacity onPress={() => {}}>
+        <StyledView className="py-3 flex-row items-center space-x-3 border-t border-lightGrey">
+          <StyledText className="text-dark text-base font-medium">
+            Follow Us
+          </StyledText>
+          <StyledView className="flex-row items-center space-x-3">
+            <StyledTouchableOpacity onPress={() => {}}>
               <MaterialCommunityIcons
                 name="facebook"
                 size={25}
                 color={Colors.Dark}
               />
-            </TouchableOpacity>
+            </StyledTouchableOpacity>
 
-            <TouchableOpacity>
+            <StyledTouchableOpacity>
               <MaterialCommunityIcons
                 name="linkedin"
                 size={25}
                 color={Colors.Dark}
               />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+            </StyledTouchableOpacity>
+          </StyledView>
+        </StyledView>
+      </StyledScrollView>
+    </StyledSafeAreaView>
   );
 };
