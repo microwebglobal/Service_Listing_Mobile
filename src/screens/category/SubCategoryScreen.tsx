@@ -1,24 +1,23 @@
 import {
   View,
   Text,
+  Image,
+  FlatList,
   ScrollView,
   Dimensions,
-  FlatList,
+  SafeAreaView,
   TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {Screen, useNav} from '../../navigation/RootNavigation';
-import AppHeader from '../../components/AppHeader';
-import {Image} from '@rneui/themed';
-import {Colors} from '../../utils/Colors';
+import {SERVER_BASE} from '@env';
+import {styled} from 'nativewind';
 import {instance} from '../../api/instance';
 import {ServiceType} from './ServiceTypeScreen';
-import {SERVER_BASE} from '@env';
+import AppHeader from '../../components/AppHeader';
+import {Screen, useNav} from '../../navigation/RootNavigation';
+import {LoadingIndicator} from '../../components/LoadingIndicator';
 
-interface SubCategory {
+export interface SubCategory {
   sub_category_id: string;
   category_id: string;
   name: string;
@@ -32,6 +31,12 @@ const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
 };
+
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledImage = styled(Image);
+const StyledScrollView = styled(ScrollView);
+const StyledSafeAreaView = styled(SafeAreaView);
 
 export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
   const {categoryId, category, imageUrl} = route.params;
@@ -53,7 +58,7 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
 
   const _renderSubCategoryItem = ({item}: any) => {
     return (
-      <View className="w-full basis-1/2 px-2 my-3">
+      <StyledView className="w-full basis-1/2 px-2 my-3">
         <TouchableOpacity
           className="shadow-sm shadow-black rounded-xl"
           onPress={() => {
@@ -64,54 +69,54 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
               });
             }
           }}>
-          <View className="py-2 items-center justify-center bg-lightGrey rounded-xl">
-            <View className="">
-              <Image
+          <StyledView className="py-2 items-center justify-center bg-lightGrey rounded-xl">
+            <StyledView className="">
+              <StyledImage
+                className="w-40 h-24 rounded-lg"
                 source={{uri: `${SERVER_BASE}${item.icon_url}`}}
-                containerStyle={styles.itemImage}
               />
-            </View>
-            <View className="w-full mt-2 px-3 items-center bg-white shadow-sm shadow-black rounded-b-xl">
-              <Text className="my-2 text-base text-black">{item.name}</Text>
-            </View>
-          </View>
+            </StyledView>
+            <StyledView className="w-full mt-2 px-3 items-center bg-white shadow-sm shadow-black rounded-b-xl">
+              <StyledText className="my-2 text-base text-black">
+                {item.name}
+              </StyledText>
+            </StyledView>
+          </StyledView>
         </TouchableOpacity>
-      </View>
+      </StyledView>
     );
   };
 
   if (isLoading) {
-    return (
-      <View className="items-center justify-center flex-1 bg-white">
-        <ActivityIndicator size="large" color={Colors.Primary} />
-      </View>
-    );
+    return <LoadingIndicator />;
   }
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <ScrollView className="flex-grow" showsVerticalScrollIndicator={false}>
+    <StyledSafeAreaView className="flex-1 bg-white">
+      <StyledScrollView
+        className="flex-grow"
+        showsVerticalScrollIndicator={false}>
         <AppHeader title={category} back={true} cartVisible={true} />
-        <View>
-          <Image
+        <StyledView>
+          <StyledImage
             source={{uri: `${SERVER_BASE}${imageUrl}`}}
-            containerStyle={styles.categoryImage}
+            className="w-full h-52"
           />
-        </View>
-        <View
+        </StyledView>
+        <StyledView
           className="flex-1 justify-between"
           style={{marginHorizontal: RPW(5)}}>
-          <View className="my-2">
-            <Text className="text-dark text-justify text-base my-2">
+          <StyledView className="my-2">
+            <StyledText className="text-dark text-justify text-base my-2">
               {category}
               {
                 'is an essential part of daily life in delhi. Whether you are looking for professional services, products, or local offers, this category encompasses everything you need. From reliable service providers to unique offerings, we have gathered all the top choices for you.'
               }
-            </Text>
-            <Text className="mt-5 text-dark text-justify text-base font-medium">
+            </StyledText>
+            <StyledText className="mt-5 text-dark text-justify text-base font-medium">
               {'Subcategories and available services'}
-            </Text>
-          </View>
-          <View>
+            </StyledText>
+          </StyledView>
+          <StyledView>
             {subCategoryData.length > 0 ? (
               <FlatList
                 className="mt-2"
@@ -124,29 +129,15 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
                 renderItem={_renderSubCategoryItem}
               />
             ) : (
-              <View className="my-5">
-                <Text className="text-base text-center my-2">
+              <StyledView className="my-5">
+                <StyledText className="text-base text-center my-2">
                   {'No subcategories available for \n this category'}
-                </Text>
-              </View>
+                </StyledText>
+              </StyledView>
             )}
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+          </StyledView>
+        </StyledView>
+      </StyledScrollView>
+    </StyledSafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  categoryImage: {
-    width: 'auto',
-    height: 200,
-    resizeMode: 'center',
-  },
-  itemImage: {
-    width: 150,
-    height: 100,
-    borderRadius: 12,
-    resizeMode: 'contain',
-  },
-});

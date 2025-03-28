@@ -1,12 +1,12 @@
 import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
-import { styled } from 'nativewind';
+import {styled} from 'nativewind';
 import {Colors} from '../utils/Colors';
 import {useAppSelector} from '../redux';
 import {useNav} from '../navigation/RootNavigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Octicons from 'react-native-vector-icons/Octicons';
 
 interface AppHeaderProps {

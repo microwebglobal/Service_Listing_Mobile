@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  ActivityIndicator,
   FlatList,
   SafeAreaView,
   ScrollView,
@@ -12,12 +11,12 @@ import React, {useEffect, useState} from 'react';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {SERVER_BASE} from '@env';
 import {styled} from 'nativewind';
-import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
 import AppHeader from '../../components/AppHeader';
 import {Screen} from '../../navigation/RootNavigation';
 import {RenderService} from '../../components/RenderService';
 import {RenderPackage} from '../../components/RenderPackage';
+import {LoadingIndicator} from '../../components/LoadingIndicator';
 
 interface CitySpecificPricing {
   id: number;
@@ -67,6 +66,10 @@ const RPW = (percentage: number) => {
 };
 
 const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledImage = styled(Image);
+const StyledScrollView = styled(ScrollView);
+const StyledSafeAreaView = styled(SafeAreaView);
 
 export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
   const {subCategoryId, subCategory} = route.params;
@@ -75,6 +78,8 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
   const [serviceTypeData, setServiceTypeData] = useState<Array<ServiceType>>(
     [],
   );
+
+  console.log('ServiceTypeScreen', subCategoryId, subCategory);
 
   useEffect(() => {
     try {
@@ -93,27 +98,31 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
   const _renderServiceType = ({item}: {item: ServiceType}) => {
     return (
       <StyledView className="w-full py-3 mb-2 rounded-xl drop-shadow-xl">
-        <View className="flex-row items-center space-x-5 bg-white">
-          <View className="ml-1 bg-lightGrey rounded-lg">
-            <Image
+        <StyledView className="flex-row items-center space-x-5 bg-white">
+          <StyledView className="ml-1 bg-lightGrey rounded-lg">
+            <StyledImage
               source={{uri: `${SERVER_BASE}${item.icon_url}`}}
               style={{width: 50, height: 50, borderRadius: 8}}
             />
-          </View>
-          <View className="">
-            <Text className="text-lg font-medium text-black">{item.name}</Text>
-            <Text className="text-base text-dark">{item.description}</Text>
-          </View>
-        </View>
+          </StyledView>
+          <StyledView className="">
+            <StyledText className="text-lg font-medium text-black">
+              {item.name}
+            </StyledText>
+            <StyledText className="text-base text-dark">
+              {item.description}
+            </StyledText>
+          </StyledView>
+        </StyledView>
 
         {/* Render services */}
-        <View className="mt-5">
+        <StyledView className="mt-5">
           {item.Services.map((service, index: number) => (
-            <View key={index}>
+            <StyledView key={index}>
               <RenderService service={service} />
-            </View>
+            </StyledView>
           ))}
-        </View>
+        </StyledView>
 
         {/* Render packages */}
         <RenderPackage typeId={item.type_id} />
@@ -122,20 +131,16 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
   };
 
   if (isLoading) {
-    return (
-      <View className="items-center justify-center flex-1 bg-white">
-        <ActivityIndicator size="large" color={Colors.Black} />
-      </View>
-    );
+    return <LoadingIndicator />;
   }
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <ScrollView
+    <StyledSafeAreaView className="flex-1 bg-white">
+      <StyledScrollView
         className="flex-grow"
         showsVerticalScrollIndicator={false}
         style={{marginBottom: tabBarHeight}}>
         <AppHeader back={true} title={subCategory} cartVisible={true} />
-        <View
+        <StyledView
           className="flex-1 justify-between"
           style={{marginHorizontal: RPW(5)}}>
           <FlatList
@@ -148,8 +153,8 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
             keyExtractor={(serviceType: ServiceType) => serviceType.type_id}
             renderItem={_renderServiceType}
           />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </StyledView>
+      </StyledScrollView>
+    </StyledSafeAreaView>
   );
 };

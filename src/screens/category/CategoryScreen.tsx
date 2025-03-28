@@ -1,27 +1,26 @@
 import {
   View,
   Text,
+  Image,
+  FlatList,
   ScrollView,
   Dimensions,
-  FlatList,
+  SafeAreaView,
   TouchableOpacity,
-  ActivityIndicator,
-  StyleSheet,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {SERVER_BASE} from '@env';
+import {styled} from 'nativewind';
+import {useDispatch} from 'react-redux';
 import {instance} from '../../api/instance';
-import {Colors} from '../../utils/Colors';
 import AppHeader from '../../components/AppHeader';
-import {Image} from '@rneui/themed';
 import {useNav} from '../../navigation/RootNavigation';
 import {useFocusEffect} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
+import {LoadingIndicator} from '../../components/LoadingIndicator';
 import {setPrimaryCityID} from '../../redux/address/address.slice';
-import {SERVER_BASE} from '@env';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
-interface Category {
+export interface Category {
   category_id: string;
   name: string;
   slug: string;
@@ -29,7 +28,7 @@ interface Category {
   display_order: number;
 }
 
-interface City {
+export interface City {
   city_id: string;
   name: string;
   state: string;
@@ -50,6 +49,13 @@ export interface Address {
   postal_code: string;
   is_primary: boolean;
 }
+
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledImage = styled(Image);
+const StyledFlatList = styled(FlatList);
+const StyledScrollView = styled(ScrollView);
+const StyledSafeAreaView = styled(SafeAreaView);
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -104,13 +110,17 @@ export const CategoryScreen = () => {
       if (cityData !== undefined) {
         setCategoryData(cityData.serviceCategories);
         dispatch(setPrimaryCityID(cityData.city_id));
+      } else {
+        cities.map((city: City) => {
+          setCategoryData([...city.serviceCategories]);
+        });
       }
     }, [cities, dispatch, fetchAddress, primaryAddress?.city]),
   );
 
   const _renderCategoryItem = ({item}: any) => {
     return (
-      <View className="w-full basis-1/2 px-2 mt-3">
+      <StyledView className="w-full basis-1/2 px-2 mt-3">
         <TouchableOpacity
           className="shadow-sm shadow-black rounded-xl"
           onPress={() => {
@@ -120,40 +130,37 @@ export const CategoryScreen = () => {
               imageUrl: item.icon_url,
             });
           }}>
-          <View className="py-2 items-center justify-center bg-lightGrey rounded-xl">
-            <View className="">
-              <Image
+          <StyledView className="py-2 items-center justify-center bg-lightGrey rounded-xl">
+            <StyledView className="">
+              <StyledImage
+                className="w-40 h-24 rounded-lg"
                 source={{uri: `${SERVER_BASE}${item.icon_url}`}}
-                containerStyle={styles.itemImage}
               />
-            </View>
-            <View className="w-full mt-2 px-3 items-center bg-white shadow-sm shadow-black rounded-b-xl">
-              <Text className="my-2 text-base text-black">{item.name}</Text>
-            </View>
-          </View>
+            </StyledView>
+            <StyledView className="w-full mt-2 px-3 items-center bg-white shadow-sm shadow-black rounded-b-xl">
+              <StyledText className="my-2 text-base text-black">
+                {item.name}
+              </StyledText>
+            </StyledView>
+          </StyledView>
         </TouchableOpacity>
-      </View>
+      </StyledView>
     );
   };
 
   if (isLoading) {
-    return (
-      <View className="items-center justify-center flex-1 bg-white">
-        <ActivityIndicator size="large" color={Colors.Black} />
-      </View>
-    );
+    return <LoadingIndicator />;
   }
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <ScrollView
-        className="flex-grow mb-[var(--tabBarHeight, 10px)]"
+    <StyledSafeAreaView className="flex-1 bg-white">
+      <StyledScrollView
         showsVerticalScrollIndicator={false}
         style={{marginBottom: tabBarHeight}}>
         <AppHeader back={false} title="Our Services" cartVisible={true} />
-        <View
+        <StyledView
           className="flex-1 justify-between"
           style={{marginHorizontal: RPW(4)}}>
-          <FlatList
+          <StyledFlatList
             horizontal={false}
             numColumns={2}
             scrollEnabled={false}
@@ -162,17 +169,8 @@ export const CategoryScreen = () => {
             keyExtractor={(item: any) => item.category_id}
             renderItem={_renderCategoryItem}
           />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </StyledView>
+      </StyledScrollView>
+    </StyledSafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  itemImage: {
-    width: 150,
-    height: 100,
-    borderRadius: 12,
-    resizeMode: 'contain',
-  },
-});
