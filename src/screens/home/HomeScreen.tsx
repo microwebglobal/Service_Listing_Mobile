@@ -6,7 +6,6 @@ import {
   FlatList,
   Animated,
   Dimensions,
-  StyleSheet,
   BackHandler,
   SafeAreaView,
   RefreshControl,
@@ -30,12 +29,8 @@ import {Address, Category, City} from '../category/CategoryScreen';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
 const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
 const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
-};
-const RPH = (percentage: number) => {
-  return (percentage / 100) * screenHeight;
 };
 
 const StyledView = styled(View);
@@ -145,13 +140,12 @@ export const HomeScreen = () => {
           onPress={() => {}}>
           <StyledView className="overflow-hidden">
             <StyledImage
-              className="rounded-t-xl "
+              className="w-full h-40 rounded-t-xl object-cover"
               source={item.imageURI}
-              style={styles.Image}
             />
           </StyledView>
           <StyledView className="mt-2 ml-5">
-            <StyledText className="mt-2 text-xl font-medium text-dark first-letter:capitalize">
+            <StyledText className="mt-2 text-lg font-medium text-dark first-letter:capitalize">
               {item.description}
             </StyledText>
           </StyledView>
@@ -162,17 +156,18 @@ export const HomeScreen = () => {
 
   const _renderCategoryItem = ({item}: any) => {
     return (
-      <StyledView className="flex-wrap basis-[35] mt-3">
+      <StyledView className="basis-1/3 mt-3">
         <StyledTouchableOpacity
+          className="mx-1"
           onPress={() => {
             navigation.navigate('TabNavigator', {
               screen: 'Service',
             });
           }}>
-          <StyledView className="flex-1">
+          <StyledView className="flex-1 items-center">
             <StyledImage
+              className="w-full h-20 rounded-lg"
               source={{uri: `${SERVER_BASE}${item.icon_url}`}}
-              style={styles.categoryImage}
             />
             <StyledText
               numberOfLines={2}
@@ -211,7 +206,7 @@ export const HomeScreen = () => {
             {primaryAddress && (
               <StyledTouchableOpacity
                 onPress={() => {
-                  navigation.navigate('SelectAddress', {prevScreen: 'Home'});
+                  navigation.navigate('SelectAddress', {});
                 }}>
                 <StyledView className="flex-row items-center space-x-2">
                   <StyledText
@@ -285,17 +280,16 @@ export const HomeScreen = () => {
           <StyledText className="text-lg text-black font-medium">
             Explore all services
           </StyledText>
-          <StyledView className="flex-1 justify-between">
-            <StyledFlatList
-              horizontal={false}
-              numColumns={3}
-              scrollEnabled={false}
-              showsHorizontalScrollIndicator={false}
-              data={categories}
-              keyExtractor={(item: any) => item.category_id}
-              renderItem={_renderCategoryItem}
-            />
-          </StyledView>
+
+          <StyledFlatList
+            horizontal={false}
+            numColumns={3}
+            scrollEnabled={false}
+            showsHorizontalScrollIndicator={false}
+            data={categories}
+            keyExtractor={(item: any) => item.category_id}
+            renderItem={_renderCategoryItem}
+          />
         </StyledView>
 
         <StyledView className="my-4 h-2 bg-lightGrey" />
@@ -316,17 +310,3 @@ export const HomeScreen = () => {
     </StyledSafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  Image: {
-    width: RPW(88),
-    height: RPH(20),
-    resizeMode: 'cover',
-  },
-  categoryImage: {
-    width: 100,
-    height: 80,
-    borderRadius: 8,
-    resizeMode: 'contain',
-  },
-});

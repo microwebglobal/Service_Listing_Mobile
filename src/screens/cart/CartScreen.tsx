@@ -109,7 +109,7 @@ export const CartScreen = () => {
     <StyledSafeAreaView className="flex-1 bg-white">
       <ScrollView className="flex-grow" showsVerticalScrollIndicator={false}>
         <AppHeader back={true} title={'Shopping Cart'} />
-        <StyledView className="flex-1 mt-5" style={{marginHorizontal: RPW(6)}}>
+        <StyledView className="flex-1 mt-5" style={{marginHorizontal: RPW(5)}}>
           {cart !== undefined &&
             cart?.BookingItems.map((item: BookingItem, index: number) => {
               return (
@@ -117,10 +117,10 @@ export const CartScreen = () => {
                   key={index}
                   className="flex-row justify-between items-center mb-7">
                   {item?.serviceItem && (
-                    <StyledView className="flex-row items-center space-x-4">
+                    <StyledView className="flex-row basis-2/4 items-center space-x-4">
                       <StyledView className="ml-1 bg-lightGrey rounded-lg">
                         <StyledImage
-                          className="w-12 h-12 rounded-md"
+                          className="w-14 h-14 rounded-md"
                           source={{
                             uri: `${SERVER_BASE}${item.serviceItem.icon_url}`,
                           }}
@@ -138,7 +138,7 @@ export const CartScreen = () => {
                     </StyledView>
                   )}
                   {item?.packageItem && (
-                    <StyledView className="flex-row items-center space-x-4">
+                    <StyledView className="flex-row basis-2/4 items-center space-x-4">
                       <StyledView className="ml-1 bg-lightGrey rounded-lg">
                         <StyledImage
                           className="w-12 h-12 rounded-md"

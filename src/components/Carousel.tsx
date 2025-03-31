@@ -1,10 +1,10 @@
 import {
   View,
-  TouchableOpacity,
+  Image,
   FlatList,
   StyleSheet,
   Dimensions,
-  Image,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {styled} from 'nativewind';
@@ -79,7 +79,13 @@ export const Carousel = () => {
         decelerationRate="normal"
         data={OfferCardImages}
         renderItem={({item}) => {
-          return <StyledImage source={item.imageLink} style={styles.Image} />;
+          return (
+            <StyledImage
+              className="rounded-xl"
+              source={item.imageLink}
+              style={styles.Image}
+            />
+          );
         }}
         keyExtractor={(item, index) => index.toString()}
         ref={ref => {
@@ -109,8 +115,7 @@ const styles = StyleSheet.create({
   Image: {
     marginHorizontal: RPW(3),
     width: RPW(94),
-    height: RPH(20),
+    height: RPH(22),
     resizeMode: 'cover',
-    borderRadius: 12,
   },
 });

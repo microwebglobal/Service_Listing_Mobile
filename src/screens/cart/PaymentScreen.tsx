@@ -189,10 +189,10 @@ export const PaymentScreen = ({route}: any) => {
                   color={Colors.Error}
                 />
                 <StyledText className="flex-1 text-sm text-error">
-                  {`You should pay the remaining ${
+                  {`You should pay the remaining ${(
                     parseFloat(booking.BookingPayment.total_amount) -
                     parseFloat(booking.BookingPayment.advance_payment)
-                  } after completing the service.`}
+                  ).toFixed(2)} after completing the service.`}
                 </StyledText>
               </StyledView>
             )}

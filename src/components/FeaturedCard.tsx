@@ -3,7 +3,6 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  StyleSheet,
   Dimensions,
   FlatList,
   ScrollView,
@@ -13,12 +12,8 @@ import {StarRatingDisplay} from 'react-native-star-rating-widget';
 import {styled} from 'nativewind';
 
 const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
 const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
-};
-const RPH = (percentage: number) => {
-  return (percentage / 100) * screenHeight;
 };
 
 const StyledView = styled(View);
@@ -46,17 +41,16 @@ export const FeaturedCard = ({featuredData}: FeatureCardProps) => {
     return (
       <StyledView className="mr-5">
         <StyledTouchableOpacity
-          className="pb-5 bg-white rounded-xl shadow-sm shadow-black"
+          className="w-60 pb-5 bg-white rounded-xl shadow-sm shadow-black"
           onPress={() => {}}>
           <StyledView className="overflow-hidden">
             <StyledImage
-              className="rounded-t-xl"
+              className="w-full h-40 rounded-t-xl"
               source={item.imageURI}
-              style={styles.Image}
             />
           </StyledView>
           <StyledView className="flex-row">
-            <StyledView className="relative -top-40 left-5 px-3 py-1 basis-1/4 rounded-full bg-white">
+            <StyledView className="relative -top-36 left-5 px-3 py-1 rounded-full bg-white">
               <StyledText className="text-sm uppercase font-medium text-primary">
                 {item.category}
               </StyledText>
@@ -69,7 +63,7 @@ export const FeaturedCard = ({featuredData}: FeatureCardProps) => {
               </StyledText>
             </StyledView>
           </StyledView>
-          <StyledView className="-mt-10 ml-5 bg-white">
+          <StyledView className="-mt-10 mx-5 bg-white">
             <StyledView className="flex-row items-center gap-3">
               <StarRatingDisplay
                 maxStars={5}
@@ -80,9 +74,11 @@ export const FeaturedCard = ({featuredData}: FeatureCardProps) => {
                 {item.rating}
               </StyledText>
             </StyledView>
-            <StyledText className="mt-2 text-xl font-medium text-black">
+            <StyledText
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              className="mt-2 text-base font-medium text-black">
               {item.title}
-              {'...'}
             </StyledText>
           </StyledView>
         </StyledTouchableOpacity>
@@ -124,16 +120,3 @@ export const FeaturedCard = ({featuredData}: FeatureCardProps) => {
     </StyledView>
   );
 };
-
-const styles = StyleSheet.create({
-  ImageStyles: {
-    width: RPW(10),
-    height: RPW(10),
-    resizeMode: 'contain',
-  },
-  Image: {
-    width: RPW(88),
-    height: RPH(20),
-    resizeMode: 'cover',
-  },
-});

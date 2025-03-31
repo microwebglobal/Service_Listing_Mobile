@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dimensions, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Colors} from '../utils/Colors';
@@ -11,12 +11,6 @@ import {
   ProfileNavigator,
 } from './RootNavigator';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
-const screenHeight = Dimensions.get('window').height;
-
-const RPH = (percentage: number) => {
-  return (percentage / 100) * screenHeight;
-};
 
 const Tab = createBottomTabNavigator();
 
@@ -83,7 +77,7 @@ export const TabNavigator = () => {
 
 const styles = StyleSheet.create({
   tabBarStyle: {
-    height: RPH(7),
+    height: 65,
     position: 'absolute',
     backgroundColor: Colors.White,
     elevation: 2,

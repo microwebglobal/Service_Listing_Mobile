@@ -56,7 +56,7 @@ export const SelectedItemsScreen = () => {
         className="flex-grow"
         showsVerticalScrollIndicator={false}>
         <AppHeader back={true} title={'Selected Services'} />
-        <StyledView className="flex-1 mt-5" style={{marginHorizontal: RPW(6)}}>
+        <StyledView className="flex-1 mt-5" style={{marginHorizontal: RPW(5)}}>
           {(LocalCart === null || LocalCart?.length === 0) && (
             <StyledView
               className="flex-1 justify-center items-center"
@@ -94,10 +94,10 @@ export const SelectedItemsScreen = () => {
               <StyledView
                 key={index}
                 className="flex-row justify-between items-center mb-7">
-                <StyledView className="flex-row basis-2/4 items-center space-x-4">
+                <StyledView className="flex-row basis-3/5 items-center space-x-4">
                   <StyledView className="ml-1 bg-lightGrey rounded-lg">
                     <StyledImage
-                      className="w-12 h-12 rounded-md"
+                      className="w-14 h-14 rounded-md"
                       source={{uri: `${SERVER_BASE}${item.icon_url}`}}
                     />
                   </StyledView>
