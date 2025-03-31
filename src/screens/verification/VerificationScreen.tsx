@@ -40,7 +40,7 @@ const StyledKeyboardAvoidingView = styled(KeyboardAvoidingView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const VerificationScreen: Screen<'Verification'> = ({route}) => {
-  const {phone} = route.params;
+  const {phone, mode} = route.params;
   const navigation = useNav();
   const [loading, setLoading] = useState<boolean>(false);
   const [count, setCount] = useState<number>(60);
@@ -57,10 +57,23 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
       if (!error) {
         const response = await userLogin({mobile: phone, otp: otp});
         if (response?.success) {
-          if (prevRoute.name === 'SelectLocation') {
-            userUpdate(user?.name, user?.email, user?.id);
+          if (
+            mode === 'login' &&
+            response?.user?.name === `User-${phone.slice(-4)}`
+          ) {
+            navigation.navigate('SignUp', {phone: phone, mode: 'login'});
+          } else if (prevRoute.name === 'SelectLocation') {
+            userUpdate(
+              response.user?.id,
+              user?.name,
+              user?.email,
+              user?.gender,
+              user?.dob,
+            );
+            navigation.navigate('LoginSuccess');
+          } else {
+            navigation.navigate('LoginSuccess');
           }
-          navigation.navigate('LoginSuccess');
         } else {
           setIsValid(true);
         }

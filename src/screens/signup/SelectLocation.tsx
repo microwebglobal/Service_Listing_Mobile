@@ -17,9 +17,9 @@ import {useAppSelector} from '../../redux';
 import {Button} from '../../components/rneui';
 import AppHeader from '../../components/AppHeader';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {useNav} from '../../navigation/RootNavigation';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {SearchBarComponent} from '../../components/Searchbar';
+import {Screen, useNav} from '../../navigation/RootNavigation';
 import {AddressEntity} from '../../redux/address/address.entity';
 import {saveAddressList} from '../../redux/address/address.slice';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -44,7 +44,8 @@ const StyledScrollView = styled(ScrollView);
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
-export const SelectLocation = () => {
+export const SelectLocation: Screen<'SelectLocation'> = ({route}) => {
+  const {mode} = route.params;
   const navigation = useNav();
   const dispatch = useDispatch();
   const snapPoints = useMemo(() => ['98%'], []);
@@ -59,21 +60,28 @@ export const SelectLocation = () => {
 
   const submitFinish = () => {
     dispatch(saveAddressList(addressList));
-    setLoading(true);
-    axios
-      .post(`${API_BASE}/auth/customer/login/send-otp`, {
-        mobile: user?.mobile,
-      })
-      .then(() => {
-        user?.mobile &&
-          navigation.navigate('Verification', {phone: user?.mobile});
-      })
-      .catch(error => {
-        console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    if (mode === 'login') {
+      navigation.navigate('LoginSuccess');
+    } else {
+      setLoading(true);
+      axios
+        .post(`${API_BASE}/auth/customer/login/send-otp`, {
+          mobile: user?.mobile,
+        })
+        .then(() => {
+          user?.mobile &&
+            navigation.navigate('Verification', {
+              phone: user?.mobile,
+              mode: mode,
+            });
+        })
+        .catch(error => {
+          console.log(error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   };
 
   const submit = (data: AddressEntity) => {
@@ -213,7 +221,7 @@ export const SelectLocation = () => {
           <AddressForm
             btnTitle="Save Address"
             onClose={handleClosePress}
-            onSubmit={(data) => submit(data)}
+            onSubmit={data => submit(data)}
           />
         </BottomSheetView>
       </BottomSheet>

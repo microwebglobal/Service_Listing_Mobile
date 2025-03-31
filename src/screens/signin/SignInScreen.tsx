@@ -55,7 +55,7 @@ export const SignInScreen = () => {
         mobile: data.phone,
       })
       .then(response => {
-        navigation.navigate('Verification', {phone: data.phone});
+        navigation.navigate('Verification', {phone: data.phone, mode: 'login'});
         console.log(response.data);
       })
       .catch(error => {
@@ -153,7 +153,7 @@ export const SignInScreen = () => {
             </StyledText>
             <StyledTouchableOpacity
               onPress={() => {
-                navigation.navigate('SignUp');
+                navigation.navigate('SignUp', {mode: 'signup'});
               }}>
               <StyledText className="mb-2 text-base font-medium text-primary underline">
                 Sign Up

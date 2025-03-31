@@ -7,10 +7,10 @@ export type RootStackParamList = {
   Splash: undefined;
   Onboarding: undefined;
   SignIn: undefined;
-  SignUp: undefined;
-  Verification: {phone: string};
+  SignUp: {phone?: string; mode: 'login' | 'signup'};
+  Verification: {phone: string; mode: 'login' | 'signup'};
   LoginSuccess: undefined;
-  SelectLocation: undefined;
+  SelectLocation: {mode: 'login' | 'signup'};
   TabNavigator: undefined;
   HomeScreen: undefined;
   AccountScreen: undefined;
@@ -21,10 +21,10 @@ export type RootStackParamList = {
   EditProfile: {itemName: string};
   EditLocation: undefined;
   AddressDetails: {address: Address};
-  SelectAddress: {date?: string, time?: string};
+  SelectAddress: {date?: string; time?: string};
   Notification: undefined;
   SelectedItems: undefined;
-  ServiceSchedule: {address?: string, date?: string, time?: string};
+  ServiceSchedule: {address?: string; date?: string; time?: string};
   Cart: undefined;
   Payment: {amount: string; bookingId: string};
   BookingScreen: undefined;

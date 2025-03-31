@@ -1,9 +1,7 @@
 export interface UserDetailEntity {
   id: number;
   name: string;
-  userName: string;
   email: string;
-  password: string;
   mobile: string;
   role: string;
   photo: string;

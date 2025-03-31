@@ -35,6 +35,7 @@ export const userLogin = dispatchable(({mobile, otp}: LoginParams) => {
         dispatch(setId(response.data.user.id));
         return {
           success: true,
+          user: response.data.user,
         };
       }
     } catch (error: any) {
@@ -85,31 +86,33 @@ export const userLogout = dispatchable(() => {
   };
 });
 
-export const userUpdate = dispatchable((name: any, email: any, id: any) => {
-  return async () => {
-    try {
-      const result = await instance.put(`/users/profile/${id}`, {
-        name: name,
-        email: email,
-        gender: null,
-        dob: null,
-      });
+export const userUpdate = dispatchable(
+  (id: any, name: string, email: string, gender: string, dob: string) => {
+    return async () => {
+      try {
+        const result = await instance.put(`/users/profile/${id}`, {
+          name: name,
+          email: email,
+          gender: gender,
+          dob: dob,
+        });
 
-      const {status} = result;
+        const {status} = result;
 
-      if (status === 200) {
+        if (status === 200) {
+          return {
+            success: true,
+          };
+        }
+      } catch (error: any) {
         return {
-          success: true,
+          success: false,
+          error: error.message,
         };
       }
-    } catch (error: any) {
-      return {
-        success: false,
-        error: error.message,
-      };
-    }
-  };
-});
+    };
+  },
+);
 
 export const addressUpdate = dispatchable(
   (addressList: Array<AddressEntity>) => {
