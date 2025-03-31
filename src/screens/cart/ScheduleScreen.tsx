@@ -69,8 +69,6 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
   const [timeValue, onChangeTimeValue] = useState<string>(time ? time : '');
   const [selectDate, setSelectDate] = useState<string>(date ? date : todayDate);
 
-  console.log(route.params);
-
   const {
     control,
     handleSubmit,
@@ -125,8 +123,8 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
   return (
     <StyledSafeAreaView className="flex-1 bg-white">
       <StyledScrollView showsVerticalScrollIndicator={false}>
-        <AppHeader back={false} title="Schedule Service" />
-        <StyledView className="mb-6">
+        <AppHeader back={true} title="Schedule Service" />
+        <StyledView className="mb-6 mt-1">
           <Calendar
             theme={{
               dayTextColor: Colors.Black,
@@ -248,7 +246,6 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
                     <TouchableOpacity
                       onPress={() => {
                         navigation.navigate('SelectAddress', {
-                          prevScreen: 'ServiceSchedule',
                           date: selectDate,
                           time: timeValue,
                         });

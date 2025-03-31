@@ -32,7 +32,10 @@ const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
   const navigation = useNav();
-  const {prevScreen, date, time} = route.params;
+  const {date, time} = route.params;
+  const routes = navigation.getState()?.routes;
+  const prevRoute = routes[routes.length - 2];
+  // console.log('===//', prevRoute.name.toString());
   const [isLoading, setIsLoading] = useState(true);
   const [addressList, setAddressList] = useState<Array<Address>>([]);
 
@@ -85,13 +88,14 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
                 ', ' +
                 address.state
               : address.line1 + ', ' + address.city + ', ' + address.state;
-            prevScreen === 'Home'
+            prevRoute.name.toString() === 'TabNavigator'
               ? setPrimaryAddress(address.id)
-              : navigation.replace('ServiceSchedule', {
+              : (navigation.pop(),
+                navigation.replace('ServiceSchedule', {
                   address: selectedAddress,
                   date: date,
                   time: time,
-                });
+                }));
           }}>
           <StyledView className="flex-row items-center gap-x-5 overflow-hidden">
             {address.type === 'work' ? (
@@ -150,13 +154,14 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
             placeholder={'Search for your location'}
             iconName={'search'}
             onSearch={(text: string) => {
-              prevScreen === 'Home'
+              prevRoute.name.toString() === 'TabNavigator'
                 ? navigation.pop()
-                : navigation.replace('ServiceSchedule', {
+                : (navigation.pop(),
+                  navigation.replace('ServiceSchedule', {
                     address: text,
-                    date,
-                    time,
-                  });
+                    date: date,
+                    time: time,
+                  }));
             }}
           />
 
