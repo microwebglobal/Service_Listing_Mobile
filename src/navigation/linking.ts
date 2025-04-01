@@ -22,7 +22,7 @@ const config = {
     SignIn: 'signin',
     SelectedItems: 'cart',
     Notification: 'notification',
-    TabsNavigator: {
+    CustomerTabsNavigator: {
       screens: {
         HomeTab: {
           screens: {
@@ -31,9 +31,9 @@ const config = {
         },
         CategoryTab: {
           screens: {
-            Category: 'category',
-            SubCategory: 'category/subcategory',
-            ServiceType: 'category/service-type',
+            Category: 'services',
+            SubCategory: 'services/subcategory',
+            ServiceType: 'services/service-type',
           },
         },
         Ticket: 'ticket',
@@ -63,18 +63,18 @@ function buildDeepLinkFromNotificationData(data = {} as RemoteMessage['data']) {
     return null;
   }
   if (navigationId === 'category') {
-    return 'http://service-app/category';
+    return 'https://qp-microwebstudios-com/services';
   } else if (navigationId === 'booking') {
-    return 'http://service-app/booking';
+    return 'https://qp-microwebstudios-com/booking';
   } else if (navigationId === 'profile') {
-    return 'http://service-app/profile';
+    return 'https://qp-microwebstudios-com/profile';
   } else {
-    return 'http://service-app/notification';
+    return 'https://qp-microwebstudios-com/notification';
   }
 }
 
 const linking: any = {
-  prefixes: ['http://service-app', 'https://service-app'],
+  prefixes: ['https://qp-microwebstudios-com'],
   config,
 
   async getInitialURL() {
