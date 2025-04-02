@@ -78,7 +78,9 @@ export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
                   <StyledText
                     numberOfLines={1}
                     className="text-base text-black font-medium">
-                    Saloon for women
+                    {booking.BookingItems[0].item_type === 'package_item'
+                      ? booking.BookingItems[0].packageItem.name
+                      : booking.BookingItems[0].serviceItem.name}
                   </StyledText>
 
                   <StyledText className="text-sm text-dark">
@@ -134,19 +136,30 @@ export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
           <StyledView className="p-3 rounded-lg">
             <StyledView className="flex-row items-center space-x-4">
               <StyledView className="bg-lightGrey rounded-lg">
-                <StyledImage
-                  source={{
-                    uri: `${SERVER_BASE}${booking.BookingItems[0].serviceItem.icon_url}`,
-                  }}
-                  className="w-12 h-12 rounded-lg"
-                />
+                {booking.BookingItems[0]?.serviceItem ? (
+                  <StyledImage
+                    source={{
+                      uri: `${SERVER_BASE}${booking.BookingItems[0].serviceItem.icon_url}`,
+                    }}
+                    className="w-12 h-12 rounded-lg"
+                  />
+                ) : (
+                  <StyledImage
+                    source={{
+                      uri: `${SERVER_BASE}${booking.BookingItems[0].packageItem.icon_url}`,
+                    }}
+                    className="w-12 h-12 rounded-lg"
+                  />
+                )}
               </StyledView>
               <StyledView className="basis-3/4 space-y-1">
                 <StyledText
                   numberOfLines={1}
                   ellipsizeMode="tail"
                   className="text-base text-black font-medium">
-                  {booking.BookingItems[0].serviceItem.name}
+                  {booking.BookingItems[0].item_type === 'package_item'
+                    ? booking.BookingItems[0].packageItem.name
+                    : booking.BookingItems[0].serviceItem.name}
                 </StyledText>
 
                 <StyledView className="flex-row items-center">

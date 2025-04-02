@@ -25,7 +25,7 @@ export const RenderService = ({service}: {service: Service}) => {
 
   useEffect(() => {
     instance
-      .get(`items/service/${service.service_id}`)
+      .get(`items/serv/${service.service_id}`)
       .then(res => {
         setServiceItemData(res.data);
       })

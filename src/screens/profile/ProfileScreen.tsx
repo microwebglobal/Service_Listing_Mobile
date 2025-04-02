@@ -78,7 +78,7 @@ export const ProfileScreen = () => {
 
   const updateGender = async (gender: string) => {
     await instance
-      .put('users/profile/7', {
+      .put(`users/profile/${user?.id}`, {
         gender,
       })
       .then(() => {
