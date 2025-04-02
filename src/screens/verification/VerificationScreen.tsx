@@ -14,14 +14,13 @@ import axios from 'axios';
 import {API_BASE} from '@env';
 import {styled} from 'nativewind';
 import {Colors} from '../../utils/Colors';
-import {useAppSelector} from '../../redux';
 import {Button} from '../../components/rneui';
 import AppHeader from '../../components/AppHeader';
 import GoogleIcon from '../../assets/svgs/GoogleIcon';
+import {userLogin} from '../../redux/user/user.action';
 import CountDown from 'react-native-countdown-component';
 import {Screen, useNav} from '../../navigation/RootNavigation';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
-import {userLogin, userUpdate} from '../../redux/user/user.action';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -40,16 +39,13 @@ const StyledKeyboardAvoidingView = styled(KeyboardAvoidingView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const VerificationScreen: Screen<'Verification'> = ({route}) => {
-  const {phone, mode} = route.params;
+  const {phone} = route.params;
   const navigation = useNav();
   const [loading, setLoading] = useState<boolean>(false);
   const [count, setCount] = useState<number>(60);
   const [otp, setOtp] = useState<string>('');
   const [isValid, setIsValid] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const user = useAppSelector(state => state.user.user);
-  const routes = navigation.getState()?.routes;
-  const prevRoute = routes[routes.length - 2]; // -2 because -1 is the current route
 
   const submit = async () => {
     otp?.length !== 6 ? setError(true) : setError(false);
@@ -57,20 +53,8 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
       if (!error) {
         const response = await userLogin({mobile: phone, otp: otp});
         if (response?.success) {
-          if (
-            mode === 'login' &&
-            response?.user?.name === `User-${phone.slice(-4)}`
-          ) {
-            navigation.navigate('SignUp', {phone: phone, mode: 'login'});
-          } else if (prevRoute.name === 'SelectLocation') {
-            userUpdate(
-              response.user?.id,
-              user?.name,
-              user?.email,
-              user?.gender,
-              user?.dob,
-            );
-            navigation.navigate('LoginSuccess');
+          if (response.firstTimeLogin) {
+            navigation.navigate('SignUp');
           } else {
             navigation.navigate('LoginSuccess');
           }

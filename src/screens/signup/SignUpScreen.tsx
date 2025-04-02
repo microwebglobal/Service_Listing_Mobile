@@ -11,17 +11,16 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {styled} from 'nativewind';
-import {useDispatch} from 'react-redux';
 import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
+import {instance} from '../../api/instance';
 import {Button} from '../../components/rneui';
-import {setUser} from '../../redux/user/user.slice';
 import {Controller, useForm} from 'react-hook-form';
 import InputField from '../../components/InputFeild';
-import {userUpdate} from '../../redux/user/user.action';
-import Feather from 'react-native-vector-icons/Feather';
 import {useFocusEffect} from '@react-navigation/native';
+import Feather from 'react-native-vector-icons/Feather';
 import ImagePicker from 'react-native-image-crop-picker';
+import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '../../components/DateTimePicker';
 import {UserDetailEntity} from '../../redux/user/user.entity';
 import {Screen, useNav} from '../../navigation/RootNavigation';
@@ -43,28 +42,47 @@ const StyledScrollView = styled(ScrollView);
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
-export const SignUpScreen: Screen<'SignUp'> = ({route}) => {
-  const {phone, mode} = route.params;
+export const SignUpScreen: Screen<'SignUp'> = () => {
   const navigation = useNav();
-  const dispatch = useDispatch();
-  const [imageURI, setImageURI] = useState<string>();
   const [date, setDate] = useState(new Date());
+  const [imageURI, setImageURI] = useState<string>();
+  const [loading, setLoading] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<string>('');
   const user = useAppSelector(state => state.user.user);
   const {
     control,
     handleSubmit,
     formState: {errors},
-  } = useForm<UserDetailEntity>({defaultValues: {mobile: phone}});
+  } = useForm<UserDetailEntity>();
+  // DropDownPicker
+  const [open, setOpen] = useState(false);
+  const [genValue, setGenValue] = useState(null);
+  const [items, setItems] = useState([
+    {label: 'Male', value: 'male'},
+    {label: 'Female', value: 'female'},
+    {label: 'Other', value: 'other'},
+  ]);
 
-  const submit = (data: UserDetailEntity) => {
-    imageURI && (data.photo = imageURI);
-    if (mode === 'login') {
-      data.id = user?.id;
-      userUpdate(user?.id, user?.name, user?.email, user?.gender, user?.dob);
-    }
-    dispatch(setUser(data));
-    navigation.navigate('SelectLocation', {mode: mode});
+  const submit = async (data: UserDetailEntity) => {
+    setLoading(true);
+    // imageURI && (data.photo = imageURI);
+
+    await instance
+      .put(`/users/profile/${user.id}`, {
+        name: data.name,
+        email: data.email,
+        gender: genValue,
+        dob: data.dob,
+      })
+      .then(() => {
+        navigation.navigate('SelectLocation');
+      })
+      .catch(error => {
+        console.log('Error updating user:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   //   const takePhotoFromCamera = async () => {
@@ -147,19 +165,6 @@ export const SignUpScreen: Screen<'SignUp'> = ({route}) => {
             placeHolder="Full Name"
           />
           <SignUpFormField
-            name="mobile"
-            label="Mobile"
-            control={control}
-            errors={errors.mobile}
-            rules={{
-              required: true,
-              pattern: /^[0-9]{10}$/,
-              minLength: 10,
-              maxlength: 10,
-            }}
-            placeHolder="Mobile"
-          />
-          <SignUpFormField
             name="email"
             label="Email"
             control={control}
@@ -167,14 +172,28 @@ export const SignUpScreen: Screen<'SignUp'> = ({route}) => {
             rules={{required: true, pattern: /^\S+@\S+$/i}}
             placeHolder="Email"
           />
-          <SignUpFormField
-            name="gender"
-            label="Gender"
-            control={control}
-            errors={errors.gender}
-            rules={{required: true}}
-            placeHolder="Gender"
-          />
+
+          <StyledView className="mb-3">
+            <StyledText className="mb-2 text-base text-black font-medium">
+              Gender
+            </StyledText>
+            <DropDownPicker
+              flatListProps={{
+                scrollEnabled: false,
+              }}
+              open={open}
+              value={genValue}
+              items={items}
+              setOpen={setOpen}
+              setValue={setGenValue}
+              setItems={setItems}
+            />
+            {!genValue && (
+              <StyledText className="text-error">
+                {'Gender is required'}
+              </StyledText>
+            )}
+          </StyledView>
 
           <StyledView className="mb-3">
             <StyledText className="mb-2 text-base text-black font-medium">
@@ -216,10 +235,11 @@ export const SignUpScreen: Screen<'SignUp'> = ({route}) => {
             )}
           </StyledView>
         </StyledView>
+
         <StyledView className="mb-28">
           <StyledView className="my-5">
             <Button
-              loading={false}
+              loading={loading}
               title={'Continue'}
               onPress={(Keyboard.dismiss(), handleSubmit(submit))}
               primary
@@ -290,9 +310,7 @@ const SignUpFormField: React.FC<SignUpFormFieldProps> = ({
       />
       {errors && (
         <StyledText className="text-error">
-          {name === 'mobile'
-            ? 'Please enter valid mobile number'
-            : name === 'email'
+          {name === 'email'
             ? 'Please enter valid email address'
             : name === 'gender'
             ? 'Gender is required'

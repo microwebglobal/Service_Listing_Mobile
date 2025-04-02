@@ -7,10 +7,10 @@ export type RootStackParamList = {
   Splash: undefined;
   Onboarding: undefined;
   SignIn: undefined;
-  SignUp: {phone?: string; mode: 'login' | 'signup'};
-  Verification: {phone: string; mode: 'login' | 'signup'};
+  SignUp: undefined;
+  Verification: {phone: string};
   LoginSuccess: undefined;
-  SelectLocation: {mode: 'login' | 'signup'};
+  SelectLocation: undefined;
   TabNavigator: undefined;
   HomeScreen: undefined;
   AccountScreen: undefined;

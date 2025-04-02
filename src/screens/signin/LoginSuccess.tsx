@@ -3,7 +3,6 @@ import React, {useEffect} from 'react';
 import {styled} from 'nativewind';
 import {useAppSelector} from '../../redux';
 import LottieView from 'lottie-react-native';
-import {addressUpdate} from '../../redux/user/user.action';
 import {Screen, useNav} from '../../navigation/RootNavigation';
 
 const StyledView = styled(View);
@@ -12,16 +11,12 @@ const StyledText = styled(Text);
 export const LoginSuccessScreen: Screen<'LoginSuccess'> = () => {
   const navigation = useNav();
   const user = useAppSelector(state => state.user.user);
-  const addressList = useAppSelector(state => state.address.addresses);
 
   useEffect(() => {
-    if (addressList.length > 0) {
-      addressUpdate(addressList.filter(address => address !== null));
-    }
     setTimeout(() => {
       navigation.navigate('TabNavigator');
     }, 3000);
-  }, [addressList, navigation, user.id]);
+  }, [navigation, user.id]);
 
   return (
     <StyledView className="items-center justify-center flex-1 bg-white">

@@ -15,6 +15,7 @@ export interface LoginParams {
 }
 
 export interface LoginResponse {
+  first_time_login: boolean;
   user: {
     id: number;
     name: string;

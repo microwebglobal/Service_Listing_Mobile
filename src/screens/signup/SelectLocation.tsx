@@ -6,28 +6,27 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
-import React, {useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import axios from 'axios';
-import {API_BASE} from '@env';
 import {styled} from 'nativewind';
-import {useDispatch} from 'react-redux';
+import {GOOGLE_MAP_API_KEY} from '@env';
 import {Colors} from '../../utils/Colors';
-import {useAppSelector} from '../../redux';
+import {instance} from '../../api/instance';
 import {Button} from '../../components/rneui';
 import AppHeader from '../../components/AppHeader';
 import Entypo from 'react-native-vector-icons/Entypo';
+import {AddressForm} from '../../components/AddressForm';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {SearchBarComponent} from '../../components/Searchbar';
 import {Screen, useNav} from '../../navigation/RootNavigation';
 import {AddressEntity} from '../../redux/address/address.entity';
-import {saveAddressList} from '../../redux/address/address.slice';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
-import {AddressForm} from '../../components/AddressForm';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -40,48 +39,101 @@ const RPH = (percentage: number) => {
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
+const StyledTextInput = styled(TextInput);
 const StyledScrollView = styled(ScrollView);
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
-export const SelectLocation: Screen<'SelectLocation'> = ({route}) => {
-  const {mode} = route.params;
+export const SelectLocation: Screen<'SelectLocation'> = () => {
   const navigation = useNav();
-  const dispatch = useDispatch();
   const snapPoints = useMemo(() => ['98%'], []);
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const user = useAppSelector(state => state.user.user);
+  const [searchQuery, setSearchQuery] = useState('');
+  // const user = useAppSelector(state => state.user.user);
   const [loading, setLoading] = useState<boolean>(false);
-  const [searchText, setSearchText] = useState<string>();
+  const [filteredLocations, setFilteredLocations] = useState([]);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
   const [addressList, setAddressList] = useState<Array<AddressEntity>>([]);
   const handleClosePress = () => {
     bottomSheetRef.current?.close();
   };
 
-  const submitFinish = () => {
-    dispatch(saveAddressList(addressList));
-    if (mode === 'login') {
-      navigation.navigate('LoginSuccess');
+  useEffect(() => {
+    if (searchQuery.length > 0) {
+      fetchLocations(searchQuery);
     } else {
-      setLoading(true);
-      axios
-        .post(`${API_BASE}/auth/customer/login/send-otp`, {
-          mobile: user?.mobile,
+      setFilteredLocations([]);
+    }
+  }, [searchQuery]);
+
+  const fetchLocations = async (query: any) => {
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
+          query,
+        )}&types=geocode&components=country:IN&key=${GOOGLE_MAP_API_KEY}`,
+      );
+
+      const apiResults = response.data.predictions.map(
+        (prediction: any) => prediction.description,
+      );
+      setFilteredLocations(apiResults);
+    } catch (error) {
+      console.error('Error fetching locations from API:', error);
+    }
+  };
+
+  const handleLocationSelect = async (location: any) => {
+    const nameWithoutCountry = location.replace(/,?\s*India$/, '').trim();
+    setSearchQuery(nameWithoutCountry);
+    setAddressList([...addressList, nameWithoutCountry]);
+    setDropdownVisible(false);
+
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+          location,
+        )}&key=${GOOGLE_MAP_API_KEY}`,
+      );
+      const results = response.data.results;
+
+      if (results.length > 0) {
+        // const district = results[0].address_components.find((component: any) =>
+        //   component.types.includes('administrative_area_level_2'),
+        // );
+        // if (district) {
+        //   setSelectedDistrict(district.long_name);
+        // }
+      }
+    } catch (error) {
+      console.error('Error fetching district from API:', error);
+    }
+
+    setFilteredLocations([]);
+  };
+
+  const submitFinish = () => {
+    setLoading(true);
+    addressList.map(async (address: AddressEntity) => {
+      await instance
+        .post('/users/addresses', {
+          type: address?.type,
+          line1: address?.line1,
+          line2: address?.line2,
+          city: address?.city,
+          state: address?.state,
+          postal_code: address?.postal_code,
         })
         .then(() => {
-          user?.mobile &&
-            navigation.navigate('Verification', {
-              phone: user?.mobile,
-              mode: mode,
-            });
+          navigation.navigate('LoginSuccess');
         })
         .catch(error => {
-          console.log(error);
+          console.log('Error:', error);
         })
         .finally(() => {
           setLoading(false);
         });
-    }
+    });
   };
 
   const submit = (data: AddressEntity) => {
@@ -108,31 +160,63 @@ export const SelectLocation: Screen<'SelectLocation'> = ({route}) => {
             </StyledText>
           </StyledView>
 
-          <StyledView className="flex-row mb-6 items-center flex justify-between">
-            <StyledView className="flex-1">
-              <SearchBarComponent
-                placeholder="Add location on map"
-                iconName="location-outline"
-                onSearch={(text: string) => {
-                  setSearchText(text);
-                }}
-              />
-            </StyledView>
-            <StyledView className="w-12 h-12 p-2 ml-2 items-center justify-center rounded-md bg-primary">
-              <StyledTouchableOpacity
-                onPress={() => {
-                  Keyboard.dismiss();
-                }}>
-                <MaterialIcons
-                  name="my-location"
-                  size={22}
-                  color={Colors.White}
+          {/* Location Search Input */}
+          <StyledView>
+            <StyledView className="flex-row items-center flex justify-between">
+              <StyledView className="flex-1">
+                <StyledTextInput
+                  className="w-full h-12 px-4 bg-white border border-gray rounded-lg text-dark"
+                  placeholder="Search your Location..."
+                  placeholderTextColor={Colors.Gray}
+                  value={searchQuery}
+                  onFocus={() => setDropdownVisible(true)}
+                  onChangeText={text => {
+                    setSearchQuery(text);
+                    setFilteredLocations([]);
+                    setDropdownVisible(text.length > 0);
+                  }}
                 />
-              </StyledTouchableOpacity>
+              </StyledView>
+              <StyledView className="w-12 h-12 p-2 ml-2 items-center justify-center rounded-md bg-primary">
+                <StyledTouchableOpacity
+                  onPress={() => {
+                    Keyboard.dismiss();
+                  }}>
+                  <MaterialIcons
+                    name="my-location"
+                    size={22}
+                    color={Colors.White}
+                  />
+                </StyledTouchableOpacity>
+              </StyledView>
             </StyledView>
+
+            {/* Location Dropdown */}
+            {dropdownVisible && searchQuery && filteredLocations.length > 0 && (
+              <StyledView className="absolute top-12 w-full bg-white border border-gray rounded-lg z-50">
+                {filteredLocations.map((location, index) => (
+                  <StyledTouchableOpacity
+                    key={index}
+                    className="flex-row items-center px-2 py-3 border-b border-gray last:border-b-0"
+                    onPress={() => handleLocationSelect(location)}>
+                    <Ionicons
+                      name="location-outline"
+                      size={20}
+                      color={Colors.Dark}
+                    />
+                    <StyledText
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      className="flex-1 ml-2 text-dark">
+                      {location}
+                    </StyledText>
+                  </StyledTouchableOpacity>
+                ))}
+              </StyledView>
+            )}
           </StyledView>
 
-          <StyledView>
+          <StyledView className="mt-6">
             <StyledTouchableOpacity
               className="flex-row items-center"
               onPress={() => {

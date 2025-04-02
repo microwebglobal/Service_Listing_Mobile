@@ -1,11 +1,11 @@
 import {
   Text,
   View,
+  Image,
   Keyboard,
   Dimensions,
   ScrollView,
   SafeAreaView,
-  TouchableOpacity,
   KeyboardAvoidingView,
 } from 'react-native';
 import React, {useState} from 'react';
@@ -15,10 +15,7 @@ import {styled} from 'nativewind';
 import {Button} from '../../components/rneui';
 import {Controller, useForm} from 'react-hook-form';
 import InputField from '../../components/InputFeild';
-import GoogleIcon from '../../assets/svgs/GoogleIcon';
 import {useNav} from '../../navigation/RootNavigation';
-// import auth from '@react-native-firebase/auth';
-// import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 interface SignInData {
   phone: string;
@@ -35,9 +32,9 @@ const RPH = (percentage: number) => {
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledSafeAreaView = styled(SafeAreaView);
+const StyledImage = styled(Image);
 const StyledScrollView = styled(ScrollView);
-const StyledTouchableOpacity = styled(TouchableOpacity);
+const StyledSafeAreaView = styled(SafeAreaView);
 
 export const SignInScreen = () => {
   const navigation = useNav();
@@ -54,9 +51,8 @@ export const SignInScreen = () => {
       .post(`${API_BASE}/auth/customer/login/send-otp`, {
         mobile: data.phone,
       })
-      .then(response => {
-        navigation.navigate('Verification', {phone: data.phone, mode: 'login'});
-        console.log(response.data);
+      .then(() => {
+        navigation.navigate('Verification', {phone: data.phone});
       })
       .catch(error => {
         console.log(error);
@@ -65,32 +61,6 @@ export const SignInScreen = () => {
         setLoading(false);
       });
   };
-
-  // useEffect(() => {
-  //   GoogleSignin.configure({
-  //     webClientId: '',
-  //   });
-  // }, []);
-
-  // async function onGoogleButtonPress() {
-  //   try {
-  //     // Check if your device supports Google Play
-  //     await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-  //     // Get the users ID token
-  //     const idToken = await GoogleSignin.signIn();
-
-  //     console.log(idToken);
-  //     Alert.alert('Success Login');
-
-  //     // Create a Google credential with the token
-  //     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-
-  //     // Sign-in the user with the credential
-  //     return auth().signInWithCredential(googleCredential);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
 
   return (
     <StyledSafeAreaView className="flex-1 bg-white">
@@ -101,19 +71,30 @@ export const SignInScreen = () => {
             marginHorizontal: RPW(5),
             paddingTop: RPH(10),
           }}>
+          <StyledView className="items-center justify-center">
+            <StyledImage
+              source={require('../../assets/app-images/logo.png')}
+              className="w-32 h-32 rounded-full"
+            />
+          </StyledView>
           <StyledView className="my-8 items-center">
-            <StyledText className="text-2xl font-medium text-black">
-              {'Welcome back'}!
+            <StyledText className="text-xl font-PoppinsRegular text-black">
+              {'Welcome! to'}
+              <StyledText className="text-xl font-PoppinsSemiBold text-primary">
+                {' Customer'}
+              </StyledText>
             </StyledText>
-            <StyledText className="mt-3 text-lg font-normal text-dark">
-              {'Enter Your Contact Number To '}
-            </StyledText>
-            <StyledText className="mt-3 text-lg font-normal text-dark">
-              {'Sign In'}
+            <StyledText className="mt-3 text-base font-PoppinsRegular text-black">
+              {'Enter Your Contact Number To Continue'}
             </StyledText>
           </StyledView>
 
-          <StyledView className="gap-5 mb-3">
+          <StyledView className="gap-2 mb-3">
+            <StyledView>
+              <StyledText className="text-base text-black font-PoppinsRegular">
+                Contact Number
+              </StyledText>
+            </StyledView>
             <StyledView>
               <Controller
                 name="phone"
@@ -145,37 +126,6 @@ export const SignInScreen = () => {
               onPress={(Keyboard.dismiss(), handleSubmit(submit))}
               primary
             />
-          </StyledView>
-
-          <StyledView className="flex-row justify-center">
-            <StyledText className="mb-2 text-base font-normal text-dark">
-              Don't have an account?{'  '}
-            </StyledText>
-            <StyledTouchableOpacity
-              onPress={() => {
-                navigation.navigate('SignUp', {mode: 'signup'});
-              }}>
-              <StyledText className="mb-2 text-base font-medium text-primary underline">
-                Sign Up
-              </StyledText>
-            </StyledTouchableOpacity>
-          </StyledView>
-
-          <StyledView className="mt-12 justify-center items-center">
-            <StyledView className="flex-row items-baseline">
-              <StyledView className="w-full h-0.5 bg-slate-300" />
-              <StyledView className="mx-3">
-                <StyledText className="mb-5 text-base font-medium">
-                  Or continue with
-                </StyledText>
-              </StyledView>
-              <StyledView className="w-full h-0.5 bg-slate-300" />
-            </StyledView>
-            <StyledTouchableOpacity
-              className="p-1 bg-lightGrey rounded-full"
-              onPress={() => {}}>
-              <GoogleIcon />
-            </StyledTouchableOpacity>
           </StyledView>
         </StyledScrollView>
       </KeyboardAvoidingView>
