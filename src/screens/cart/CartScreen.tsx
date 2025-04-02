@@ -232,7 +232,7 @@ export const CartScreen = () => {
             </StyledText>
             <StyledText className="text-base text-black font-bold">
               {'₹'}
-              {cart.BookingPayment.total_amount}
+              {cart.BookingPayment.advance_payment}
             </StyledText>
           </StyledView>
           <StyledView className="my-5">

@@ -125,7 +125,7 @@ export const BookingScreen = () => {
           }}
         />
         <Tab.Screen
-          name={'Assigned'}
+          name={'Accepted'}
           children={() => <Assigned badgeCountRef={assignedCountRef} />}
           options={{
             tabBarBadge: () => badgeCount(assignedCountRef),

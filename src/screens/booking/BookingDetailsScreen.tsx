@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   Linking,
+  StyleSheet,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Employee} from './types';
@@ -16,7 +17,7 @@ import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
 import {Button} from '../../components/rneui';
 import AppHeader from '../../components/AppHeader';
-import {Screen} from '../../navigation/RootNavigation';
+import {Screen, useNav} from '../../navigation/RootNavigation';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {ServiceItem} from '../category/ServiceTypeScreen';
@@ -24,7 +25,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import { styled } from 'nativewind';
+import {styled} from 'nativewind';
+import {Dialog} from '@rneui/base';
 
 export interface BookingItem {
   id: number;
@@ -86,9 +88,38 @@ const StyledSafeAreaView = styled(SafeAreaView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
+  const navigation = useNav();
   const {booking} = route.params;
   const [employee, setEmployee] = useState<Employee>();
+  const [visible, setVisible] = useState<boolean>(false);
+  const [penaltyAmount, setPenaltyAmount] = useState<string>('');
   // const [isChecked, setIsChecked] = useState<boolean>(false);
+
+  const toggleDialog = () => {
+    setVisible(!visible);
+  };
+
+  const CancelBooking = async () => {
+    await instance
+      .put(`/booking/cancel/confirm/${booking.booking_id}`, {
+        penalty: penaltyAmount,
+      })
+      .then(() => {
+        toggleDialog();
+        navigation.goBack();
+      });
+  };
+
+  const checkPenaltyAmount = async () => {
+    await instance
+      .get(`/booking/cancel/${booking.booking_id}`)
+      .then(res => {
+        setPenaltyAmount(res.data.penalty);
+      })
+      .catch(function (e) {
+        console.log(e.message);
+      });
+  };
 
   useEffect(() => {
     booking.provider &&
@@ -240,7 +271,14 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                   booking.status === 'assigned' ||
                   booking.status === 'in_progress') && (
                   <StyledView>
-                    <Button size="sm" title="Cancel" />
+                    <Button
+                      size="sm"
+                      title="Cancel"
+                      onPress={() => {
+                        toggleDialog();
+                        checkPenaltyAmount();
+                      }}
+                    />
                   </StyledView>
                 )}
               </StyledView>
@@ -605,7 +643,51 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
         )}
 
         {booking.status === 'cancelled' && <StyledView className="mb-10" />}
+
+        {/* Logout Dialog */}
+        <Dialog
+          isVisible={visible}
+          onBackdropPress={toggleDialog}
+          overlayStyle={styles.dialog}>
+          <StyledText className="mb-5 text-base text-black font-PoppinsMedium">
+            Are you sure you want to cancel this booking?
+          </StyledText>
+          <StyledText className="mb-3 text-sm text-black font-PoppinsRegular">
+            No grace period exceeded penalty will not be apply Penalty
+          </StyledText>
+          <StyledView className="flex-row mb-5 items-center">
+            <StyledText className="text-sm text-black font-PoppinsMedium">
+              Penalty:{' '}
+            </StyledText>
+            <StyledText className="text-sm text-dark font-PoppinsMedium">
+              {penaltyAmount}
+            </StyledText>
+          </StyledView>
+
+          <StyledView className="space-y-5">
+            <StyledView className="">
+              <Button
+                primary
+                title="Confirm & Cancel"
+                size="md"
+                onPress={CancelBooking}
+              />
+            </StyledView>
+            <StyledView className="">
+              <Button title="Close" size="md" onPress={toggleDialog} />
+            </StyledView>
+          </StyledView>
+        </Dialog>
       </StyledScrollView>
     </StyledSafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  dialog: {
+    padding: 15,
+    width: '90%',
+    backgroundColor: Colors.White,
+    borderRadius: 15,
+  },
+});
