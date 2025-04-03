@@ -16,7 +16,6 @@ import {styled} from 'nativewind';
 import {Colors} from '../../utils/Colors';
 import {Button} from '../../components/rneui';
 import AppHeader from '../../components/AppHeader';
-import GoogleIcon from '../../assets/svgs/GoogleIcon';
 import {userLogin} from '../../redux/user/user.action';
 import CountDown from 'react-native-countdown-component';
 import {Screen, useNav} from '../../navigation/RootNavigation';
@@ -94,13 +93,13 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
           }}>
           <StyledView>
             <StyledView className="items-center mb-5">
-              <StyledText className="text-2xl text-black font-medium">
+              <StyledText className="text-2xl text-black font-PoppinsMedium">
                 Enter OTP
               </StyledText>
-              <StyledText className="mt-3 text-lg font-normal text-dark">
+              <StyledText className="mt-5 text-lg font-PoppinsRegular text-dark">
                 Enter the 6 Digit Code Sent To
               </StyledText>
-              <StyledText className="mt-3 text-lg font-normal text-dark">
+              <StyledText className="mt-1 text-lg font-PoppinsRegular text-dark">
                 Your Phone
               </StyledText>
             </StyledView>
@@ -135,7 +134,7 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
             </StyledView>
 
             <StyledView className="mt-3 flex-row items-center">
-              <StyledText className="text-base font-normal text-dark">
+              <StyledText className="text-base font-PoppinsRegular text-dark">
                 OTP will expire in
               </StyledText>
               <CountDown
@@ -150,7 +149,7 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
                 timeLabels={{s: undefined}}
                 running={true}
               />
-              <StyledText className="text-base font-normal text-dark">
+              <StyledText className="text-base font-PoppinsRegular text-dark">
                 seconds
               </StyledText>
             </StyledView>
@@ -166,7 +165,7 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
             </StyledView>
 
             <StyledView className="flex-row justify-center">
-              <StyledText className="mb-2 text-base font-normal text-dark">
+              <StyledText className="mb-2 text-base font-PoppinsRegular text-dark">
                 Didn't receive the SMS?{'  '}
               </StyledText>
               <StyledTouchableOpacity
@@ -174,26 +173,9 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
                   setCount(count + count * 0.0001);
                   resendOTP();
                 }}>
-                <StyledText className="mb-2 text-base font-medium text-primary underline">
+                <StyledText className="mb-2 text-base font-PoppinsMedium text-primary">
                   Resend it
                 </StyledText>
-              </StyledTouchableOpacity>
-            </StyledView>
-
-            <StyledView className="mt-12 justify-center items-center">
-              <StyledView className="flex-row items-baseline">
-                <StyledView className="w-full h-0.5 bg-slate-300" />
-                <StyledView className="mx-3">
-                  <StyledText className="mb-5 text-base font-medium">
-                    Or continue with
-                  </StyledText>
-                </StyledView>
-                <StyledView className="w-full h-0.5 bg-slate-300" />
-              </StyledView>
-              <StyledTouchableOpacity
-                className="p-1 bg-lightGrey rounded-full"
-                onPress={() => {}}>
-                <GoogleIcon />
               </StyledTouchableOpacity>
             </StyledView>
           </StyledView>

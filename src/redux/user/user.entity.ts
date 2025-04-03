@@ -15,7 +15,7 @@ export interface LoginParams {
 }
 
 export interface LoginResponse {
-  first_time_login: boolean;
+  need_profile_setup: boolean;
   user: {
     id: number;
     name: string;

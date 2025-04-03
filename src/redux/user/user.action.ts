@@ -35,7 +35,7 @@ export const userLogin = dispatchable(({mobile, otp}: LoginParams) => {
         dispatch(setId(response.data.user.id));
         return {
           success: true,
-          firstTimeLogin: response.data.first_time_login,
+          firstTimeLogin: response.data.need_profile_setup,
         };
       }
     } catch (error: any) {

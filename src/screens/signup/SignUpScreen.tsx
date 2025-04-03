@@ -8,6 +8,7 @@ import {
   BackHandler,
   SafeAreaView,
   TouchableOpacity,
+  StyleSheet,
 } from 'react-native';
 import React, {useState} from 'react';
 import {styled} from 'nativewind';
@@ -124,7 +125,7 @@ export const SignUpScreen: Screen<'SignUp'> = () => {
         showsVerticalScrollIndicator={false}
         style={{
           marginHorizontal: RPW(5),
-          paddingVertical: RPH(5),
+          paddingVertical: RPH(8),
         }}>
         <StyledView className="items-center justify-center">
           {imageURI && (
@@ -145,11 +146,11 @@ export const SignUpScreen: Screen<'SignUp'> = () => {
           </StyledTouchableOpacity>
         </StyledView>
 
-        <StyledView className="mb-6 items-center">
-          <StyledText className="text-2xl font-medium text-black">
+        <StyledView className="-mt-2 mb-5 items-center">
+          <StyledText className="text-xl font-PoppinsMedium text-black">
             Let's Set You Up!
           </StyledText>
-          <StyledText className="mt-3 text-base font-medium text-dark">
+          <StyledText className="mt-2 text-base font-PoppinsRegular  text-dark">
             Sign Up To Continue
           </StyledText>
         </StyledView>
@@ -187,6 +188,8 @@ export const SignUpScreen: Screen<'SignUp'> = () => {
               setOpen={setOpen}
               setValue={setGenValue}
               setItems={setItems}
+              style={styles.dropDown}
+              textStyle={styles.dropDownText}
             />
             {!genValue && (
               <StyledText className="text-error">
@@ -320,3 +323,18 @@ const SignUpFormField: React.FC<SignUpFormFieldProps> = ({
     </StyledView>
   );
 };
+
+const styles = StyleSheet.create({
+  dropDown: {
+    height: 48,
+    borderRadius: 6,
+    borderWidth: 1.5,
+    paddingHorizontal: 12,
+    borderColor: Colors.Gray,
+  },
+  dropDownText: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: Colors.Dark,
+  },
+});

@@ -27,7 +27,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import { LoadingIndicator } from '../../components/LoadingIndicator';
+import {LoadingIndicator} from '../../components/LoadingIndicator';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const screenWidth = Dimensions.get('window').width;
