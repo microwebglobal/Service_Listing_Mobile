@@ -144,8 +144,11 @@ export const HomeScreen = () => {
               source={item.imageURI}
             />
           </StyledView>
-          <StyledView className="mt-2 ml-5">
-            <StyledText className="mt-2 text-lg font-medium text-dark first-letter:capitalize">
+          <StyledView className="mt-2 mx-3">
+            <StyledText className="mt-2 text-base font-PoppinsSemiBold text-black first-letter:capitalize">
+              {item.description}
+            </StyledText>
+            <StyledText className="mt-2 text-sm font-PoppinsRegular text-black first-letter:capitalize">
               {item.description}
             </StyledText>
           </StyledView>
