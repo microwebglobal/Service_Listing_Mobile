@@ -77,13 +77,13 @@ export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
                 <StyledView>
                   <StyledText
                     numberOfLines={1}
-                    className="text-base text-black font-medium">
+                    className="text-base text-black font-PoppinsMedium">
                     {booking.BookingItems[0].item_type === 'package_item'
                       ? booking.BookingItems[0].packageItem.name
                       : booking.BookingItems[0].serviceItem.name}
                   </StyledText>
 
-                  <StyledText className="text-sm text-dark">
+                  <StyledText className="text-sm text-dark font-PoppinsRegular">
                     {new Date(booking.booking_date).toLocaleString('en-us', {
                       weekday: 'short',
                       month: 'short',
@@ -96,7 +96,7 @@ export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
               </StyledView>
 
               <StyledView className="mt-1 flex-row justify-between items-center">
-                <StyledText className="text-sm text-black">
+                <StyledText className="text-sm text-black font-PoppinsRegular">
                   Payment status
                 </StyledText>
                 <StyledView
@@ -112,7 +112,7 @@ export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
                         : 'bg-red-100'
                     }`,
                   )}>
-                  <StyledText className="text-sm text-black first-letter:capitalize">
+                  <StyledText className="text-sm text-black font-PoppinsRegular first-letter:capitalize">
                     {booking.BookingPayment.payment_status ===
                     'advance_only_paid'
                       ? 'Advance Paid'
@@ -138,17 +138,19 @@ export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
               <StyledView className="bg-lightGrey rounded-lg">
                 {booking.BookingItems[0]?.serviceItem ? (
                   <StyledImage
+                    resizeMode="cover"
+                    className="w-12 h-12 rounded-lg"
                     source={{
                       uri: `${SERVER_BASE}${booking.BookingItems[0].serviceItem.icon_url}`,
                     }}
-                    className="w-12 h-12 rounded-lg"
                   />
                 ) : (
                   <StyledImage
+                    resizeMode="cover"
+                    className="w-12 h-12 rounded-lg"
                     source={{
                       uri: `${SERVER_BASE}${booking.BookingItems[0].packageItem.icon_url}`,
                     }}
-                    className="w-12 h-12 rounded-lg"
                   />
                 )}
               </StyledView>
@@ -156,14 +158,14 @@ export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
                 <StyledText
                   numberOfLines={1}
                   ellipsizeMode="tail"
-                  className="text-base text-black font-medium">
+                  className="text-base text-black font-PoppinsMedium">
                   {booking.BookingItems[0].item_type === 'package_item'
                     ? booking.BookingItems[0].packageItem.name
                     : booking.BookingItems[0].serviceItem.name}
                 </StyledText>
 
                 <StyledView className="flex-row items-center">
-                  <StyledText className="text-base text-dark first-letter:capitalize">
+                  <StyledText className="text-base text-dark font-PoppinsRegular first-letter:capitalize">
                     {booking.status}
                     {' . '}
                   </StyledText>

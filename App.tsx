@@ -13,8 +13,6 @@ import {ButtonProps, createTheme, ThemeProvider} from '@rneui/themed';
 import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
 import PushNotification, {Importance} from 'react-native-push-notification';
 
-export const FONT_FAMILY = 'Poppins';
-
 const checkPermission = () => {
   messaging()
     .hasPermission()
@@ -103,7 +101,7 @@ const theme = createTheme({
       capitalize: true,
       titleStyle: {
         paddingHorizontal: 5,
-        fontFamily: FONT_FAMILY,
+        fontFamily: 'Poppins',
         fontWeight: 'bold',
         lineHeight: props.size === 'md' ? 25 : props.size === 'sm' ? 22 : 30,
         color:

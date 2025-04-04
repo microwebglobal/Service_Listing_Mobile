@@ -92,20 +92,24 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
             paddingTop: RPH(5),
           }}>
           <StyledView>
-            <StyledView className="items-center mb-5">
+            <StyledView className="mb-5">
               <StyledText className="text-2xl text-black font-PoppinsMedium">
                 Enter OTP
               </StyledText>
-              <StyledText className="mt-5 text-lg font-PoppinsRegular text-dark">
-                Enter the 6 Digit Code Sent To
-              </StyledText>
-              <StyledText className="mt-1 text-lg font-PoppinsRegular text-dark">
-                Your Phone
+              <StyledText className="mt-5 text-base font-PoppinsRegular text-black">
+                Enter the 6-digit code sent to your phone number
+                <StyledText className="text-base text-primary font-PoppinsRegular">
+                  {' '}
+                  {phone}
+                </StyledText>
               </StyledText>
             </StyledView>
+            <StyledText className="mb-3 text-sm text-black font-PoppinsRegular">
+              Enter Your OTP
+            </StyledText>
 
             {/* OTP input */}
-            <StyledView className="flex-1 my-2 items-start">
+            <StyledView className="flex-1 mb-2 items-start">
               <OTPInputView
                 pinCount={6}
                 autoFocusOnLoad={true}

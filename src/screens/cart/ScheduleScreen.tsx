@@ -173,7 +173,7 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
             <StyledView>
               <StyledView className="flex-row space-x-2 items-baseline">
                 <Icon name="clock" size={18} color={Colors.Primary} />
-                <StyledText className="mb-2 text-base text-black font-medium first-letter:capitalize">
+                <StyledText className="mb-2 text-base text-black font-PoppinsMedium first-letter:capitalize">
                   {'Select time slot'}
                 </StyledText>
               </StyledView>
@@ -207,12 +207,12 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
                 rules={{required: timeValue ? false : true}}
               />
               {errors.timeSlot && (
-                <StyledText className="text-error">
+                <StyledText className="font-PoppinsRegular text-error">
                   {'Please fill out this field.'}
                 </StyledText>
               )}
               {error && (
-                <StyledText className="text-error">
+                <StyledText className="font-PoppinsRegular text-error">
                   {'Please select a time between 11:00 AM and 8:30 PM.'}
                 </StyledText>
               )}
@@ -225,7 +225,7 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
                   size={18}
                   color={Colors.Primary}
                 />
-                <StyledText className="mb-2 text-base text-black font-medium">
+                <StyledText className="mb-2 text-base text-black font-PoppinsMedium">
                   Service Address
                 </StyledText>
               </StyledView>
@@ -261,7 +261,7 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
                 rules={{required: true}}
               />
               {errors.address && (
-                <StyledText className="text-error">
+                <StyledText className="font-PoppinsRegular text-error">
                   {'Please fill out this field.'}
                 </StyledText>
               )}
@@ -274,7 +274,7 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
                   size={18}
                   color={Colors.Primary}
                 />
-                <StyledText className="mb-2 text-base text-black font-medium">
+                <StyledText className="mb-2 text-base text-black font-PoppinsMedium">
                   Special Instructions
                 </StyledText>
               </StyledView>

@@ -42,7 +42,7 @@ export const AboutUsScreen = () => {
             data.onPress();
           }}>
           <StyledView className="flex-row my-3 items-center justify-between">
-            <StyledText className="text-dark text-base font-medium">
+            <StyledText className="text-dark text-base font-PoppinsMedium">
               {data.title}
             </StyledText>
             {data.edit && (
@@ -64,11 +64,11 @@ export const AboutUsScreen = () => {
     <StyledSafeAreaView className="flex-1 bg-white">
       <AppHeader back={true} title="About Us" />
       <StyledScrollView style={{paddingHorizontal: RPW(5)}}>
-        <StyledText className="my-5 text-xl font-medium text-primary text-center">
+        <StyledText className="my-5 text-xl font-PoppinsMedium text-primary text-center">
           QProz
         </StyledText>
         <StyledView className="">
-          <StyledText className="text-base text-black text-justify">
+          <StyledText className="text-sm text-black text-justify font-PoppinsRegular">
             Your trusted partner for seamless and efficient solutions. We
             specialize in delivering high-quality services tailored to your
             needs.
@@ -77,22 +77,22 @@ export const AboutUsScreen = () => {
 
         <StyledView className="mt-5">
           <StyledView className="my-2 flex-row items-center space-x-3">
-            <StyledText className="text-base text-black font-medium">
+            <StyledText className="text-sm text-black font-PoppinsMedium">
               Support Customer
             </StyledText>
-            <StyledText className="text-base text-primary">
+            <StyledText className="text-sm text-primary font-PoppinsRegular">
               0114765334
             </StyledText>
           </StyledView>
           <StyledView className="my-2 flex-row items-center space-x-3">
-            <StyledText className="text-base text-black font-medium">
+            <StyledText className="text-sm text-black font-PoppinsMedium">
               Website
             </StyledText>
             <StyledTouchableOpacity
               onPress={() =>
                 Linking.openURL('https://qp.microwebstudios.com/')
               }>
-              <StyledText className="text-base text-primary">
+              <StyledText className="text-sm text-primary font-PoppinsRegular">
                 https://qp.microwebstudios.com
               </StyledText>
             </StyledTouchableOpacity>
@@ -100,7 +100,7 @@ export const AboutUsScreen = () => {
         </StyledView>
 
         <StyledView className="my-5">
-          <StyledText className="text-base text-black text-justify">
+          <StyledText className="text-sm text-black text-justify font-PoppinsRegular">
             Your trusted partner for seamless and efficient solutions. We
             specialize in delivering high-quality services tailored to your
             needs.
@@ -123,7 +123,7 @@ export const AboutUsScreen = () => {
         })}
 
         <StyledView className="py-3 flex-row items-center space-x-3 border-t border-lightGrey">
-          <StyledText className="text-dark text-base font-medium">
+          <StyledText className="text-dark text-base font-PoppinsMedium">
             Follow Us
           </StyledText>
           <StyledView className="flex-row items-center space-x-3">

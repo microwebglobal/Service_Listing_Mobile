@@ -17,10 +17,10 @@ export const TermsScreen = () => {
   const section = (title: string, paragraph: string) => {
     return (
       <StyledView className="mt-5">
-        <StyledText className="text-base text-black font-medium">
+        <StyledText className="text-base text-black font-PoppinsMedium">
           {title}
         </StyledText>
-        <StyledText className="mt-2 text-sm text-black text-justify">
+        <StyledText className="mt-2 text-sm text-black text-justify font-PoppinsRegular">
           {paragraph}
         </StyledText>
       </StyledView>
@@ -35,7 +35,7 @@ export const TermsScreen = () => {
         showsVerticalScrollIndicator={false}
         style={{paddingHorizontal: RPW(5)}}>
         <StyledView>
-          <StyledText className="text-sm text-black text-justify">
+          <StyledText className="text-sm text-black font-PoppinsRegular text-justify">
             {
               'Welcome to our website. If you continue to browse and use this website, you are agreeing to comply with and be bound by the following terms and conditions of use, which together with our privacy policy govern our relationship with you in relation to this website.'
             }
@@ -71,10 +71,10 @@ export const TermsScreen = () => {
         )}
 
         <StyledView className="mt-5 mb-20">
-          <StyledText className="text-base text-black font-medium">
+          <StyledText className="text-base text-black font-PoppinsMedium">
             7. Contact Us
           </StyledText>
-          <StyledText className="mt-2 text-sm text-black text-justify">
+          <StyledText className="mt-2 text-sm text-black text-justify font-PoppinsRegular">
             {
               'If you have any questions about these Terms and Conditions, please contact us at '
             }

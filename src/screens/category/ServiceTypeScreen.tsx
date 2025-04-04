@@ -101,15 +101,16 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
         <StyledView className="flex-row items-center space-x-5 bg-white">
           <StyledView className="ml-1 bg-lightGrey rounded-lg">
             <StyledImage
+              resizeMode="cover"
+              className="w-16 h-16 rounded-lg"
               source={{uri: `${SERVER_BASE}${item.icon_url}`}}
-              style={{width: 50, height: 50, borderRadius: 8}}
             />
           </StyledView>
           <StyledView className="">
-            <StyledText className="text-lg font-medium text-black">
+            <StyledText className="text-lg font-PoppinsMedium text-black">
               {item.name}
             </StyledText>
-            <StyledText className="text-base text-dark">
+            <StyledText className="text-sm font-PoppinsRegular text-dark">
               {item.description}
             </StyledText>
           </StyledView>

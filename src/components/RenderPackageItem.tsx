@@ -61,15 +61,15 @@ export const RenderPackageItem = ({
             />
 
             <StyledView className="-ml-3">
-              <StyledText className="text-sm text-black font-medium overflow-clip">
+              <StyledText className="text-sm text-black font-PoppinsMedium overflow-clip">
                 {item.name}
               </StyledText>
-              <StyledText className="text-sm text-dark overflow-clip">
+              <StyledText className="text-sm font-PoppinsRegular text-dark overflow-clip">
                 {item.description}
               </StyledText>
             </StyledView>
           </StyledView>
-          <StyledText className="text-base text-black font-bold">
+          <StyledText className="text-base text-black font-PoppinsMedium">
             {'₹'}
             {item.price}
           </StyledText>

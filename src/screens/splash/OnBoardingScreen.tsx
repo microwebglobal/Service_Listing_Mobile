@@ -3,7 +3,6 @@ import {Dimensions, StyleSheet, Image, View} from 'react-native';
 import {styled} from 'nativewind';
 import classNames from 'classnames';
 import {Button} from '@rneui/themed';
-import {FONT_FAMILY} from '../../../App';
 import {Colors} from '../../utils/Colors';
 import {useNav} from '../../navigation/RootNavigation';
 import Onboarding from 'react-native-onboarding-swiper';
@@ -160,17 +159,15 @@ const styles = StyleSheet.create({
   TitleStyles: {
     marginTop: -20,
     fontSize: 20,
-    fontWeight: 'bold',
     lineHeight: 28,
-    color: Colors.Dark,
-    fontFamily: FONT_FAMILY,
+    color: Colors.Black,
+    fontFamily: 'Poppins-SemiBold',
   },
   SubTitleStyles: {
     marginTop: 10,
     fontSize: 16,
-    fontWeight: 'normal',
     lineHeight: 24,
     color: Colors.Dark,
-    fontFamily: FONT_FAMILY,
+    fontFamily: 'Poppins-Regular',
   },
 });

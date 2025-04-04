@@ -120,9 +120,9 @@ export const CategoryScreen = () => {
 
   const _renderCategoryItem = ({item}: any) => {
     return (
-      <StyledView className="basis-1/2 px-1 mt-3">
+      <StyledView className="basis-1/2 px-2 mt-3 shadow-sm shadow-black">
         <TouchableOpacity
-          className="flex-1 shadow-sm shadow-black rounded-xl"
+          className="flex-1 bg-white shadow-sm shadow-black"
           onPress={() => {
             navigation.navigate('SubCategory', {
               categoryId: item.category_id,
@@ -130,13 +130,13 @@ export const CategoryScreen = () => {
               imageUrl: item.icon_url,
             });
           }}>
-          <StyledView className="flex-1 p-2 items-center justify-center bg-lightGrey rounded-xl">
+          <StyledView className="flex-1 items-center justify-center bg-lightGrey rounded-xl">
             <StyledImage
-              className="w-full h-24 rounded-lg"
+              className="w-full h-32 rounded-t-lg"
               source={{uri: `${SERVER_BASE}${item.icon_url}`}}
             />
-            <StyledView className="w-full mt-2 px-3 items-center bg-white shadow-sm shadow-black rounded-b-xl">
-              <StyledText className="my-2 text-sm text-black">
+            <StyledView className="w-full px-3 items-center bg-white shadow-sm shadow-black rounded-b-xl">
+              <StyledText className="my-2 text-sm text-black font-PoppinsRegular">
                 {item.name}
               </StyledText>
             </StyledView>

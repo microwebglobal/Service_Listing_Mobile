@@ -152,10 +152,10 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
             marginHorizontal: RPW(5),
           }}>
           <StyledView className="my-8 items-center">
-            <StyledText className="text-2xl font-medium text-black">
+            <StyledText className="text-2xl  font-PoppinsMedium text-black">
               Select Your Location
             </StyledText>
-            <StyledText className="mt-3 text-base font-medium text-dark">
+            <StyledText className="mt-3 text-base  font-PoppinsMedium text-dark">
               Add Multiple Locations
             </StyledText>
           </StyledView>
@@ -207,7 +207,7 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
                     <StyledText
                       numberOfLines={1}
                       ellipsizeMode="tail"
-                      className="flex-1 ml-2 text-dark">
+                      className="flex-1 ml-2 text-dark  font-PoppinsRegular">
                       {location}
                     </StyledText>
                   </StyledTouchableOpacity>
@@ -222,7 +222,7 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
               onPress={() => {
                 bottomSheetRef.current?.expand();
               }}>
-              <StyledText className="mb-5 text-base text-primary mt-2">
+              <StyledText className="mb-5 text-base text-primary mt-2  font-PoppinsRegular">
                 Set Location Manually
               </StyledText>
             </StyledTouchableOpacity>
@@ -249,13 +249,13 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
                   <StyledText
                     numberOfLines={2}
                     ellipsizeMode="tail"
-                    className="basis-4/5 text-black text-base">
+                    className="basis-4/5 text-black text-base font-PoppinsRegular">
                     {item?.line1} {item?.line2} {item?.city} {item?.state}
                   </StyledText>
                   <StyledText
                     numberOfLines={2}
                     ellipsizeMode="tail"
-                    className="text-gray text-base">
+                    className="text-gray text-base font-PoppinsRegular">
                     {'Postal code: '}
                     {item.postal_code}
                   </StyledText>

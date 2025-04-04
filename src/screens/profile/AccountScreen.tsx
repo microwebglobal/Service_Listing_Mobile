@@ -108,7 +108,7 @@ export const AccountScreen = () => {
                 color={Colors.Dark}
               />
               <StyledView>
-                <StyledText className="text-dark text-base font-medium">
+                <StyledText className="text-dark text-base font-PoppinsMedium">
                   {data.title}
                 </StyledText>
               </StyledView>
@@ -163,7 +163,7 @@ export const AccountScreen = () => {
             <StyledTouchableOpacity
               className="flex-row items-center space-x-1"
               onPress={() => navigation.navigate('Profile')}>
-              <StyledText className="text-black text-lg font-medium">
+              <StyledText className="text-black text-lg font-PoppinsMedium">
                 {userData?.name ? userData.name : 'Your Name'}
               </StyledText>
               <MaterialIcons
@@ -184,17 +184,21 @@ export const AccountScreen = () => {
 
           <StyledView className="p-3 bg-lightGrey rounded-lg">
             <StyledView className="flex-row justify-between">
-              <StyledText className="text-black">
+              <StyledText className="text-black font-PoppinsRegular">
                 8 of 10{' '}
-                <StyledText className="text-primary">complete</StyledText>
+                <StyledText className="text-primary font-PoppinsRegular">
+                  complete
+                </StyledText>
               </StyledText>
-              <StyledText className="text-primary">Complete now</StyledText>
+              <StyledText className="text-primary font-PoppinsRegular">
+                Complete now
+              </StyledText>
             </StyledView>
             <StyledView className="my-3 flex-row items-center">
               <StyledView className="basis-10/12 h-1 bg-primary rounded-full" />
               <StyledView className="basis-2/12 h-1 bg-white rounded-full" />
             </StyledView>
-            <StyledText className="text-black text-sm">
+            <StyledText className="text-black text-sm font-PoppinsRegular">
               {
                 'Additional information you give will help us provide you a more personalized experience.'
               }
@@ -203,12 +207,12 @@ export const AccountScreen = () => {
 
           <StyledView className="my-5 p-3 bg-lightGrey rounded-lg">
             <StyledView className="flex-row justify-between items-center">
-              <StyledText className="basis-3/4 text-black text-base font-medium">
+              <StyledText className="basis-3/4 text-black text-base font-PoppinsMedium">
                 {"Don't miss out your valuable promotions"}
               </StyledText>
               <FontAwesome6 name="tags" size={25} color={Colors.Dark} />
             </StyledView>
-            <StyledText className="mt-2 text-black text-sm">
+            <StyledText className="mt-2 text-black text-sm font-PoppinsRegular">
               {
                 'Get the latest promotions and offers from your favorite brands and stores.'
               }
@@ -236,7 +240,7 @@ export const AccountScreen = () => {
             className="mt-3 flex-row items-center space-x-3"
             onPress={toggleDialog}>
             <Feather name="log-out" size={20} color={Colors.Error} />
-            <StyledText className="text-error text-base font-medium">
+            <StyledText className="text-error text-base font-PoppinsMedium">
               Logout
             </StyledText>
           </StyledTouchableOpacity>
@@ -247,7 +251,7 @@ export const AccountScreen = () => {
           isVisible={visible}
           onBackdropPress={toggleDialog}
           overlayStyle={styles.dialog}>
-          <StyledText className="mb-5 text-base text-black font-medium text-center">
+          <StyledText className="mb-5 text-base text-black font-PoppinsMedium text-center">
             Are you sure you want {'\n'}to logout?
           </StyledText>
 

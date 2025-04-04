@@ -5,8 +5,8 @@ import {styled} from 'nativewind';
 import {Colors} from '../utils/Colors';
 import {useDispatch} from 'react-redux';
 import {instance} from '../api/instance';
-import LottieView from 'lottie-react-native';
 import Toast from 'react-native-toast-message';
+import {LoadingIndicator} from './LoadingIndicator';
 import {ItemEntity} from '../redux/cart/cart.entity';
 import {RenderPackageItem} from './RenderPackageItem';
 import Feather from 'react-native-vector-icons/Feather';
@@ -130,26 +130,26 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
         <StyledView className="bg-white rounded-lg p-2">
           {!isItemClicked && (
             <>
-              <StyledText className="text-base text-black font-medium first-letter:capitalize">
+              <StyledText className="text-base text-black font-PoppinsMedium first-letter:capitalize">
                 {item.name}
               </StyledText>
               <StyledView className="flex-row justify-between items-center space-x-2">
                 <StyledView className="w-1/2 align-top">
-                  <StyledText className="text-sm text-dark overflow-clip">
+                  <StyledText className="my-2 text-sm font-PoppinsRegular text-dark overflow-clip">
                     {item.description}
                   </StyledText>
                   <StyledView className="flex-row items-center space-x-2">
-                    <StyledText className="text-sm text-dark overflow-clip">
+                    <StyledText className="text-sm font-PoppinsRegular text-dark overflow-clip">
                       {'Service Duration: '}
                     </StyledText>
-                    <StyledText className="text-sm text-dark overflow-clip">
+                    <StyledText className="text-sm font-PoppinsRegular text-dark overflow-clip">
                       {item.duration_hours} {'h'} {item.duration_minutes} {'m'}
                     </StyledText>
                   </StyledView>
                 </StyledView>
 
                 <StyledView className="items-end">
-                  <StyledText className="text-base text-black font-bold shadow-sm">
+                  <StyledText className="text-base text-black font-PoppinsSemiBold shadow-sm">
                     {'₹'}
                     {calculateDefaultPrice(item)}
                   </StyledText>
@@ -176,10 +176,10 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
                 return (
                   <StyledView key={section.section_id} className="mb-2">
                     <StyledView className="mb-2">
-                      <StyledText className="mb-1 text-base text-black font-medium first-letter:capitalize">
+                      <StyledText className="mb-1 text-base text-black font-PoppinsMedium first-letter:capitalize">
                         {section.name}
                       </StyledText>
-                      <StyledText className="text-sm text-black overflow-clip">
+                      <StyledText className="text-sm font-PoppinsRegular text-black overflow-clip">
                         {section.description}
                       </StyledText>
                     </StyledView>
@@ -195,8 +195,10 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
               })}
 
               <StyledView className="flex-row justify-between">
-                <StyledText className="text-base text-black">Total</StyledText>
-                <StyledText className="text-base text-black font-bold">
+                <StyledText className="text-base font-PoppinsMedium text-black">
+                  Total
+                </StyledText>
+                <StyledText className="text-base text-black font-PoppinsSemiBold">
                   {'₹'}
                   {packagePrice}
                 </StyledText>
@@ -223,23 +225,18 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
   if (isLoading) {
     return (
       <StyledView className="items-center justify-center flex-1 bg-white">
-        <LottieView
-          source={require('../assets/animations/loading.json')}
-          autoPlay
-          loop
-          style={{width: '60%', height: '10%'}}
-        />
+        <LoadingIndicator />
       </StyledView>
     );
   }
   return (
     <StyledView>
       {packageData?.length !== 0 && (
-        <StyledView className="mb-1 flex-row items-center bg-white space-x-2">
+        <StyledView className="mb-2 flex-row items-center bg-white space-x-2">
           <StyledView className="bg-lightGrey rounded-lg">
             <Feather name={'package'} size={15} color={Colors.Black} />
           </StyledView>
-          <StyledText className="text-base text-dark font-medium">
+          <StyledText className="text-base text-dark font-PoppinsMedium">
             Available Packages
           </StyledText>
         </StyledView>

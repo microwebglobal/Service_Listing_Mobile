@@ -60,7 +60,7 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
     return (
       <StyledView className="w-full basis-1/2 px-2 my-3">
         <TouchableOpacity
-          className="shadow-sm shadow-black rounded-xl"
+          className="bg-white shadow-sm shadow-black"
           onPress={() => {
             if (item.ServiceTypes.length > 0) {
               navigation.navigate('ServiceType', {
@@ -69,15 +69,15 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
               });
             }
           }}>
-          <StyledView className="py-2 items-center justify-center bg-lightGrey rounded-xl">
+          <StyledView className="items-center justify-center bg-lightGrey rounded-xl">
             <StyledView className="">
               <StyledImage
-                className="w-40 h-24 rounded-lg"
+                className="w-full h-32 rounded-t-lg"
                 source={{uri: `${SERVER_BASE}${item.icon_url}`}}
               />
             </StyledView>
             <StyledView className="w-full mt-2 px-3 items-center bg-white shadow-sm shadow-black rounded-b-xl">
-              <StyledText className="my-2 text-base text-black">
+              <StyledText className="my-2 text-sm text-black font-PoppinsRegular">
                 {item.name}
               </StyledText>
             </StyledView>
@@ -106,13 +106,13 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
           className="flex-1 justify-between"
           style={{marginHorizontal: RPW(5)}}>
           <StyledView className="my-2">
-            <StyledText className="text-dark text-justify text-base my-2">
+            <StyledText className="text-dark font-PoppinsRegular text-justify text-sm my-2">
               {category}
               {
                 'is an essential part of daily life in delhi. Whether you are looking for professional services, products, or local offers, this category encompasses everything you need. From reliable service providers to unique offerings, we have gathered all the top choices for you.'
               }
             </StyledText>
-            <StyledText className="mt-5 text-dark text-justify text-base font-medium">
+            <StyledText className="mt-5 text-black font-PoppinsMedium text-justify text-base font-medium">
               {'Subcategories and available services'}
             </StyledText>
           </StyledView>
@@ -130,7 +130,7 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
               />
             ) : (
               <StyledView className="my-5">
-                <StyledText className="text-base text-center my-2">
+                <StyledText className="text-sm font-PoppinsRegular text-center my-2">
                   {'No subcategories available for \n this category'}
                 </StyledText>
               </StyledView>

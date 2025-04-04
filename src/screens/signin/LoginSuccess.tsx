@@ -27,10 +27,10 @@ export const LoginSuccessScreen: Screen<'LoginSuccess'> = () => {
         speed={0.6}
       />
       <StyledView className="mx-10">
-        <StyledText className="text-2xl text-dark font-semibold text-center">
+        <StyledText className="text-2xl text-dark font-PoppinsMedium text-center">
           Congratulations!
         </StyledText>
-        <StyledText className="mt-2 text-lg text-center">
+        <StyledText className="mt-2 text-lg text-center font-PoppinsRegular">
           You have successfully logged in.
         </StyledText>
       </StyledView>

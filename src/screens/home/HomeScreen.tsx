@@ -136,7 +136,7 @@ export const HomeScreen = () => {
     return (
       <StyledView className="mb-5">
         <StyledTouchableOpacity
-          className="pb-5 bg-lightGrey rounded-xl"
+          className="pb-5 bg-lightGrey rounded-xl shadow-sm shadow-black"
           onPress={() => {}}>
           <StyledView className="overflow-hidden">
             <StyledImage

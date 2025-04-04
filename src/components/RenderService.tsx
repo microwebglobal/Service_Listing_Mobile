@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {Button} from './rneui';
 import {SERVER_BASE} from '@env';
 import classNames from 'classnames';
-import { styled } from 'nativewind';
+import {styled} from 'nativewind';
 import {Colors} from '../utils/Colors';
 import {useAppSelector} from '../redux';
 import {useDispatch} from 'react-redux';
@@ -87,10 +87,10 @@ export const RenderService = ({service}: {service: Service}) => {
         <StyledView className="bg-white rounded-lg p-2">
           <StyledView className="flex-row justify-between space-x-2">
             <StyledView className="w-2/3">
-              <StyledText className="text-base text-black font-medium first-letter:capitalize">
+              <StyledText className="text-base text-black font-PoppinsMedium first-letter:capitalize">
                 {item.name}
               </StyledText>
-              <StyledText className="my-1 text-base text-black font-bold">
+              <StyledText className="my-1 text-base text-black font-PoppinsSemiBold">
                 {'₹'}
                 {item.base_price}
               </StyledText>
@@ -100,19 +100,20 @@ export const RenderService = ({service}: {service: Service}) => {
                   {'% Advanced Payment Required'}
                 </StyledText>
               )}
-              <StyledText className="text-sm text-black overflow-clip">
+              <StyledText className="text-sm font-PoppinsRegular text-black overflow-clip">
                 {item.description}
               </StyledText>
               {item.is_home_visit && (
-                <StyledText className="my-2 text-sm text-error">
+                <StyledText className="my-2 text-xs font-PoppinsRegular text-error">
                   You need to visit service provider to get an service
                 </StyledText>
               )}
             </StyledView>
             <StyledView className="items-center">
               <StyledImage
+                resizeMode="cover"
+                className="w-20 h-20 rounded-lg"
                 source={{uri: `${SERVER_BASE}${item.icon_url}`}}
-                style={{width: 90, height: 90, borderRadius: 8}}
               />
               <StyledView className="relative -mt-5 w-20 bg-black rounded-xl shadow-md shadow-black">
                 <Button
@@ -143,8 +144,8 @@ export const RenderService = ({service}: {service: Service}) => {
             className={
               (classNames('first-letter:capitalize'),
               isItemClicked
-                ? 'text-primary text-base font-medium ml-2'
-                : 'text-dark text-base font-medium ml-2')
+                ? 'text-primary text-base font-PoppinsMedium ml-2'
+                : 'text-dark text-base font-PoppinsMedium ml-2')
             }>
             {service.name}
           </StyledText>

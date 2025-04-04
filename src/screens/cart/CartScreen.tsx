@@ -120,6 +120,7 @@ export const CartScreen = () => {
                     <StyledView className="flex-row basis-2/4 items-center space-x-4">
                       <StyledView className="ml-1 bg-lightGrey rounded-lg">
                         <StyledImage
+                          resizeMode="cover"
                           className="w-14 h-14 rounded-md"
                           source={{
                             uri: `${SERVER_BASE}${item.serviceItem.icon_url}`,
@@ -127,10 +128,10 @@ export const CartScreen = () => {
                         />
                       </StyledView>
                       <StyledView>
-                        <StyledText className="text-base text-black font-normal text-clip">
+                        <StyledText className="text-base text-black font-PoppinsRegular text-clip">
                           {item.serviceItem.name}
                         </StyledText>
-                        <StyledText className="text-base text-black font-normal">
+                        <StyledText className="text-base text-black font-PoppinsMedium">
                           {'₹'}
                           {item.unit_price}
                         </StyledText>
@@ -141,17 +142,18 @@ export const CartScreen = () => {
                     <StyledView className="flex-row basis-2/4 items-center space-x-4">
                       <StyledView className="ml-1 bg-lightGrey rounded-lg">
                         <StyledImage
-                          className="w-12 h-12 rounded-md"
+                          resizeMode="cover"
+                          className="w-14 h-14 rounded-md"
                           source={{
                             uri: `${SERVER_BASE}${item.packageItem.icon_url}`,
                           }}
                         />
                       </StyledView>
                       <StyledView>
-                        <StyledText className="text-base text-black font-normal text-clip">
+                        <StyledText className="text-base text-black font-PoppinsRegular text-clip">
                           {item.packageItem.name}
                         </StyledText>
-                        <StyledText className="text-base text-black font-normal">
+                        <StyledText className="text-base text-black font-PoppinsMedium">
                           {'₹'}
                           {item.unit_price}
                         </StyledText>
@@ -180,7 +182,7 @@ export const CartScreen = () => {
                           />
                         </StyledTouchableOpacity>
                       )}
-                      <StyledText className="text-base text-black">
+                      <StyledText className="text-base text-black first-letter:first-line:font-PoppinsRegular">
                         {item?.quantity}
                       </StyledText>
                       <StyledTouchableOpacity
@@ -204,33 +206,37 @@ export const CartScreen = () => {
           }}>
           <StyledView className="my-5 h-1 bg-lightGrey" />
           <StyledView className="mb-1 flex-row justify-between">
-            <StyledText className="text-base text-black">Subtotal</StyledText>
-            <StyledText className="text-base text-black">
+            <StyledText className="text-base text-black font-PoppinsRegular">
+              Subtotal
+            </StyledText>
+            <StyledText className="text-base text-black font-PoppinsRegular">
               {'₹'}
               {cart.BookingPayment.subtotal}
             </StyledText>
           </StyledView>
           <StyledView className="flex-row justify-between">
-            <StyledText className="text-base text-black">Tax (18%)</StyledText>
-            <StyledText className="text-base text-black">
+            <StyledText className="text-base text-black font-PoppinsRegular">
+              Tax (18%)
+            </StyledText>
+            <StyledText className="text-base text-black font-PoppinsRegular">
               {'₹'}
               {cart.BookingPayment.tax_amount}
             </StyledText>
           </StyledView>
           <StyledView className="my-1 flex-row justify-between">
-            <StyledText className="text-base text-black font-bold">
+            <StyledText className="text-base text-black font-PoppinsMedium">
               Total
             </StyledText>
-            <StyledText className="text-base text-black font-bold">
+            <StyledText className="text-base text-black font-PoppinsSemiBold">
               {'₹'}
               {cart.BookingPayment.total_amount}
             </StyledText>
           </StyledView>
           <StyledView className="flex-row justify-between">
-            <StyledText className="text-base text-black font-bold">
+            <StyledText className="text-base text-black font-PoppinsMedium">
               Advance Amount
             </StyledText>
-            <StyledText className="text-base text-black font-bold">
+            <StyledText className="text-base text-black font-PoppinsSemiBold">
               {'₹'}
               {cart.BookingPayment.advance_payment}
             </StyledText>

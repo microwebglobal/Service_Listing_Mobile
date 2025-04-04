@@ -69,7 +69,7 @@ export const SignInScreen = () => {
           showsVerticalScrollIndicator={false}
           style={{
             marginHorizontal: RPW(5),
-            paddingTop: RPH(10),
+            paddingTop: RPH(12),
           }}>
           <StyledView className="items-center justify-center">
             <StyledImage
@@ -77,22 +77,19 @@ export const SignInScreen = () => {
               className="w-32 h-32 rounded-full"
             />
           </StyledView>
-          <StyledView className="my-8 items-center">
+          <StyledView className="my-10 items-center">
             <StyledText className="text-xl font-PoppinsRegular text-black">
               {'Welcome! to'}
               <StyledText className="text-xl font-PoppinsSemiBold text-primary">
                 {' Customer'}
               </StyledText>
             </StyledText>
-            <StyledText className="mt-3 text-base font-PoppinsRegular text-black">
-              {'Enter Your Contact Number To Continue'}
-            </StyledText>
           </StyledView>
 
           <StyledView className="gap-2 mb-3">
             <StyledView>
-              <StyledText className="text-base text-black font-PoppinsRegular">
-                Contact Number
+              <StyledText className="text-sm text-black font-PoppinsRegular">
+                Contact Number to Register or Login
               </StyledText>
             </StyledView>
             <StyledView>

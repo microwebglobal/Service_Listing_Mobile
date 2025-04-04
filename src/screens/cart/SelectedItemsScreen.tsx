@@ -64,13 +64,11 @@ export const SelectedItemsScreen = () => {
               <StyledImage
                 source={require('../../assets/app-images/cart.png')}
               />
-              <StyledText className="mt-5 text-xl text-black text-center font-medium">
+              <StyledText className="mt-5 text-base text-black text-center font-PoppinsMedium">
                 Your cart is empty
               </StyledText>
-              <StyledText className="mt-2 text-base text-dark text-center">
-                {
-                  'Once you add items from a service, your cart will appear here.'
-                }
+              <StyledText className="mt-2 text-sm text-dark text-center font-PoppinsRegular">
+                {'Once you add items, your cart will appear here.'}
               </StyledText>
 
               <StyledView className="my-5">
@@ -94,42 +92,44 @@ export const SelectedItemsScreen = () => {
               <StyledView
                 key={index}
                 className="flex-row justify-between items-center mb-7">
-                <StyledView className="flex-row basis-3/5 items-center space-x-4">
+                <StyledView className="flex-row flex-wrap basis-4/5 items-center space-x-4">
                   <StyledView className="ml-1 bg-lightGrey rounded-lg">
                     <StyledImage
+                      resizeMode="cover"
                       className="w-14 h-14 rounded-md"
                       source={{uri: `${SERVER_BASE}${item.icon_url}`}}
                     />
                   </StyledView>
                   <StyledView>
-                    <StyledText className="text-base text-black font-normal text-clip">
+                    <StyledText className="text-base text-black font-PoppinsRegular text-clip">
                       {item.name}
                     </StyledText>
-                    <StyledText className="text-base text-gray font-normal">
-                      {'Quantity: '}
-                      {item.quantity}
-                    </StyledText>
+                    <StyledView className="flex-row items-center space-x-2">
+                      <StyledText className="text-base text-black font-PoppinsMedium">
+                        {'₹'}
+                        {item.price}
+                        {'.00'}
+                      </StyledText>
+                      <StyledText className="text-sm text-gray font-PoppinsRegular">
+                        {'(x'}
+                        {item.quantity}
+                        {')'}
+                      </StyledText>
+                    </StyledView>
                   </StyledView>
                 </StyledView>
-                <StyledView className="flex-row items-center space-x-2">
-                  <StyledText className="text-base text-black font-normal">
-                    {'₹'}
-                    {item.price}
-                    {'.00'}
-                  </StyledText>
-                  <StyledView className="py-1 px-2 bg-lightGrey rounded-full">
-                    <TouchableOpacity
-                      onPress={() => {
-                        showToast();
-                        dispatch(removeItem(item.itemId));
-                      }}>
-                      <MaterialIcons
-                        name="delete-outline"
-                        size={20}
-                        color={Colors.Dark}
-                      />
-                    </TouchableOpacity>
-                  </StyledView>
+                <StyledView className="py-1 px-2 bg-lightGrey rounded-full">
+                  <TouchableOpacity
+                    onPress={() => {
+                      showToast();
+                      dispatch(removeItem(item.itemId));
+                    }}>
+                    <MaterialIcons
+                      name="delete-outline"
+                      size={20}
+                      color={Colors.Dark}
+                    />
+                  </TouchableOpacity>
                 </StyledView>
               </StyledView>
             );
@@ -144,8 +144,10 @@ export const SelectedItemsScreen = () => {
           }}>
           <StyledView className="my-5 h-1 bg-lightGrey" />
           <StyledView className="flex-row justify-between">
-            <StyledText className="text-base text-black">Total</StyledText>
-            <StyledText className="text-base text-black font-bold">
+            <StyledText className="text-base text-black font-PoppinsMedium">
+              Total
+            </StyledText>
+            <StyledText className="text-base text-black font-PoppinsSemiBold">
               {'₹'}
               {totalPrice}
               {'.00'}

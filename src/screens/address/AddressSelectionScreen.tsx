@@ -5,6 +5,7 @@ import {
   Dimensions,
   FlatList,
   TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {styled} from 'nativewind';
@@ -19,6 +20,8 @@ import {SearchBarComponent} from '../../components/Searchbar';
 import {Screen, useNav} from '../../navigation/RootNavigation';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+// import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+// import {GOOGLE_MAP_API_KEY} from '@env';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -28,6 +31,7 @@ const RPW = (percentage: number) => {
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledScrollView = styled(ScrollView);
+const StyledSafeAreaView = styled(SafeAreaView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
@@ -113,7 +117,7 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
               <StyledText
                 numberOfLines={2}
                 ellipsizeMode="tail"
-                className="basis-3/4 text-base text-black">
+                className="basis-3/4 text-base text-black font-PoppinsRegular">
                 {address.line1 +
                   ' ' +
                   address.line2 +
@@ -126,7 +130,7 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
               <StyledText
                 numberOfLines={2}
                 ellipsizeMode="tail"
-                className="basis-3/4 text-base text-black">
+                className="basis-3/4 text-base text-black font-PoppinsRegular">
                 {address.line1 + ', ' + address.city + ', ' + address.state}
               </StyledText>
             )}
@@ -146,55 +150,75 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
     return <LoadingIndicator />;
   }
   return (
-    <StyledScrollView className="bg-white" showsVerticalScrollIndicator={false}>
+    <StyledSafeAreaView className="flex-1 bg-white">
       <AppHeader title={'Addresses'} back={true} />
-      <StyledView className="my-5">
-        <StyledView style={{paddingHorizontal: RPW(5)}}>
-          <SearchBarComponent
-            placeholder={'Search for your location'}
-            iconName={'search'}
-            onSearch={(text: string) => {
-              prevRoute.name.toString() === 'TabNavigator'
-                ? navigation.pop()
-                : (navigation.pop(),
-                  navigation.replace('ServiceSchedule', {
-                    address: text,
-                    date: date,
-                    time: time,
-                  }));
-            }}
-          />
-
-          <StyledTouchableOpacity
-            className="my-5 flex-row items-center gap-x-3"
-            onPress={() => {}}>
-            <MaterialIcons
-              name="my-location"
-              size={20}
-              color={Colors.Primary}
+      <StyledScrollView>
+        <StyledView className="my-3">
+          <StyledView style={{paddingHorizontal: RPW(5)}}>
+            <SearchBarComponent
+              placeholder={'Search for your location'}
+              iconName={'search'}
+              onSearch={(text: string) => {
+                prevRoute.name.toString() === 'TabNavigator'
+                  ? navigation.pop()
+                  : (navigation.pop(),
+                    navigation.replace('ServiceSchedule', {
+                      address: text,
+                      date: date,
+                      time: time,
+                    }));
+              }}
             />
-            <StyledText className="text-base text-primary font-medium">
-              Use current location
-            </StyledText>
-          </StyledTouchableOpacity>
+
+            <StyledTouchableOpacity
+              className="my-6 flex-row items-center gap-x-3"
+              onPress={() => {}}>
+              <MaterialIcons
+                name="my-location"
+                size={20}
+                color={Colors.Primary}
+              />
+              <StyledText className="text-base text-primary font-PoppinsMedium">
+                Use current location
+              </StyledText>
+            </StyledTouchableOpacity>
+
+            {/* <StyledView className="my-5 flex-row items-center gap-x-3 border border-gray rounded-md bg-white">
+              <GooglePlacesAutocomplete
+                placeholder="Search for your location..."
+                fetchDetails={true}
+                onPress={(data, details = null) => {
+                  console.log(data, details);
+                  console.log(JSON.stringify(data));
+                  console.log(JSON.stringify(details?.geometry.location));
+                }}
+                query={{
+                  key: GOOGLE_MAP_API_KEY,
+                  language: 'en',
+                }}
+                onFail={error => console.error(error)}
+                onNotFound={() => console.log('no results')}
+              />
+            </StyledView> */}
+          </StyledView>
+          <StyledView className="h-2 bg-lightGrey" />
+
+          <StyledText
+            className="mt-5 mb-2 text-base text-black font-PoppinsMedium"
+            style={{paddingHorizontal: RPW(5)}}>
+            Available Addresses
+          </StyledText>
+
+          <FlatList
+            horizontal={false}
+            scrollEnabled={false}
+            showsHorizontalScrollIndicator={false}
+            data={addressList}
+            keyExtractor={item => item.id.toString()}
+            renderItem={({item}) => _renderAddress(item)}
+          />
         </StyledView>
-        <StyledView className="h-2 bg-lightGrey" />
-
-        <StyledText
-          className="mt-5 mb-2 text-lg text-black"
-          style={{paddingHorizontal: RPW(5)}}>
-          Available Addresses
-        </StyledText>
-
-        <FlatList
-          horizontal={false}
-          scrollEnabled={false}
-          showsHorizontalScrollIndicator={false}
-          data={addressList}
-          keyExtractor={item => item.id.toString()}
-          renderItem={({item}) => _renderAddress(item)}
-        />
-      </StyledView>
-    </StyledScrollView>
+      </StyledScrollView>
+    </StyledSafeAreaView>
   );
 };

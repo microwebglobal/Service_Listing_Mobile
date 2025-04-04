@@ -175,7 +175,7 @@ export const SignUpScreen: Screen<'SignUp'> = () => {
           />
 
           <StyledView className="mb-3">
-            <StyledText className="mb-2 text-base text-black font-medium">
+            <StyledText className="mb-2 text-base text-black font-PoppinsMedium">
               Gender
             </StyledText>
             <DropDownPicker
@@ -192,14 +192,14 @@ export const SignUpScreen: Screen<'SignUp'> = () => {
               textStyle={styles.dropDownText}
             />
             {!genValue && (
-              <StyledText className="text-error">
+              <StyledText className="text-error font-PoppinsRegular">
                 {'Gender is required'}
               </StyledText>
             )}
           </StyledView>
 
           <StyledView className="mb-3">
-            <StyledText className="mb-2 text-base text-black font-medium">
+            <StyledText className="mb-2 text-base text-black font-PoppinsMedium">
               Date of Birth
             </StyledText>
             <Controller
@@ -232,7 +232,7 @@ export const SignUpScreen: Screen<'SignUp'> = () => {
               rules={{required: selectDate === ''}}
             />
             {errors.dob && (
-              <StyledText className="text-error">
+              <StyledText className="text-error font-PoppinsRegular">
                 {'Date of birth is required'}
               </StyledText>
             )}
@@ -250,14 +250,14 @@ export const SignUpScreen: Screen<'SignUp'> = () => {
           </StyledView>
 
           <StyledView className="flex-row justify-center">
-            <StyledText className="text-base font-normal text-dark">
+            <StyledText className="text-base text-dark font-PoppinsRegular">
               Already have an account?{'  '}
             </StyledText>
             <StyledTouchableOpacity
               onPress={() => {
                 navigation.navigate('SignIn');
               }}>
-              <StyledText className="text-base font-medium text-primary underline">
+              <StyledText className="text-base text-primary font-PoppinsRegular underline">
                 Sign In
               </StyledText>
             </StyledTouchableOpacity>
@@ -287,7 +287,7 @@ const SignUpFormField: React.FC<SignUpFormFieldProps> = ({
 }) => {
   return (
     <StyledView className="mb-2">
-      <StyledText className="mb-2 text-base text-black font-medium">
+      <StyledText className="mb-2 text-base text-black  font-PoppinsMedium">
         {label}
       </StyledText>
       <Controller
@@ -312,7 +312,7 @@ const SignUpFormField: React.FC<SignUpFormFieldProps> = ({
         rules={rules}
       />
       {errors && (
-        <StyledText className="text-error">
+        <StyledText className="text-error  font-PoppinsRegular">
           {name === 'email'
             ? 'Please enter valid email address'
             : name === 'gender'

@@ -113,7 +113,7 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
           />
         </StyledView>
         <StyledView style={{paddingHorizontal: RPW(5)}}>
-          <StyledText className="my-2 mb-3 text-lg text-black">
+          <StyledText className="my-2 mb-3 text-lg text-black font-PoppinsMedium">
             {address.city}
             {', '}
             {address.state}
@@ -173,7 +173,7 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
           <StyledView className={'mb-3 h-0.5 bg-lightGrey'} />
 
           <StyledView>
-            <StyledText className="text-lg text-black font-medium">
+            <StyledText className="text-lg text-black font-PoppinsMedium">
               Address label
             </StyledText>
             <StyledView className="mt-3 flex-row items-center space-x-3">
@@ -235,7 +235,7 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
         )}
         index={-1}>
         <BottomSheetView>
-          <StyledText className="text-lg text-black font-medium text-center">
+          <StyledText className="text-lg text-black font-PoppinsMedium text-center">
             Remove this address?
           </StyledText>
           <StyledView className="my-5">
@@ -278,7 +278,7 @@ const AddressFormField: React.FC<AddressFormFieldProps> = ({
 }) => {
   return (
     <StyledView className="mb-3">
-      <StyledText className="mb-2 text-base text-black font-medium">
+      <StyledText className="mb-2 text-base text-black font-PoppinsMedium">
         {label}
         {errors.name && <StyledText className="text-error">{' *'}</StyledText>}
       </StyledText>
@@ -346,7 +346,7 @@ const AddressType: React.FC<AddressTypeProps> = ({
 
       <StyledText
         className={classNames(
-          'text-base',
+          'text-base font-PoppinsRegular',
           `${type === typeName ? 'text-white' : 'text-black'}`,
         )}>
         {typeName}

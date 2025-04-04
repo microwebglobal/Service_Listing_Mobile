@@ -11,6 +11,8 @@ import {
 import React, {useEffect, useState} from 'react';
 import {Employee} from './types';
 import {SERVER_BASE} from '@env';
+import {styled} from 'nativewind';
+import {Dialog} from '@rneui/base';
 import classNames from 'classnames';
 import {ScrollView} from 'react-native';
 import {Colors} from '../../utils/Colors';
@@ -25,8 +27,6 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import {styled} from 'nativewind';
-import {Dialog} from '@rneui/base';
 
 export interface BookingItem {
   id: number;
@@ -179,10 +179,10 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                 className="w-16 h-16"
               />
               <StyledView>
-                <StyledText className="text-lg text-black font-medium">
+                <StyledText className="text-lg text-black font-PoppinsMedium">
                   Job Complete
                 </StyledText>
-                <StyledText className="text-base text-dark">
+                <StyledText className="text-base text-dark font-PoppinsRegular">
                   Thanks for taking service from us.
                 </StyledText>
               </StyledView>
@@ -200,10 +200,10 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                 className="w-12 h-12"
               />
               <StyledView>
-                <StyledText className="text-lg text-black font-medium">
+                <StyledText className="text-lg text-black font-PoppinsMedium">
                   Booking cancelled
                 </StyledText>
-                <StyledText className="text-base text-dark">
+                <StyledText className="text-base text-dark font-PoppinsRegular">
                   We hope to see you again in the future.
                 </StyledText>
               </StyledView>
@@ -218,18 +218,18 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
               style={{paddingHorizontal: RPW(4)}}>
               <StyledView className="space-y-1">
                 <StyledView className="flex-row items-center space-x-1">
-                  <StyledText className="text-base text-dark">
+                  <StyledText className="text-base text-dark font-PoppinsRegular">
                     Booking ID:
                   </StyledText>
-                  <StyledText className="text-base text-black font-medium">
+                  <StyledText className="text-base text-black font-PoppinsMedium">
                     {booking.booking_id}
                   </StyledText>
                 </StyledView>
                 <StyledView className="flex-row items-center space-x-1">
-                  <StyledText className="text-base text-dark">
+                  <StyledText className="text-base text-dark font-PoppinsRegular">
                     Booking status:
                   </StyledText>
-                  <StyledText className="text-base text-primary font-medium first-letter:capitalize">
+                  <StyledText className="text-base text-primary font-PoppinsMedium first-letter:capitalize">
                     {booking.status === 'payment_pending'
                       ? 'Confirmed'
                       : booking.status === 'in_progress'
@@ -238,7 +238,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                   </StyledText>
                 </StyledView>
                 <StyledView className="flex-row items-center space-x-1">
-                  <StyledText className="text-base text-dark">
+                  <StyledText className="text-base text-dark font-PoppinsRegular">
                     Payment status:
                   </StyledText>
                   <StyledView
@@ -254,7 +254,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                           : 'bg-red-100'
                       }`,
                     )}>
-                    <StyledText className="text-base text-black first-letter:capitalize">
+                    <StyledText className="text-base text-black font-PoppinsRegular first-letter:capitalize">
                       {booking.BookingPayment.payment_status ===
                       'advance_only_paid'
                         ? 'Advance Paid'
@@ -293,7 +293,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
               className="flex-row space-x-2 items-center"
               style={{paddingHorizontal: RPW(4)}}>
               <Feather name="user-check" size={18} color={Colors.Primary} />
-              <StyledText className="text-base text-black font-medium">
+              <StyledText className="text-base text-black font-PoppinsSemiBold">
                 Provider Details
               </StyledText>
             </StyledView>
@@ -353,19 +353,19 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
 
                               <StyledView className="flex-1 space-y-1">
                                 <StyledView className="flex-row items-center space-x-2">
-                                  <StyledText className="text-base text-black">
+                                  <StyledText className="text-base text-black font-PoppinsRegular">
                                     {employee.User.name}
                                   </StyledText>
                                 </StyledView>
                                 <StyledView className="flex-row items-center space-x-2">
-                                  <StyledText className="text-base text-black">
+                                  <StyledText className="text-base text-black font-PoppinsRegular">
                                     {booking.provider.business_name}
                                   </StyledText>
                                 </StyledView>
 
                                 <StyledView className="flex-row items-center justify-between">
                                   <StyledView>
-                                    <StyledText className="text-base text-dark">
+                                    <StyledText className="text-base text-dark font-PoppinsRegular">
                                       {employee.User.mobile}
                                     </StyledText>
                                   </StyledView>
@@ -404,18 +404,18 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                 style={{paddingHorizontal: RPW(4)}}>
                 <StyledView className="p-2 rounded-lg space-y-1 border border-primaryBlackRGBA">
                   <StyledView className="flex-row items-center space-x-2">
-                    <StyledText className="text-base text-dark">
+                    <StyledText className="text-base text-dark font-PoppinsRegular">
                       Name:{' '}
                     </StyledText>
-                    <StyledText className="text-base text-black">
+                    <StyledText className="text-base text-black font-PoppinsRegular">
                       {booking.provider.User.name}
                     </StyledText>
                   </StyledView>
                   <StyledView className="flex-row items-center space-x-2">
-                    <StyledText className="text-base text-dark">
+                    <StyledText className="text-base text-dark font-PoppinsRegular">
                       Mobile:
                     </StyledText>
-                    <StyledText className="text-base text-black">
+                    <StyledText className="text-base text-black font-PoppinsRegular">
                       {booking.provider.User.mobile}
                     </StyledText>
                   </StyledView>
@@ -431,7 +431,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
             <StyledView className="flex-row items-baseline space-x-2">
               <Icon name="clock" size={16} color={Colors.Primary} />
               <StyledView>
-                <StyledText className="text-base text-black">
+                <StyledText className="text-base text-black font-PoppinsRegular">
                   {new Date(booking.booking_date).toLocaleString('en-us', {
                     weekday: 'long',
                     month: 'short',
@@ -439,7 +439,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                     year: 'numeric',
                   })}
                 </StyledText>
-                <StyledText className="text-base text-dark">
+                <StyledText className="text-base text-dark font-PoppinsRegular">
                   {'Started on '}
                   {new Date(booking.booking_date).toLocaleString('en-us', {
                     weekday: 'short',
@@ -458,7 +458,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                 size={18}
                 color={Colors.Primary}
               />
-              <StyledText className="text-base text-black">
+              <StyledText className="text-base text-black font-PoppinsRegular">
                 {booking.service_address}
               </StyledText>
             </StyledView>
@@ -472,11 +472,11 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                       size={20}
                       color={Colors.Primary}
                     />
-                    <StyledText className="text-base text-black">
+                    <StyledText className="text-base text-black font-PoppinsRegular">
                       Special Note:
                     </StyledText>
                   </StyledView>
-                  <StyledText className="pl-5 text-base text-dark">
+                  <StyledText className="pl-5 text-base text-dark font-PoppinsRegular">
                     {booking.customer_notes}
                   </StyledText>
                 </StyledView>
@@ -490,7 +490,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
             className="flex-row space-x-2 items-baseline"
             style={{paddingHorizontal: RPW(4)}}>
             <FontAwesome5 name="tasks" size={16} color={Colors.Primary} />
-            <StyledText className="mb-2 text-base text-black font-medium">
+            <StyledText className="mb-2 text-base text-black font-PoppinsSemiBold">
               Service Details
             </StyledText>
           </StyledView>
@@ -507,9 +507,9 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                         <StyledText
                           numberOfLines={2}
                           ellipsizeMode="tail"
-                          className="text-base text-black">
+                          className="text-base text-black font-PoppinsRegular">
                           {bookingItem.serviceItem.name}
-                          <StyledText className="text-sm text-gray">
+                          <StyledText className="text-sm text-gray font-PoppinsRegular">
                             {'  '}
                             {'(x '}
                             {bookingItem.quantity}
@@ -517,7 +517,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                           </StyledText>
                         </StyledText>
                       </StyledView>
-                      <StyledText className="text-base text-black">
+                      <StyledText className="text-base text-black font-PoppinsRegular">
                         {'₹'}
                         {bookingItem.total_price}
                       </StyledText>
@@ -527,9 +527,9 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                       key={index}
                       className="my-2 flex-row justify-between items-center">
                       <StyledView>
-                        <StyledText className="text-base text-black">
+                        <StyledText className="text-base text-black font-PoppinsRegular">
                           {bookingItem.packageItem.name}
-                          <StyledText className="text-sm text-gray">
+                          <StyledText className="text-sm text-gray font-PoppinsRegular">
                             {'  '}
                             {'(x '}
                             {bookingItem.quantity}
@@ -537,7 +537,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                           </StyledText>
                         </StyledText>
                       </StyledView>
-                      <StyledText className="text-base text-black">
+                      <StyledText className="text-base text-black font-PoppinsRegular">
                         {'₹'}
                         {bookingItem.packageItem.price}
                       </StyledText>
@@ -560,46 +560,46 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                   size={20}
                   color={Colors.Primary}
                 />
-                <StyledText className="text-base text-black font-medium">
+                <StyledText className="text-base text-black font-PoppinsSemiBold">
                   Payment Summary
                 </StyledText>
               </StyledView>
               <StyledView style={{paddingHorizontal: RPW(4)}}>
                 <StyledView className="my-3 p-2">
                   <StyledView className="mb-1 flex-row justify-between items-center">
-                    <StyledText className="text-base text-dark">
+                    <StyledText className="text-base text-dark font-PoppinsRegular">
                       Subtotal
                     </StyledText>
-                    <StyledText className="text-base text-black">
+                    <StyledText className="text-base text-black font-PoppinsRegular">
                       {'₹'}
                       {booking.BookingPayment.subtotal}
                     </StyledText>
                   </StyledView>
                   <StyledView className="mb-1 flex-row justify-between items-center">
-                    <StyledText className="text-base text-dark">
+                    <StyledText className="text-base text-dark font-PoppinsRegular">
                       Taxes and Fee (18%)
                     </StyledText>
-                    <StyledText className="text-base text-black">
+                    <StyledText className="text-base text-black font-PoppinsRegular">
                       {'₹'}
                       {booking.BookingPayment.tax_amount}
                     </StyledText>
                   </StyledView>
                   <StyledView className="mb-1 flex-row justify-between items-center">
-                    <StyledText className="text-base text-dark">
+                    <StyledText className="text-base text-dark font-PoppinsRegular">
                       Discount
                     </StyledText>
-                    <StyledText className="text-base text-black">
+                    <StyledText className="text-base text-black font-PoppinsRegular">
                       {'₹'}
                       {booking.BookingPayment.discount_amount}
                     </StyledText>
                   </StyledView>
                   <StyledView className="mb-1 flex-row justify-between">
                     <StyledView>
-                      <StyledText className="text-base text-black font-medium">
+                      <StyledText className="text-base text-black font-PoppinsMedium">
                         Amount paid
                       </StyledText>
                     </StyledView>
-                    <StyledText className="text-base text-black font-medium">
+                    <StyledText className="text-base text-black font-PoppinsMedium">
                       {'₹'}
                       {booking.BookingPayment.advance_payment}
                     </StyledText>
@@ -608,16 +608,16 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                     <StyledText
                       numberOfLines={1}
                       ellipsizeMode="clip"
-                      className="mt-2 h-3 border-dashed border-t border-gray"
+                      className="mt-2 h-3 border-dashed border-t border-gray font-PoppinsRegular"
                     />
                   </StyledView>
                   <StyledView className="mb-1 flex-row justify-between">
                     <StyledView>
-                      <StyledText className="text-base text-black font-bold">
+                      <StyledText className="text-base text-black font-PoppinsSemiBold">
                         Total
                       </StyledText>
                     </StyledView>
-                    <StyledText className="text-base text-black font-bold">
+                    <StyledText className="text-base text-black font-semibold">
                       {'₹'}
                       {(
                         parseFloat(booking.BookingPayment.total_amount) -
@@ -627,10 +627,10 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                   </StyledView>
                   <StyledView className="my-3 h-0.5 bg-lightGrey" />
                   <StyledView className="mb-1 flex-row items-center justify-between">
-                    <StyledText className="text-base text-black font-medium">
+                    <StyledText className="text-base text-black font-PoppinsRegular">
                       Payment mode
                     </StyledText>
-                    <StyledText className="text-base text-black first-letter:capitalize">
+                    <StyledText className="text-base text-black font-PoppinsRegular first-letter:capitalize">
                       {booking.BookingPayment.payment_method === 'net_banking'
                         ? 'Net Banking'
                         : booking.BookingPayment.payment_method}

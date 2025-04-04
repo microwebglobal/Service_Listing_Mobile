@@ -114,7 +114,7 @@ export const PaymentScreen = ({route}: any) => {
               color={Colors.Dark}
             />
           )}
-          <StyledText className="ml-3 text-base text-black">
+          <StyledText className="ml-3 text-base text-black font-PoppinsRegular">
             <StyledText className="first-letter:capitalize">
               {method}
             </StyledText>
@@ -134,33 +134,33 @@ export const PaymentScreen = ({route}: any) => {
         showsVerticalScrollIndicator={false}>
         <AppHeader back={true} title={'Payment'} />
         <StyledView className="flex-1 my-5" style={{marginHorizontal: RPW(6)}}>
-          <StyledText className="text-xl text-center font-semibold text-black first-letter:capitalize">
+          <StyledText className="text-lg text-center font-PoppinsMedium text-black first-letter:capitalize">
             {'Choose payment method'}
           </StyledText>
           <StyledView className="my-5 p-3 bg-lightGrey rounded-lg space-y-2">
             <StyledView className="flex-row justify-between">
-              <StyledText className="text-base text-black">
+              <StyledText className="text-base text-black font-PoppinsRegular">
                 {'Subtotal'}
               </StyledText>
-              <StyledText className="text-base text-black">
+              <StyledText className="text-base text-black font-PoppinsRegular">
                 {' ₹'}
                 {amount}
               </StyledText>
             </StyledView>
             <StyledView className="flex-row justify-between">
-              <StyledText className="text-base text-black">
+              <StyledText className="text-base text-black font-PoppinsRegular">
                 {'Tax (18%)'}
               </StyledText>
-              <StyledText className="text-base text-black">
+              <StyledText className="text-base text-black font-PoppinsRegular">
                 {' ₹'}
                 {booking?.BookingPayment.tax_amount}
               </StyledText>
             </StyledView>
             <StyledView className="flex-row justify-between">
-              <StyledText className="text-base text-black font-bold">
+              <StyledText className="text-base text-black font-PoppinsSemiBold">
                 {'Total'}
               </StyledText>
-              <StyledText className="text-base text-black font-bold">
+              <StyledText className="text-base text-black font-PoppinsSemiBold">
                 {' ₹'}
                 {booking?.BookingPayment.total_amount}
               </StyledText>
@@ -168,10 +168,10 @@ export const PaymentScreen = ({route}: any) => {
             {booking &&
               parseInt(booking.BookingPayment.advance_payment, 10) !== 0 && (
                 <StyledView className="flex-row justify-between">
-                  <StyledText className="text-base text-black font-bold">
+                  <StyledText className="text-base text-black font-PoppinsSemiBold">
                     {'Advance Amount'}
                   </StyledText>
-                  <StyledText className="text-base text-black font-bold">
+                  <StyledText className="text-base text-black font-PoppinsSemiBold">
                     {' ₹'}
                     {booking?.BookingPayment.advance_payment}
                   </StyledText>
@@ -188,7 +188,7 @@ export const PaymentScreen = ({route}: any) => {
                   size={18}
                   color={Colors.Error}
                 />
-                <StyledText className="flex-1 text-sm text-error">
+                <StyledText className="flex-1 text-sm text-error font-PoppinsRegular">
                   {`You should pay the remaining ${(
                     parseFloat(booking.BookingPayment.total_amount) -
                     parseFloat(booking.BookingPayment.advance_payment)
@@ -211,7 +211,7 @@ export const PaymentScreen = ({route}: any) => {
                   }}>
                   <StyledText
                     className={classNames(
-                      `text-base ${
+                      `text-sm font-PoppinsMedium ${
                         paymentType === 'advance' ? 'text-white' : 'text-black'
                       }`,
                     )}>
@@ -229,7 +229,7 @@ export const PaymentScreen = ({route}: any) => {
                   }}>
                   <StyledText
                     className={classNames(
-                      `text-base ${
+                      `text-sm font-PoppinsMedium ${
                         paymentType === 'full' ? 'text-white' : 'text-black'
                       }`,
                     )}>
@@ -252,42 +252,44 @@ export const PaymentScreen = ({route}: any) => {
           {selectedIndex === 1 && (
             <StyledView className="bg-white border border-lightGrey shadow-sm shadow-black p-3 rounded-lg">
               <StyledView>
-                <StyledText className="text-lg text-black">
+                <StyledText className="text-lg text-black font-PoppinsMedium">
                   Payment Information
                 </StyledText>
-                <StyledText className="my-2 text-base text-black">
+                <StyledText className="my-2 text-base text-black font-PoppinsRegular">
                   Please upload the payment slip after completing the payment.
                 </StyledText>
-                <StyledText className="text-base text-black font-bold">
+                <StyledText className="mb-2 text-base text-black font-PoppinsMedium">
                   {'Bank Details: '}
                 </StyledText>
                 <StyledView className="flex-row mb-1">
-                  <StyledText className="text-base text-black font-bold">
+                  <StyledText className="text-sm text-black font-PoppinsMedium">
                     {'Account No: '}
                   </StyledText>
-                  <StyledText className="text-base text-black">
+                  <StyledText className="text-sm text-black font-PoppinsRegular">
                     123456789
                   </StyledText>
                 </StyledView>
                 <StyledView className="flex-row mb-1">
-                  <StyledText className="text-base text-black font-bold">
+                  <StyledText className="text-sm text-black font-PoppinsMedium">
                     {'Name: '}
                   </StyledText>
-                  <StyledText className="text-base text-black">ABC</StyledText>
+                  <StyledText className="text-sm text-black font-PoppinsRegular">
+                    ABC
+                  </StyledText>
                 </StyledView>
                 <StyledView className="flex-row mb-1">
-                  <StyledText className="text-base text-black font-bold">
+                  <StyledText className="text-sm text-black font-PoppinsMedium">
                     {'Branch: '}
                   </StyledText>
-                  <StyledText className="text-base text-black">
+                  <StyledText className="text-sm text-black font-PoppinsRegular">
                     Main Street SWIFT
                   </StyledText>
                 </StyledView>
                 <StyledView className="flex-row mb-1">
-                  <StyledText className="text-base text-black font-bold">
+                  <StyledText className="text-sm text-black font-PoppinsMedium">
                     {'Code: '}
                   </StyledText>
-                  <StyledText className="text-base text-black">
+                  <StyledText className="text-sm text-black">
                     ABCD1234
                   </StyledText>
                 </StyledView>

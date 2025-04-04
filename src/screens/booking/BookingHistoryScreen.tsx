@@ -65,7 +65,7 @@ export const BookingHistoryScreen = () => {
       <>
         {badgeCountRef.current > 0 && (
           <StyledView className="z-10 bg-primary w-5 h-5 rounded-full items-center justify-center absolute top-2 right-2">
-            <StyledText className="text-sm text-white font-normal">
+            <StyledText className="text-sm text-white font-PoppinsRegular">
               {badgeCountRef.current}
             </StyledText>
           </StyledView>
@@ -184,7 +184,7 @@ const FetchBooking: React.FC<FetchBookingProps> = ({status, badgeCountRef}) => {
                   source={require('../../assets/app-images/no_booking.png')}
                   className="w-12 h-12"
                 />
-                <StyledText className="mt-1 text-base text-gray">
+                <StyledText className="mt-1 text-base text-gray font-PoppinsRegular">
                   No booking found.
                 </StyledText>
               </StyledView>

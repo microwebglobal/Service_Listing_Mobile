@@ -95,10 +95,10 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
             )}
           </StyledView>
           <StyledView className="space-y-1">
-            <StyledText className="text-base text-black ml-3">
+            <StyledText className="text-base text-black ml-3 font-PoppinsMedium">
               {type}
             </StyledText>
-            <StyledText className="text-sm text-gray ml-3">
+            <StyledText className="text-sm text-gray ml-3 font-PoppinsRegular">
               Add {type}
             </StyledText>
           </StyledView>
@@ -129,7 +129,7 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
               <Octicons name="location" size={22} color={Colors.Dark} />
             )}
             {address.line2 ? (
-              <StyledText className="basis-4/6 text-base text-black">
+              <StyledText className="basis-4/6 text-base text-black font-PoppinsRegular">
                 {address.line1 +
                   ' ' +
                   address.line2 +
@@ -139,7 +139,7 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
                   address.state}
               </StyledText>
             ) : (
-              <StyledText className="basis-4/6 text-base text-black">
+              <StyledText className="basis-4/6 text-base text-black font-PoppinsRegular">
                 {address.line1 + ', ' + address.city + ', ' + address.state}
               </StyledText>
             )}
@@ -169,14 +169,14 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
         }>
         <StyledView className="pt-10">
           <StyledView className="mb-3" style={{paddingHorizontal: RPW(5)}}>
-            <StyledText className="text-3xl text-black font-semibold">
+            <StyledText className="text-3xl text-black font-PoppinsMedium">
               Location
             </StyledText>
             <StyledView className="flex-1 mt-8">
               {addLocationType('Home', 'home')}
               {addLocationType('Work', 'work-outline')}
 
-              <StyledText className="text-lg text-black font-medium">
+              <StyledText className="text-base text-black font-PoppinsMedium">
                 Available Addresses
               </StyledText>
               {isLoading && (
@@ -192,7 +192,7 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
 
               {addressList.length === 0 ? (
                 <StyledView className="mt-20">
-                  <StyledText className="text-base text-center text-dark">
+                  <StyledText className="text-base text-center text-dark font-PoppinsRegular">
                     No address available
                   </StyledText>
                 </StyledView>

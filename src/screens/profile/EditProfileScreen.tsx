@@ -69,20 +69,19 @@ export const EditProfileScreen: Screen<'EditProfile'> = ({route}) => {
       <StyledScrollView
         showsVerticalScrollIndicator={false}
         style={{paddingHorizontal: RPW(6)}}>
-
         <StyledView className="mt-10">
           {itemName === 'Full Name' && (
             <StyledView>
-              <StyledText className="text-3xl text-black font-semibold">
+              <StyledText className="text-3xl text-black font-PoppinsMedium">
                 {itemName}
               </StyledText>
-              <StyledText className="mt-5 text-base text-black text-clip">
+              <StyledText className="mt-5 text-base text-black text-clip font-PoppinsRegular">
                 This is the name you would like other people to use when
                 referring to you
               </StyledText>
               <StyledView className="mt-8 mb-3 space-y-4">
                 <StyledView>
-                  <StyledText className="mb-2 text-base text-black font-medium">
+                  <StyledText className="mb-2 text-base text-black font-PoppinsMedium">
                     First Name
                   </StyledText>
                   <Controller
@@ -101,14 +100,14 @@ export const EditProfileScreen: Screen<'EditProfile'> = ({route}) => {
                     rules={{required: true}}
                   />
                   {errors.firstName && (
-                    <StyledText className="text-error">
+                    <StyledText className="text-error font-PoppinsRegular">
                       {'First name is required'}
                     </StyledText>
                   )}
                 </StyledView>
 
                 <StyledView>
-                  <StyledText className="mb-2 text-base text-black font-medium">
+                  <StyledText className="mb-2 text-base text-black font-PoppinsMedium">
                     Last Name
                   </StyledText>
                   <Controller
@@ -127,7 +126,7 @@ export const EditProfileScreen: Screen<'EditProfile'> = ({route}) => {
                     rules={{required: true}}
                   />
                   {errors.lastName && (
-                    <StyledText className="text-error">
+                    <StyledText className="text-error font-PoppinsRegular">
                       {'Last name is required'}
                     </StyledText>
                   )}
@@ -140,10 +139,10 @@ export const EditProfileScreen: Screen<'EditProfile'> = ({route}) => {
         <StyledView>
           {itemName === 'Email' && (
             <StyledView>
-              <StyledText className="text-3xl text-black font-semibold">
+              <StyledText className="text-3xl text-black font-PoppinsMedium">
                 {itemName}
               </StyledText>
-              <StyledText className="mt-5 text-base text-black text-clip">
+              <StyledText className="mt-5 text-base text-black text-clip font-PoppinsRegular">
                 You'll use this email to receive messages, sign in, and recover
                 your account.
               </StyledText>
@@ -165,30 +164,26 @@ export const EditProfileScreen: Screen<'EditProfile'> = ({route}) => {
                   rules={{required: true, pattern: /^\S+@\S+$/i}}
                 />
                 {errors.email && (
-                  <StyledText className="text-error">
+                  <StyledText className="text-error font-PoppinsRegular">
                     {'Please enter valid email address'}
                   </StyledText>
                 )}
               </StyledView>
 
-              <StyledText className="text-sm text-black">
+              <StyledText className="text-sm text-black font-PoppinsRegular">
                 A verification code to be sent to this email.
               </StyledText>
             </StyledView>
           )}
         </StyledView>
-        {/*  */}
-        <StyledView>
-          {itemName === 'Password' && <StyledText>{itemName}</StyledText>}
-        </StyledView>
 
         <StyledView>
           {itemName === 'Mobile' && (
             <StyledView>
-              <StyledText className="text-3xl text-black font-semibold">
+              <StyledText className="text-3xl text-black font-PoppinsMedium">
                 {itemName}
               </StyledText>
-              <StyledText className="mt-5 text-base text-black text-clip">
+              <StyledText className="mt-5 text-base text-black text-clip font-PoppinsRegular">
                 You'll use this email to get notifications, sign in, and recover
                 your account.
               </StyledText>
@@ -210,13 +205,13 @@ export const EditProfileScreen: Screen<'EditProfile'> = ({route}) => {
                   rules={{required: true, minLength: 10, maxLength: 10}}
                 />
                 {errors.phone && (
-                  <StyledText className="text-error">
+                  <StyledText className="text-error font-PoppinsRegular">
                     {'Please enter valid mobile number'}
                   </StyledText>
                 )}
               </StyledView>
 
-              <StyledText className="text-sm text-black">
+              <StyledText className="text-sm text-black font-PoppinsRegular">
                 A verification code to be sent to this number.
               </StyledText>
             </StyledView>

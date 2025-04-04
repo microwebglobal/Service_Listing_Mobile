@@ -91,7 +91,7 @@ export const ProfileScreen = () => {
     return (
       <StyledView>
         <StyledText
-          className="my-3 text-base font-medium text-primary tracking-wider"
+          className="my-3 text-base font-PoppinsMedium text-primary tracking-wider"
           style={{paddingHorizontal: RPW(5)}}>
           {header}
         </StyledText>
@@ -115,12 +115,12 @@ export const ProfileScreen = () => {
                 color={Colors.Dark}
               />
               <StyledView>
-                <StyledText className="text-dark text-base font-medium">
+                <StyledText className="text-dark text-base font-PoppinsMedium">
                   {data.title}
                 </StyledText>
                 {data.value && (
                   <StyledView className="flex-row items-baseline space-x-1">
-                    <StyledText className="text-base text-gray">
+                    <StyledText className="text-base text-gray font-PoppinsRegular">
                       {data.value}
                     </StyledText>
                     {userData !== undefined ? (
@@ -162,7 +162,7 @@ export const ProfileScreen = () => {
             bottomSheetRef.current?.close();
             updateGender(gender);
           }}>
-          <StyledText className="text-base text-black text-center">
+          <StyledText className="text-base text-black text-center font-PoppinsRegular">
             {gender}
           </StyledText>
         </StyledTouchableOpacity>
@@ -180,7 +180,7 @@ export const ProfileScreen = () => {
         <StyledView
           className="py-3 bg-lightGrey"
           style={{paddingHorizontal: RPW(5)}}>
-          <StyledText className="text-black text-sm">
+          <StyledText className="text-black text-sm font-PoppinsRegular">
             {
               'Additional information you give will help us provide you a more personalized experience.'
             }
@@ -190,7 +190,7 @@ export const ProfileScreen = () => {
             <StyledView className="basis-2/12 h-1 bg-white rounded-full" />
           </StyledView>
           <StyledView className="flex-row justify-between">
-            <StyledText className="text-black">
+            <StyledText className="text-black font-PoppinsRegular">
               8 of 10 <StyledText className="text-primary">complete</StyledText>
             </StyledText>
             <StyledView className="flex-row items-center space-x-1">
@@ -277,7 +277,7 @@ export const ProfileScreen = () => {
         )}
         index={-1}>
         <BottomSheetView>
-          <StyledText className="py-4 text-lg text-black font-medium text-center">
+          <StyledText className="py-4 text-lg text-black font-PoppinsMedium text-center">
             Select your gender
           </StyledText>
           {selectGender('Female')}
