@@ -147,7 +147,13 @@ export const EditLocationScreen: Screen<'EditLocation'> = () => {
           <StyledTouchableOpacity
             className="basis-1/6 items-end mr-1"
             onPress={() => {
-              navigation.navigate('AddressDetails', {address: address});
+              setIsLoading(true);
+              setTimeout(() => {
+                navigation.navigate('AddressDetails', {
+                  address: address,
+                  isEdit: true,
+                });
+              }, 1000);
             }}>
             <MaterialIcons name="edit" size={18} color={Colors.Dark} />
           </StyledTouchableOpacity>

@@ -11,13 +11,11 @@ import {
 import React, {useCallback, useEffect, useState} from 'react';
 import {SERVER_BASE} from '@env';
 import {styled} from 'nativewind';
-import {useDispatch} from 'react-redux';
 import {instance} from '../../api/instance';
 import AppHeader from '../../components/AppHeader';
 import {useNav} from '../../navigation/RootNavigation';
 import {useFocusEffect} from '@react-navigation/native';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
-import {setPrimaryCityID} from '../../redux/address/address.slice';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
 export interface Category {
@@ -64,7 +62,6 @@ const RPW = (percentage: number) => {
 
 export const CategoryScreen = () => {
   const navigation = useNav();
-  const dispatch = useDispatch();
   const tabBarHeight = useBottomTabBarHeight();
   const [isLoading, setIsLoading] = useState(true);
   const [categoryData, setCategoryData] = useState<Array<Category>>([]);
@@ -109,13 +106,12 @@ export const CategoryScreen = () => {
       });
       if (cityData !== undefined) {
         setCategoryData(cityData.serviceCategories);
-        dispatch(setPrimaryCityID(cityData.city_id));
       } else {
         cities.map((city: City) => {
           setCategoryData([...city.serviceCategories]);
         });
       }
-    }, [cities, dispatch, fetchAddress, primaryAddress?.city]),
+    }, [cities, fetchAddress, primaryAddress?.city]),
   );
 
   const _renderCategoryItem = ({item}: any) => {
