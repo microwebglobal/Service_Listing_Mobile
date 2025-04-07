@@ -13,8 +13,8 @@ export default {
       }
     });
   },
-  setPrimaryCityID: (state: AddressState, action: PayloadAction<string>) => {
-    state.cityId = action.payload;
+  savePrimaryAddress: (state: AddressState, action: PayloadAction<string>) => {
+    state.address = action.payload;
   },
   clearAddressList: (state: AddressState) => {
     state.addresses = [];

@@ -9,19 +9,34 @@ import {
 } from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {styled} from 'nativewind';
+import {useDispatch} from 'react-redux';
 import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
 import AppHeader from '../../components/AppHeader';
 import {Address} from '../category/CategoryScreen';
+import {useNav} from '../../navigation/RootNavigation';
 import {useFocusEffect} from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {SearchBarComponent} from '../../components/Searchbar';
-import {Screen, useNav} from '../../navigation/RootNavigation';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-// import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-// import {GOOGLE_MAP_API_KEY} from '@env';
+import {fetchLocations, getCityDetails} from '../../utils/location';
+import {savePrimaryAddress} from '../../redux/address/address.slice';
+
+export interface NewAddress {
+  longitude: number;
+  latitude: number;
+  id: number;
+  type: string;
+  line1: string;
+  line2: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  is_primary: boolean;
+}
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -34,13 +49,13 @@ const StyledScrollView = styled(ScrollView);
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
-export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
+export const AddressSelectionScreen = () => {
   const navigation = useNav();
-  const {date, time} = route.params;
-  const routes = navigation.getState()?.routes;
-  const prevRoute = routes[routes.length - 2];
-  // console.log('===//', prevRoute.name.toString());
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState<string>();
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [filteredLocations, setFilteredLocations] = useState([]);
   const [addressList, setAddressList] = useState<Array<Address>>([]);
 
   const fetchAddress = useCallback(() => {
@@ -59,13 +74,25 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
     (id: number) => {
       try {
         instance.patch(`/users/addresses/${id}/primary`).then(() => {
+          // Update the primary address in the Redux store
+          addressList.forEach((address: Address) => {
+            if (address.id === id) {
+              const addressPrefix = address.line2
+                ? address.line1 + ' ' + address.line2
+                : address.line1;
+              const addressSuffix = address.city + ' ' + address.state;
+              dispatch(
+                savePrimaryAddress(addressPrefix + ', ' + addressSuffix),
+              );
+            }
+          });
           navigation.pop();
         });
       } catch (e) {
         console.log('Error ', e);
       }
     },
-    [navigation],
+    [addressList, dispatch, navigation],
   );
 
   useFocusEffect(
@@ -73,6 +100,41 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
       fetchAddress();
     }, [fetchAddress]),
   );
+
+  const handleTextChange = useCallback(
+    async (text: string) => {
+      setSearchQuery(text);
+      setDropdownVisible(true);
+      setFilteredLocations(await fetchLocations(searchQuery));
+    },
+    [searchQuery],
+  );
+
+  const handleLocationSelect = async (location: any) => {
+    setIsLoading(true);
+    getCityDetails(location).then((data: any) => {
+      console.log('City Details: ', data);
+      const selectedAddress: any = {
+        latitude: data?.latitude,
+        longitude: data?.longitude,
+        type: 'other',
+        line1: '',
+        line2: '',
+        city: data?.city,
+        state: data?.state,
+        postal_code: data?.postal_code,
+        is_primary: false,
+      };
+      navigation.navigate('AddressDetails', {
+        address: selectedAddress,
+        isEdit: false,
+      });
+    });
+
+    setSearchQuery('');
+    setFilteredLocations([]);
+    setDropdownVisible(false);
+  };
 
   const _renderAddress = (address: Address) => {
     return (
@@ -83,23 +145,7 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
         <StyledTouchableOpacity
           className="flex-1 py-5"
           onPress={() => {
-            const selectedAddress: string = address.line2
-              ? address.line1 +
-                ' ' +
-                address.line2 +
-                ', ' +
-                address.city +
-                ', ' +
-                address.state
-              : address.line1 + ', ' + address.city + ', ' + address.state;
-            prevRoute.name.toString() === 'TabNavigator'
-              ? setPrimaryAddress(address.id)
-              : (navigation.pop(),
-                navigation.replace('ServiceSchedule', {
-                  address: selectedAddress,
-                  date: date,
-                  time: time,
-                }));
+            setPrimaryAddress(address.id);
           }}>
           <StyledView className="flex-row items-center gap-x-5 overflow-hidden">
             {address.type === 'work' ? (
@@ -138,7 +184,13 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
         </StyledTouchableOpacity>
         <StyledTouchableOpacity
           onPress={() => {
-            navigation.navigate('AddressDetails', {address: address});
+            setIsLoading(true);
+            setTimeout(() => {
+              navigation.navigate('AddressDetails', {
+                address: address,
+                isEdit: true,
+              });
+            }, 1000);
           }}>
           <MaterialIcons name="edit" size={18} color={Colors.Dark} />
         </StyledTouchableOpacity>
@@ -152,59 +204,45 @@ export const AddressSelectionScreen: Screen<'SelectAddress'> = ({route}) => {
   return (
     <StyledSafeAreaView className="flex-1 bg-white">
       <AppHeader title={'Addresses'} back={true} />
-      <StyledScrollView>
+      <StyledScrollView showsVerticalScrollIndicator={false}>
         <StyledView className="my-3">
           <StyledView style={{paddingHorizontal: RPW(5)}}>
             <SearchBarComponent
-              placeholder={'Search for your location'}
+              placeholder={'Search for an address'}
               iconName={'search'}
-              onSearch={(text: string) => {
-                prevRoute.name.toString() === 'TabNavigator'
-                  ? navigation.pop()
-                  : (navigation.pop(),
-                    navigation.replace('ServiceSchedule', {
-                      address: text,
-                      date: date,
-                      time: time,
-                    }));
+              onChange={(text: string) => {
+                handleTextChange(text);
               }}
             />
 
-            <StyledTouchableOpacity
-              className="my-6 flex-row items-center gap-x-3"
-              onPress={() => {}}>
-              <MaterialIcons
-                name="my-location"
-                size={20}
-                color={Colors.Primary}
-              />
-              <StyledText className="text-base text-primary font-PoppinsMedium">
-                Use current location
-              </StyledText>
-            </StyledTouchableOpacity>
-
-            {/* <StyledView className="my-5 flex-row items-center gap-x-3 border border-gray rounded-md bg-white">
-              <GooglePlacesAutocomplete
-                placeholder="Search for your location..."
-                fetchDetails={true}
-                onPress={(data, details = null) => {
-                  console.log(data, details);
-                  console.log(JSON.stringify(data));
-                  console.log(JSON.stringify(details?.geometry.location));
-                }}
-                query={{
-                  key: GOOGLE_MAP_API_KEY,
-                  language: 'en',
-                }}
-                onFail={error => console.error(error)}
-                onNotFound={() => console.log('no results')}
-              />
-            </StyledView> */}
+            {/* Location Dropdown */}
+            {dropdownVisible && searchQuery && filteredLocations.length > 0 && (
+              <StyledView className="relative w-full bg-white border border-gray rounded-lg z-50">
+                {filteredLocations.map((location, index) => (
+                  <StyledTouchableOpacity
+                    key={index}
+                    className="flex-row items-center px-2 py-3 border-b border-gray last:border-b-0"
+                    onPress={() => handleLocationSelect(location)}>
+                    <Ionicons
+                      name="location-outline"
+                      size={20}
+                      color={Colors.Black}
+                    />
+                    <StyledText
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      className="flex-1 ml-2 text-sm text-black font-PoppinsRegular">
+                      {location}
+                    </StyledText>
+                  </StyledTouchableOpacity>
+                ))}
+              </StyledView>
+            )}
           </StyledView>
-          <StyledView className="h-2 bg-lightGrey" />
+          <StyledView className="my-5 h-2 bg-lightGrey" />
 
           <StyledText
-            className="mt-5 mb-2 text-base text-black font-PoppinsMedium"
+            className="mb-2 text-lg text-black font-PoppinsMedium"
             style={{paddingHorizontal: RPW(5)}}>
             Available Addresses
           </StyledText>

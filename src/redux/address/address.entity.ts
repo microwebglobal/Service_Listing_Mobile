@@ -10,5 +10,5 @@ export interface AddressEntity {
 
 export interface AddressState {
   addresses: Array<AddressEntity | null>;
-  cityId: string | null;
+  address: string | null;
 }

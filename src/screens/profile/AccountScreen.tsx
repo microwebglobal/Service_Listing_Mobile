@@ -17,6 +17,7 @@ import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
 import {instance} from '../../api/instance';
 import {Button} from '../../components/rneui';
+import {clearCart} from '../../redux/cart/cart.slice';
 import {useNav} from '../../navigation/RootNavigation';
 import {useFocusEffect} from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
@@ -76,6 +77,7 @@ export const AccountScreen = () => {
   const logout = async () => {
     await instance.post('/auth/logout').then(() => {
       toggleDialog();
+      dispatch(clearCart());
       navigation.navigate('SignIn');
       navigation.reset({
         index: 0,

@@ -158,7 +158,7 @@ export const SelectedItemsScreen = () => {
               primary
               title="Proceed to booking"
               onPress={() => {
-                navigation.navigate('ServiceSchedule', {address: undefined});
+                navigation.navigate('ServiceSchedule');
               }}
             />
           </StyledView>

@@ -6,7 +6,6 @@ import {
   Dimensions,
   ScrollView,
   SafeAreaView,
-  TouchableOpacity,
 } from 'react-native';
 import {useState} from 'react';
 import React from 'react';
@@ -22,13 +21,12 @@ import {Controller, useForm} from 'react-hook-form';
 import InputField from '../../components/InputFeild';
 import {clearCart} from '../../redux/cart/cart.slice';
 import {StackActions} from '@react-navigation/native';
+import {useNav} from '../../navigation/RootNavigation';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import Arrow from 'react-native-vector-icons/MaterialIcons';
 import DateTimePicker from '../../components/DateTimePicker';
-import {Screen, useNav} from '../../navigation/RootNavigation';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface ServiceForm {
   date: string;
@@ -58,23 +56,23 @@ const StyledTextInput = styled(TextInput);
 const StyledScrollView = styled(ScrollView);
 const StyledSafeAreaView = styled(SafeAreaView);
 
-export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
+export const ScheduleScreen = () => {
   const navigation = useNav();
   const dispatch = useDispatch();
-  const {address, date, time} = route.params;
   const today = new Date();
   const todayDate = today.toISOString().split('T')[0];
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const [timeValue, onChangeTimeValue] = useState<string>(time ? time : '');
-  const [selectDate, setSelectDate] = useState<string>(date ? date : todayDate);
+  const [timeValue, onChangeTimeValue] = useState<string>('');
+  const [selectDate, setSelectDate] = useState<string>(todayDate);
+  const primaryAddress: any = useAppSelector(state => state.address.address);
 
   const {
     control,
     handleSubmit,
     formState: {errors},
   } = useForm<ServiceForm>({
-    defaultValues: {address: address},
+    defaultValues: {address: primaryAddress},
   });
   const cart = useAppSelector((state: any) => state.cart.cart);
   const cityId = useAppSelector((state: any) => state.address.cityId);
@@ -239,23 +237,10 @@ export const ScheduleScreen: Screen<'ServiceSchedule'> = ({route}) => {
                       placeholder="Select address"
                       className="px-3 h-12 text-base text-black"
                       value={value}
-                      inputMode="text"
+                      inputMode="none"
                       onBlur={onBlur}
                       onChangeText={onChange}
                     />
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.navigate('SelectAddress', {
-                          date: selectDate,
-                          time: timeValue,
-                        });
-                      }}>
-                      <MaterialCommunityIcons
-                        name="chevron-right"
-                        size={25}
-                        color={Colors.Gray}
-                      />
-                    </TouchableOpacity>
                   </StyledView>
                 )}
                 rules={{required: true}}

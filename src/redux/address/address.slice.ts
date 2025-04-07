@@ -4,7 +4,7 @@ import addressReducer from './address.reducer';
 
 export const initialState: AddressState = {
   addresses: [],
-  cityId: null,
+  address: null,
 };
 
 const addressSlice = createSlice({
@@ -13,6 +13,6 @@ const addressSlice = createSlice({
   reducers: addressReducer,
 });
 
-export const {saveAddressList, setPrimaryCityID, clearAddressList} =
+export const {saveAddressList, savePrimaryAddress, clearAddressList} =
   addressSlice.actions;
 export default addressSlice.reducer;

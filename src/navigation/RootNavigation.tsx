@@ -2,6 +2,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {FC, PropsWithChildren} from 'react';
 import {RouteProp, useNavigation} from '@react-navigation/native';
 import {Address} from '../screens/category/CategoryScreen';
+import {NewAddress} from '../screens/address/AddressSelectionScreen';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -20,11 +21,11 @@ export type RootStackParamList = {
   ServiceType: {subCategoryId: string; subCategory: string};
   EditProfile: {itemName: string};
   EditLocation: undefined;
-  AddressDetails: {address: Address};
+  AddressDetails: {address: Address | NewAddress; isEdit: boolean};
   SelectAddress: {date?: string; time?: string};
   Notification: undefined;
   SelectedItems: undefined;
-  ServiceSchedule: {address?: string; date?: string; time?: string};
+  ServiceSchedule: undefined;
   Cart: undefined;
   Payment: {amount: string; bookingId: string};
   BookingScreen: undefined;
