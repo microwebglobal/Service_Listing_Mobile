@@ -46,6 +46,8 @@ export interface Address {
   state: string;
   postal_code: string;
   is_primary: boolean;
+  longitude: string;
+  latitude: string;
 }
 
 const StyledView = styled(View);

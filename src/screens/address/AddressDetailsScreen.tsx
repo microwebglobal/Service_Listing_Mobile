@@ -4,12 +4,12 @@ import {
   Keyboard,
   Dimensions,
   ScrollView,
+  StyleSheet,
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
 import React, {useMemo, useRef, useState} from 'react';
 import {styled} from 'nativewind';
-import {Image} from 'react-native';
 import classNames from 'classnames';
 import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
@@ -22,6 +22,7 @@ import InputField from '../../components/InputFeild';
 import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Screen, useNav} from '../../navigation/RootNavigation';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -41,34 +42,49 @@ const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
   const navigation = useNav();
+  const {address, isEdit} = route.params;
   const snapPoints = useMemo(() => ['25%'], []);
-  const address: Address = route.params.address;
   const [type, setType] = useState<string>(address.type);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const {
     control,
-    reset,
     handleSubmit,
     formState: {errors},
   } = useForm<Address>({defaultValues: address});
+  const [state, setState] = useState({
+    latitude: parseFloat(address.latitude),
+    longitude: parseFloat(address.longitude),
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
 
   const submit = (data: Address) => {
     setLoading(true);
     try {
-      instance
-        .put(`/users/addresses/${address.id}`, {
-          type: type,
-          line1: data.line1,
-          line2: data.line2,
-          city: data.city,
-          state: data.state,
-          postal_code: data.postal_code,
-        })
-        .then(() => {
-          reset();
-          navigation.goBack();
-        });
+      if (isEdit) {
+        instance
+          .put(`/users/addresses/${address.id}`, {
+            ...data,
+            type: type,
+            latitude: state.latitude,
+            longitude: state.longitude,
+          })
+          .then(() => {
+            navigation.pop();
+          });
+      } else {
+        instance
+          .post('/users/addresses', {
+            ...data,
+            type: type,
+            latitude: state.latitude,
+            longitude: state.longitude,
+          })
+          .then(() => {
+            navigation.pop();
+          });
+      }
     } catch (e) {
       console.log('Error ', e);
     } finally {
@@ -88,7 +104,6 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
       setLoading(false);
       bottomSheetRef.current?.close();
       navigation.pop();
-      navigation.navigate('EditLocation');
     }
   };
 
@@ -106,12 +121,29 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
     <StyledSafeAreaView className={'flex-1 bg-white'}>
       <AppHeader title="Address Details" back={true} />
       <StyledScrollView showsVerticalScrollIndicator={false}>
-        <StyledView>
-          <Image
-            className="w-full"
-            source={require('../../assets/app-images/map.png')}
-          />
+        {/* Google Map */}
+        <StyledView className="h-64">
+          <MapView
+            provider={PROVIDER_GOOGLE}
+            style={styles.map}
+            initialRegion={state}>
+            <Marker
+              draggable
+              coordinate={state}
+              onDragEnd={e => {
+                setState({
+                  latitude: e.nativeEvent.coordinate.latitude,
+                  longitude: e.nativeEvent.coordinate.longitude,
+                  latitudeDelta: state.latitudeDelta,
+                  longitudeDelta: state.longitudeDelta,
+                });
+                console.log('===//', e.nativeEvent);
+              }}
+            />
+          </MapView>
         </StyledView>
+
+        {/* Address Details */}
         <StyledView style={{paddingHorizontal: RPW(5)}}>
           <StyledText className="my-2 mb-3 text-lg text-black font-PoppinsMedium">
             {address.city}
@@ -124,7 +156,7 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
               name={'line1'}
               label="Street "
               control={control}
-              errors={errors}
+              errors={errors.line1}
               required={true}
               placeHolder={address.line1}
             />
@@ -132,7 +164,7 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
               name={'label2'}
               label={'Apartment, suite, etc.'}
               control={control}
-              errors={errors}
+              errors={errors.line2}
               required={false}
               placeHolder={'Apartment, suite, etc. (optional)'}
             />
@@ -143,7 +175,7 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
                   name={'city'}
                   label={'City'}
                   control={control}
-                  errors={errors}
+                  errors={errors.city}
                   required={true}
                   placeHolder={'City'}
                 />
@@ -153,7 +185,7 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
                   name={'state'}
                   label={'State'}
                   control={control}
-                  errors={errors}
+                  errors={errors.state}
                   required={true}
                   placeHolder={'City'}
                 />
@@ -164,7 +196,7 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
               name={'postal_code'}
               label={'Postal Code'}
               control={control}
-              errors={errors}
+              errors={errors.postal_code}
               required={true}
               placeHolder={'Postal code'}
             />
@@ -201,29 +233,30 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
             </StyledView>
           </StyledView>
 
-          <StyledView className={'mt-5 h-0.5 bg-lightGrey'} />
-          <StyledView className="my-5">
+          {isEdit && (
+            <>
+              <StyledView className={'my-5 h-0.5 bg-lightGrey'} />
+              <Button
+                title={'Remove address'}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  bottomSheetRef.current?.expand();
+                }}
+              />
+            </>
+          )}
+
+          <StyledView className={'mb-5'}>
+            <StyledView className="mb-5" />
             <Button
-              title={'Remove address'}
-              onPress={() => {
-                Keyboard.dismiss();
-                bottomSheetRef.current?.expand();
-              }}
+              primary
+              loading={loading}
+              title={'Save and Continue'}
+              onPress={(Keyboard.dismiss(), handleSubmit(submit))}
             />
           </StyledView>
         </StyledView>
       </StyledScrollView>
-      <StyledView
-        className={'mb-5 border-t border-lightGrey border-1'}
-        style={{paddingHorizontal: RPW(6)}}>
-        <StyledView className="mb-5 bg-lightGrey" />
-        <Button
-          primary
-          loading={loading}
-          title={'Save and Continue'}
-          onPress={(Keyboard.dismiss(), handleSubmit(submit))}
-        />
-      </StyledView>
 
       <BottomSheet
         ref={bottomSheetRef}
@@ -259,6 +292,12 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
   );
 };
 
+const styles = StyleSheet.create({
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+});
+
 interface AddressFormFieldProps {
   errors: any;
   control: any;
@@ -280,7 +319,7 @@ const AddressFormField: React.FC<AddressFormFieldProps> = ({
     <StyledView className="mb-3">
       <StyledText className="mb-2 text-base text-black font-PoppinsMedium">
         {label}
-        {errors.name && <StyledText className="text-error">{' *'}</StyledText>}
+        {errors && <StyledText className="text-error">{' *'}</StyledText>}
       </StyledText>
       <Controller
         name={name}
