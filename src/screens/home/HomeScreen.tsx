@@ -209,7 +209,7 @@ export const HomeScreen = () => {
             {primaryAddress && (
               <StyledTouchableOpacity
                 onPress={() => {
-                  navigation.navigate('SelectAddress', {});
+                  navigation.navigate('ChangeLocation');
                 }}>
                 <StyledView className="flex-row items-center space-x-2">
                   <StyledText

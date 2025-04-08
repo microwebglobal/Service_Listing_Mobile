@@ -21,7 +21,7 @@ export type RootStackParamList = {
   EditProfile: {itemName: string};
   EditLocation: undefined;
   AddressDetails: {address: Address; isEdit: boolean};
-  SelectAddress: {date?: string; time?: string};
+  ChangeLocation: undefined;
   Notification: undefined;
   SelectedItems: undefined;
   ServiceSchedule: undefined;

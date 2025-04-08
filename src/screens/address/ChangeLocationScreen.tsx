@@ -25,19 +25,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {fetchLocations, getCityDetails} from '../../utils/location';
 import {savePrimaryAddress} from '../../redux/address/address.slice';
 
-export interface NewAddress {
-  longitude: number;
-  latitude: number;
-  id: number;
-  type: string;
-  line1: string;
-  line2: string;
-  city: string;
-  state: string;
-  postal_code: string;
-  is_primary: boolean;
-}
-
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
   return (percentage / 100) * screenWidth;
@@ -49,7 +36,7 @@ const StyledScrollView = styled(ScrollView);
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
-export const AddressSelectionScreen = () => {
+export const ChangeLocationScreen = () => {
   const navigation = useNav();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
@@ -238,6 +225,19 @@ export const AddressSelectionScreen = () => {
                 ))}
               </StyledView>
             )}
+
+            <StyledTouchableOpacity
+              className="mt-5 flex-row items-center gap-x-3"
+              onPress={() => {}}>
+              <MaterialIcons
+                name="my-location"
+                size={20}
+                color={Colors.Primary}
+              />
+              <StyledText className="text-base text-primary font-medium">
+                Use current location
+              </StyledText>
+            </StyledTouchableOpacity>
           </StyledView>
           <StyledView className="my-5 h-2 bg-lightGrey" />
 
