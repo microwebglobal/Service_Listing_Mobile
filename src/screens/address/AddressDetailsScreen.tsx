@@ -161,7 +161,7 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
               placeHolder={address.line1}
             />
             <AddressFormField
-              name={'label2'}
+              name={'line2'}
               label={'Apartment, suite, etc.'}
               control={control}
               errors={errors.line2}

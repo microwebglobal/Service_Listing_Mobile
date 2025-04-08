@@ -1,26 +1,26 @@
 import {
   View,
   Text,
+  Keyboard,
+  TextInput,
   StyleSheet,
   Dimensions,
-  Keyboard,
   TouchableOpacity,
-  TextInput,
 } from 'react-native';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import axios from 'axios';
+import React, {useCallback, useRef, useState} from 'react';
 import {Button} from './rneui';
 import {styled} from 'nativewind';
 import InputField from './InputFeild';
 import {CheckBox} from '@rneui/themed';
 import {Colors} from '../utils/Colors';
-import {GOOGLE_MAP_API_KEY} from '@env';
 import {instance} from '../api/instance';
-import {Controller, set, useForm} from 'react-hook-form';
+import {Controller, useForm} from 'react-hook-form';
+import {ScrollView} from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Address} from '../screens/category/CategoryScreen';
 import {AddressEntity} from '../redux/address/address.entity';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {fetchLocations, getCityDetails} from '../utils/location';
 
 interface AddressFormProps {
   btnTitle: string;
@@ -35,7 +35,8 @@ const RPW = (percentage: number) => {
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledTextInput = styled(TextInput);
+const StyledTextInput = React.memo(styled(TextInput));
+const StyledScrollView = styled(ScrollView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const AddressForm = ({
@@ -46,13 +47,12 @@ export const AddressForm = ({
   const [selectedIndex, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>();
-  // const selectedState = useRef<string>();
   // const searchQuery = useRef<string>();
+  // const [postalCode, setPostalCode] = useState<string>();
   const [selectedState, setSelectedState] = useState<string>();
   const [filteredLocations, setFilteredLocations] = useState([]);
-  // const filteredLocations = useRef([]);
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [isFocused, setIsFocused] = React.useState<boolean>(false);
+  const isFocused = useRef<boolean>(false);
   const {
     control,
     reset,
@@ -60,10 +60,28 @@ export const AddressForm = ({
     formState: {errors},
   } = useForm<Address>();
 
+  const handleTextChange = useCallback(
+    async (text: string) => {
+      setSearchQuery(text);
+      setDropdownVisible(true);
+      setFilteredLocations(await fetchLocations(searchQuery));
+    },
+    [searchQuery],
+  );
+
+  const handleLocationSelect = async (location: any) => {
+    getCityDetails(location).then((data: any) => {
+      setSearchQuery(data?.city);
+      setSelectedState(data?.state);
+    });
+    setFilteredLocations([]);
+  };
+
   const submit = (data: Address) => {
     if (onSubmit && searchQuery && selectedState) {
       data.city = searchQuery;
       data.state = selectedState;
+      // data.postal_code = postalCode;
       data.type = selectedIndex === 0 ? 'home' : 'work';
       onSubmit(data);
       reset();
@@ -93,74 +111,11 @@ export const AddressForm = ({
     }
   };
 
-  // useCallback(() => {
-  //   if (searchQuery) {
-  //     fetchLocations(searchQuery);
-  //   } else {
-  //     setFilteredLocations([]);
-  //     // filteredLocations.current = [];
-  //   }
-  // }, [searchQuery]);
-
-  useEffect(() => {
-    if (searchQuery) {
-      fetchLocations(searchQuery);
-    } else {
-      setFilteredLocations([]);
-    }
-  }, [searchQuery]);
-
-  const fetchLocations = async (query: any) => {
-    try {
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
-          query,
-        )}&types=geocode&components=country:IN&key=${GOOGLE_MAP_API_KEY}`,
-      );
-
-      const apiResults = response.data.predictions.map(
-        (prediction: any) => prediction.description,
-      );
-      setFilteredLocations(apiResults);
-      // filteredLocations.current = apiResults;
-    } catch (error) {
-      console.error('Error fetching locations from API:', error);
-    }
-  };
-
-  const handleLocationSelect = async (location: any) => {
-    const nameWithoutCountry = location.replace(/,?\s*India$/, '').trim();
-    const CityName = nameWithoutCountry.split(',')[0].trim();
-    setSearchQuery(CityName);
-    setDropdownVisible(false);
-
-    try {
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-          location,
-        )}&key=${GOOGLE_MAP_API_KEY}`,
-      );
-      const results = response.data.results;
-
-      if (results.length > 0) {
-        const state = results[0].address_components.find((component: any) =>
-          component.types.includes('administrative_area_level_1'),
-        );
-
-        if (state) {
-          setSelectedState(state.long_name);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching district from API:', error);
-    }
-
-    setFilteredLocations([]);
-    // filteredLocations.current = [];
-  };
-
   return (
-    <StyledView style={{paddingHorizontal: RPW(5)}}>
+    <StyledScrollView
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+      style={{paddingHorizontal: RPW(5)}}>
       <StyledView className="mb-5 flex-row justify-between w-full items-center">
         <StyledText className="text-lg font-PoppinsMedium text-black">
           Add New Address
@@ -233,14 +188,8 @@ export const AddressForm = ({
             }`}`}
             value={searchQuery}
             inputMode={'text'}
-            onFocus={() => {
-              setIsFocused(true);
-              setDropdownVisible(true);
-            }}
             onChangeText={text => {
-              setSearchQuery(text);
-              setFilteredLocations([]);
-              setDropdownVisible(true);
+              handleTextChange(text);
             }}
           />
 
@@ -305,7 +254,7 @@ export const AddressForm = ({
           onPress={(Keyboard.dismiss(), handleSubmit(submit))}
         />
       </StyledView>
-    </StyledView>
+    </StyledScrollView>
   );
 };
 

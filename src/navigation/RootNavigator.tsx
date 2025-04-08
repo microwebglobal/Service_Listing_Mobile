@@ -28,7 +28,7 @@ import {BookingScreen} from '../screens/booking/BookingScreen';
 import linking from './linking';
 import {ActivityIndicator} from 'react-native';
 import {AddressDetailsScreen} from '../screens/address/AddressDetailsScreen';
-import {AddressSelectionScreen} from '../screens/address/AddressSelectionScreen';
+import {ChangeLocationScreen} from '../screens/address/ChangeLocationScreen';
 import {BookingHistoryScreen} from '../screens/booking/BookingHistoryScreen';
 import {AccountScreen} from '../screens/profile/AccountScreen';
 import {TermsScreen} from '../screens/profile/TermsScreen';
@@ -89,7 +89,9 @@ export const RootNavigator: React.FC = () => {
     <NavigationContainer
       linking={linking}
       fallback={<ActivityIndicator animating />}>
-      <Stack.Navigator initialRouteName="Splash" screenOptions={screenOptions}>
+      <Stack.Navigator
+        initialRouteName="SelectLocation"
+        screenOptions={screenOptions}>
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
@@ -106,7 +108,7 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="SelectLocation" component={SelectLocation} />
         <Stack.Screen name="EditLocation" component={EditLocationScreen} />
         <Stack.Screen name="AddressDetails" component={AddressDetailsScreen} />
-        <Stack.Screen name="SelectAddress" component={AddressSelectionScreen} />
+        <Stack.Screen name="ChangeLocation" component={ChangeLocationScreen} />
         <Stack.Screen name="Notification" component={NotificationScreen} />
         <Stack.Screen name="ServiceSchedule" component={ScheduleScreen} />
         <Stack.Screen name="BookingDetails" component={BookingDetailsScreen} />

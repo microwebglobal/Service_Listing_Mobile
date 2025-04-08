@@ -6,27 +6,28 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
-  TextInput,
 } from 'react-native';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
-import axios from 'axios';
+import React, {useCallback, useState} from 'react';
 import {styled} from 'nativewind';
-import {GOOGLE_MAP_API_KEY} from '@env';
 import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
 import {Button} from '../../components/rneui';
 import AppHeader from '../../components/AppHeader';
-import Entypo from 'react-native-vector-icons/Entypo';
-import {AddressForm} from '../../components/AddressForm';
+// import {AddressForm} from '../../components/AddressForm';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {SearchBarComponent} from '../../components/Searchbar';
 import {Screen, useNav} from '../../navigation/RootNavigation';
 import {AddressEntity} from '../../redux/address/address.entity';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import BottomSheet, {
-  BottomSheetBackdrop,
-  BottomSheetView,
-} from '@gorhom/bottom-sheet';
+import {fetchLocations, getCityDetails} from '../../utils/location';
+// import BottomSheet, {
+//   BottomSheetBackdrop,
+//   BottomSheetView,
+// } from '@gorhom/bottom-sheet';
+import {useFocusEffect} from '@react-navigation/native';
+import {LoadingIndicator} from '../../components/LoadingIndicator';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -39,161 +40,150 @@ const RPH = (percentage: number) => {
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledTextInput = styled(TextInput);
 const StyledScrollView = styled(ScrollView);
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const SelectLocation: Screen<'SelectLocation'> = () => {
   const navigation = useNav();
-  const snapPoints = useMemo(() => ['98%'], []);
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  // const user = useAppSelector(state => state.user.user);
+  // const snapPoints = useMemo(() => ['98%'], []);
+  // const bottomSheetRef = useRef<BottomSheet>(null);
+  const [searchQuery, setSearchQuery] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [filteredLocations, setFilteredLocations] = useState([]);
-  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [addressList, setAddressList] = useState<Array<AddressEntity>>([]);
-  const handleClosePress = () => {
-    bottomSheetRef.current?.close();
-  };
+  // const handleClosePress = () => {
+  //   bottomSheetRef.current?.close();
+  // };
 
-  useEffect(() => {
-    if (searchQuery.length > 0) {
-      fetchLocations(searchQuery);
-    } else {
-      setFilteredLocations([]);
-    }
-  }, [searchQuery]);
-
-  const fetchLocations = async (query: any) => {
+  const fetchAddress = useCallback(() => {
     try {
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
-          query,
-        )}&types=geocode&components=country:IN&key=${GOOGLE_MAP_API_KEY}`,
-      );
-
-      const apiResults = response.data.predictions.map(
-        (prediction: any) => prediction.description,
-      );
-      setFilteredLocations(apiResults);
-    } catch (error) {
-      console.error('Error fetching locations from API:', error);
+      instance.get('/users/addresses').then(response => {
+        setAddressList(response.data);
+      });
+    } catch (e) {
+      console.log('Error ', e);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchAddress();
+    }, [fetchAddress]),
+  );
+
+  const handleTextChange = useCallback(
+    async (text: string) => {
+      setSearchQuery(text);
+      setDropdownVisible(true);
+      setFilteredLocations(await fetchLocations(searchQuery));
+    },
+    [searchQuery],
+  );
 
   const handleLocationSelect = async (location: any) => {
-    const nameWithoutCountry = location.replace(/,?\s*India$/, '').trim();
-    setSearchQuery(nameWithoutCountry);
-    setAddressList([...addressList, nameWithoutCountry]);
-    setDropdownVisible(false);
+    getCityDetails(location).then((data: any) => {
+      // setAddressList([
+      //   ...addressList,
+      //   {
+      //     type: 'other',
+      //     line1: '',
+      //     line2: '',
+      //     city: data?.city,
+      //     state: data?.state,
+      //     postal_code: data?.postal_code,
+      //     is_primary: false,
+      //   },
+      // ]);
+      const selectedAddress: any = {
+        type: 'other',
+        line1: '',
+        line2: '',
+        city: data?.city,
+        state: data?.state,
+        postal_code: data?.postal_code,
+        is_primary: false,
+        latitude: data?.latitude,
+        longitude: data?.longitude,
+      };
+      navigation.navigate('AddressDetails', {
+        address: selectedAddress,
+        isEdit: false,
+      });
+    });
 
-    try {
-      const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-          location,
-        )}&key=${GOOGLE_MAP_API_KEY}`,
-      );
-      const results = response.data.results;
-
-      if (results.length > 0) {
-        // const district = results[0].address_components.find((component: any) =>
-        //   component.types.includes('administrative_area_level_2'),
-        // );
-        // if (district) {
-        //   setSelectedDistrict(district.long_name);
-        // }
-      }
-    } catch (error) {
-      console.error('Error fetching district from API:', error);
-    }
-
+    setSearchQuery('');
     setFilteredLocations([]);
+    setDropdownVisible(false);
   };
 
   const submitFinish = () => {
-    setLoading(true);
-    addressList.map(async (address: AddressEntity) => {
-      await instance
-        .post('/users/addresses', {
-          type: address?.type,
-          line1: address?.line1,
-          line2: address?.line2,
-          city: address?.city,
-          state: address?.state,
-          postal_code: address?.postal_code,
-        })
-        .then(() => {
-          navigation.navigate('LoginSuccess');
-        })
-        .catch(error => {
-          console.log('Error:', error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    });
+    navigation.navigate('LoginSuccess');
+    // setLoading(true);
+    // addressList.map(async (address: AddressEntity) => {
+    //   await instance
+    //     .post('/users/addresses', {
+    //       type: address?.type,
+    //       line1: address?.line1,
+    //       line2: address?.line2,
+    //       city: address?.city,
+    //       state: address?.state,
+    //       postal_code: address?.postal_code,
+    //     })
+    //     .then(() => {
+    //       navigation.navigate('LoginSuccess');
+    //     })
+    //     .catch(error => {
+    //       console.log('Error:', error);
+    //     })
+    //     .finally(() => {
+    //       setLoading(false);
+    //     });
+    // });
   };
 
-  const submit = (data: AddressEntity) => {
-    setAddressList([...addressList, data]);
-    handleClosePress();
-  };
+  // const submit = (data: AddressEntity) => {
+  //   setAddressList([...addressList, data]);
+  //   handleClosePress();
+  // };
 
+  if (isLoading) {
+    return <LoadingIndicator />;
+  }
   return (
     <StyledSafeAreaView className="flex-1 bg-white">
-      <StyledScrollView
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="always">
+      <StyledScrollView showsVerticalScrollIndicator={false}>
         <AppHeader back={true} />
         <StyledView
           style={{
             marginHorizontal: RPW(5),
           }}>
-          <StyledView className="my-8 items-center">
-            <StyledText className="text-2xl  font-PoppinsMedium text-black">
+          <StyledView className="my-8">
+            <StyledText className="text-xl  font-PoppinsMedium text-black">
               Select Your Location
             </StyledText>
-            <StyledText className="mt-3 text-base  font-PoppinsMedium text-dark">
-              Add Multiple Locations
+            <StyledText className="mt-3 text-base  font-PoppinsRegular text-dark">
+              Add multiple addresses to your account for easy access.
             </StyledText>
           </StyledView>
 
-          {/* Location Search Input */}
-          <StyledView>
-            <StyledView className="flex-row items-center flex justify-between">
-              <StyledView className="flex-1">
-                <StyledTextInput
-                  className="w-full h-12 px-4 bg-white border border-gray rounded-lg text-dark"
-                  placeholder="Search your Location..."
-                  placeholderTextColor={Colors.Gray}
-                  value={searchQuery}
-                  onFocus={() => setDropdownVisible(true)}
-                  onChangeText={text => {
-                    setSearchQuery(text);
-                    setFilteredLocations([]);
-                    setDropdownVisible(text.length > 0);
-                  }}
-                />
-              </StyledView>
-              <StyledView className="w-12 h-12 p-2 ml-2 items-center justify-center rounded-md bg-primary">
-                <StyledTouchableOpacity
-                  onPress={() => {
-                    Keyboard.dismiss();
-                  }}>
-                  <MaterialIcons
-                    name="my-location"
-                    size={22}
-                    color={Colors.White}
-                  />
-                </StyledTouchableOpacity>
-              </StyledView>
-            </StyledView>
+          {/* SearchBar */}
+          <StyledView className="flex-1">
+            <SearchBarComponent
+              placeholder={'Search your city'}
+              iconName={'search'}
+              onChange={(text: string) => {
+                handleTextChange(text);
+              }}
+            />
 
             {/* Location Dropdown */}
             {dropdownVisible && searchQuery && filteredLocations.length > 0 && (
-              <StyledView className="absolute top-12 w-full bg-white border border-gray rounded-lg z-50">
+              <StyledView className="absolute top-[52px] w-full bg-white border border-gray rounded-md z-50">
                 {filteredLocations.map((location, index) => (
                   <StyledTouchableOpacity
                     key={index}
@@ -202,12 +192,12 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
                     <Ionicons
                       name="location-outline"
                       size={20}
-                      color={Colors.Dark}
+                      color={Colors.Black}
                     />
                     <StyledText
                       numberOfLines={1}
                       ellipsizeMode="tail"
-                      className="flex-1 ml-2 text-dark  font-PoppinsRegular">
+                      className="flex-1 ml-2 text-sm text-black font-PoppinsRegular">
                       {location}
                     </StyledText>
                   </StyledTouchableOpacity>
@@ -216,7 +206,7 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
             )}
           </StyledView>
 
-          <StyledView className="mt-6">
+          {/* <StyledView className="mt-6">
             <StyledTouchableOpacity
               className="flex-row items-center"
               onPress={() => {
@@ -226,23 +216,29 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
                 Set Location Manually
               </StyledText>
             </StyledTouchableOpacity>
-          </StyledView>
+          </StyledView> */}
+
+          <StyledView className="mt-5" />
 
           {/* Render Address list */}
-          {addressList.map((item, index) => (
+          {addressList.map((address, index) => (
             <StyledView
               key={index}
               className="py-2 mb-2 flex-row items-center justify-between border-b border-lightGrey">
               <StyledView className="flex-row items-center space-x-5">
                 <StyledView className="py-2">
-                  {item?.type === 'home' ? (
-                    <AntDesign name="home" size={22} color={Colors.Black} />
-                  ) : (
+                  {address?.type === 'home' && (
+                    <AntDesign name="home" size={20} color={Colors.Black} />
+                  )}
+                  {address?.type === 'work' && (
                     <MaterialIcons
                       name="work-outline"
-                      size={20}
+                      size={18}
                       color={Colors.Black}
                     />
+                  )}
+                  {address?.type === 'other' && (
+                    <Octicons name="location" size={18} color={Colors.Black} />
                   )}
                 </StyledView>
                 <StyledView>
@@ -250,26 +246,30 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
                     numberOfLines={2}
                     ellipsizeMode="tail"
                     className="basis-4/5 text-black text-base font-PoppinsRegular">
-                    {item?.line1} {item?.line2} {item?.city} {item?.state}
+                    {address?.line1} {address?.line2} {address?.city}{' '}
+                    {address?.state}
                   </StyledText>
                   <StyledText
                     numberOfLines={2}
                     ellipsizeMode="tail"
                     className="text-gray text-base font-PoppinsRegular">
                     {'Postal code: '}
-                    {item.postal_code}
+                    {address.postal_code}
                   </StyledText>
                 </StyledView>
               </StyledView>
-              <Entypo
-                name="cross"
-                size={20}
-                color={Colors.Gray}
+              <StyledTouchableOpacity
                 onPress={() => {
-                  addressList.splice(index, 1);
-                  setAddressList([...addressList]);
-                }}
-              />
+                  setIsLoading(true);
+                  setTimeout(() => {
+                    navigation.navigate('AddressDetails', {
+                      address: address,
+                      isEdit: true,
+                    });
+                  }, 1000);
+                }}>
+                <MaterialIcons name="edit" size={18} color={Colors.Dark} />
+              </StyledTouchableOpacity>
             </StyledView>
           ))}
         </StyledView>
@@ -293,7 +293,7 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
         </StyledView>
       </StyledView>
 
-      <BottomSheet
+      {/* <BottomSheet
         index={-1}
         ref={bottomSheetRef}
         snapPoints={snapPoints}
@@ -308,7 +308,7 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
             onSubmit={data => submit(data)}
           />
         </BottomSheetView>
-      </BottomSheet>
+      </BottomSheet> */}
     </StyledSafeAreaView>
   );
 };
