@@ -87,6 +87,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        manifestPlaceholders = [API_KEY: "$System.env.GOOGLE_MAP_API_KEY"]
     }
     signingConfigs {
         debug {
@@ -113,9 +114,9 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    implementation platform('com.google.firebase:firebase-bom:33.9.0')
-    implementation 'com.google.firebase:firebase-analytics'
-    implementation "com.google.firebase:firebase-messaging"
+    // implementation platform('com.google.firebase:firebase-bom:33.9.0')
+    // implementation 'com.google.firebase:firebase-analytics'
+    // implementation "com.google.firebase:firebase-messaging"
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
