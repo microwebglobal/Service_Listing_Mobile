@@ -2,8 +2,8 @@ import {View, Text, TouchableOpacity, FlatList, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Button} from './rneui';
 import {SERVER_BASE} from '@env';
-import classNames from 'classnames';
 import {styled} from 'nativewind';
+import classNames from 'classnames';
 import {Colors} from '../utils/Colors';
 import {useAppSelector} from '../redux';
 import {useDispatch} from 'react-redux';
@@ -83,8 +83,8 @@ export const RenderService = ({service}: {service: Service}) => {
 
   const _renderServiceItem = ({item}: {item: ServiceItem}) => {
     return (
-      <StyledView className="rounded-lg shadow-sm shadow-black">
-        <StyledView className="bg-white rounded-lg p-2">
+      <StyledView className="p-1">
+        <StyledView className="bg-white rounded-lg p-2 shadow-sm shadow-black">
           <StyledView className="flex-row justify-between space-x-2">
             <StyledView className="w-2/3">
               <StyledText className="text-base text-black font-PoppinsMedium first-letter:capitalize">
@@ -95,7 +95,7 @@ export const RenderService = ({service}: {service: Service}) => {
                 {item.base_price}
               </StyledText>
               {parseInt(item.advance_percentage, 10) !== 0 && (
-                <StyledText className="my-1 text-sm text-error">
+                <StyledText className="my-1 text-xs font-PoppinsRegular text-error">
                   {item.advance_percentage}
                   {'% Advanced Payment Required'}
                 </StyledText>
@@ -153,7 +153,6 @@ export const RenderService = ({service}: {service: Service}) => {
       </TouchableOpacity>
       {isItemClicked && serviceItemData && (
         <FlatList
-          className="mt-2"
           horizontal={false}
           numColumns={1}
           scrollEnabled={false}

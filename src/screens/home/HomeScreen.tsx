@@ -134,9 +134,9 @@ export const HomeScreen = () => {
 
   const _renderOfferItem = ({item}: any) => {
     return (
-      <StyledView className="mb-5">
+      <StyledView className="mb-5 p-2 rounded-xl">
         <StyledTouchableOpacity
-          className="pb-5 bg-lightGrey rounded-xl shadow-sm shadow-black"
+          className="pb-3 bg-lightGrey rounded-xl shadow-md shadow-black"
           onPress={() => {}}>
           <StyledView className="overflow-hidden">
             <StyledImage
@@ -161,17 +161,19 @@ export const HomeScreen = () => {
     return (
       <StyledView className="basis-1/3 mt-3">
         <StyledTouchableOpacity
-          className="mx-1"
+          className="mx-[6]"
           onPress={() => {
             navigation.navigate('TabNavigator', {
               screen: 'Service',
             });
           }}>
           <StyledView className="flex-1 items-center">
-            <StyledImage
-              className="w-full h-20 rounded-lg"
-              source={{uri: `${SERVER_BASE}${item.icon_url}`}}
-            />
+            <StyledView className="w-full h-20 bg-white rounded-lg shadow-sm shadow-black">
+              <StyledImage
+                className="w-full h-20 rounded-lg"
+                source={{uri: `${SERVER_BASE}${item.icon_url}`}}
+              />
+            </StyledView>
             <StyledText
               numberOfLines={2}
               ellipsizeMode="tail"
@@ -299,7 +301,7 @@ export const HomeScreen = () => {
         <FeaturedCard featuredData={featuredData} />
         <StyledView className="my-4 h-2 bg-lightGrey" />
 
-        <StyledView className="my-8" style={{marginHorizontal: RPW(5)}}>
+        <StyledView className="my-5" style={{marginHorizontal: RPW(4)}}>
           <StyledFlatList
             horizontal={false}
             scrollEnabled={false}

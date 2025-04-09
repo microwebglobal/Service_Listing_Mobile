@@ -79,8 +79,6 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
     [],
   );
 
-  console.log('ServiceTypeScreen', subCategoryId, subCategory);
-
   useEffect(() => {
     try {
       instance.get(`/subcategories/${subCategoryId}/types`).then(response => {
@@ -143,7 +141,7 @@ export const ServiceTypeScreen: Screen<'ServiceType'> = ({route}) => {
         <AppHeader back={true} title={subCategory} cartVisible={true} />
         <StyledView
           className="flex-1 justify-between"
-          style={{marginHorizontal: RPW(5)}}>
+          style={{marginHorizontal: RPW(4)}}>
           <FlatList
             className="mt-2"
             horizontal={false}

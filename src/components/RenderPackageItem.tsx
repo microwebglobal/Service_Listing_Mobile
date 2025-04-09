@@ -36,6 +36,7 @@ export const RenderPackageItem = ({
       icon_url: item.icon_url,
       is_home_visit: false,
     });
+    onPress();
   };
 
   return (
@@ -53,7 +54,6 @@ export const RenderPackageItem = ({
                 if (selectedIndex !== index) {
                   setSelectedIndex(index);
                 }
-                onPress();
                 handleAddToCart(item);
               }}
               checkedIcon="dot-circle-o"

@@ -58,9 +58,8 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
 
   const _renderSubCategoryItem = ({item}: any) => {
     return (
-      <StyledView className="w-full basis-1/2 px-2 my-3">
+      <StyledView className="basis-1/2 p-2 bg-white">
         <TouchableOpacity
-          className="bg-white shadow-sm shadow-black"
           onPress={() => {
             if (item.ServiceTypes.length > 0) {
               navigation.navigate('ServiceType', {
@@ -69,14 +68,12 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
               });
             }
           }}>
-          <StyledView className="items-center justify-center bg-lightGrey rounded-xl">
-            <StyledView className="">
-              <StyledImage
-                className="w-full h-32 rounded-t-lg"
-                source={{uri: `${SERVER_BASE}${item.icon_url}`}}
-              />
-            </StyledView>
-            <StyledView className="w-full mt-2 px-3 items-center bg-white shadow-sm shadow-black rounded-b-xl">
+          <StyledView className="flex-1 items-center justify-center bg-white shadow-md shadow-black rounded-xl">
+            <StyledImage
+              className="w-full h-32 rounded-t-lg"
+              source={{uri: `${SERVER_BASE}${item.icon_url}`}}
+            />
+            <StyledView className="w-full px-3 items-center bg-white rounded-b-xl">
               <StyledText className="my-2 text-sm text-black font-PoppinsRegular">
                 {item.name}
               </StyledText>
@@ -116,7 +113,7 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
               {'Subcategories and available services'}
             </StyledText>
           </StyledView>
-          <StyledView>
+          <StyledView className="-mx-2">
             {subCategoryData.length > 0 ? (
               <FlatList
                 className="mt-2"

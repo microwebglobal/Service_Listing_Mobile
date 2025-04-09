@@ -41,7 +41,7 @@ export const FeaturedCard = ({featuredData}: FeatureCardProps) => {
     return (
       <StyledView className="mr-5">
         <StyledTouchableOpacity
-          className="w-60 pb-5 bg-white rounded-xl shadow-sm shadow-black"
+          className="w-60 pb-5 bg-white rounded-xl shadow-md shadow-black"
           onPress={() => {}}>
           <StyledView className="overflow-hidden">
             <StyledImage
@@ -105,7 +105,7 @@ export const FeaturedCard = ({featuredData}: FeatureCardProps) => {
           showsHorizontalScrollIndicator={false}>
           <StyledView className="flex items-center">
             <StyledFlatList
-              className="mt-2"
+              className="py-2"
               style={{paddingHorizontal: RPW(5)}}
               horizontal={true}
               scrollEnabled={false}

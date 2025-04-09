@@ -126,8 +126,8 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
 
   const _renderPackage = ({item}: {item: Package}) => {
     return (
-      <StyledView className="rounded-lg shadow-sm shadow-black">
-        <StyledView className="bg-white rounded-lg p-2">
+      <StyledView className="p-1">
+        <StyledView className="bg-white rounded-lg p-2 shadow-sm shadow-black">
           {!isItemClicked && (
             <>
               <StyledText className="text-base text-black font-PoppinsMedium first-letter:capitalize">
@@ -243,7 +243,6 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
       )}
 
       <FlatList
-        className="mt-2"
         horizontal={false}
         numColumns={1}
         scrollEnabled={false}
