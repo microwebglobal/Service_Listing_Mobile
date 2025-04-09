@@ -48,4 +48,39 @@ const getCityDetails = async (location: any) => {
   }
 };
 
-export {fetchLocations, getCityDetails};
+const getCurrentLocationAddress = async (
+  latitude: number,
+  longitude: number,
+) => {
+  try {
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${GOOGLE_MAP_API_KEY}`,
+    );
+    const results = response.data.results;
+    // console.log(response.data.results[0].formatted_address);
+
+    if (results.length > 0) {
+      const addressComponents = results[0].address_components;
+      const city = addressComponents.find((component: any) =>
+        component.types.includes('locality'),
+      );
+      const state = addressComponents.find((component: any) =>
+        component.types.includes('administrative_area_level_1'),
+      );
+      const postal_code = addressComponents.find((component: any) =>
+        component.types.includes('postal_code'),
+      );
+
+      return {
+        formatted_address: results[0].formatted_address.split(',')[0],
+        city: city ? city.long_name : '',
+        state: state ? state.long_name : '',
+        postal_code: postal_code ? postal_code.long_name : '',
+      };
+    }
+  } catch (error) {
+    console.error('Error fetching locations from API:', error);
+  }
+};
+
+export {fetchLocations, getCityDetails, getCurrentLocationAddress};

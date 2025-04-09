@@ -37,8 +37,7 @@ export interface City {
 }
 
 export interface Address {
-  id: number;
-  userId: number;
+  id: any;
   type: string;
   line1: string;
   line2: string;

@@ -1,11 +1,13 @@
 import {
   View,
   Text,
+  Platform,
+  FlatList,
   ScrollView,
   Dimensions,
-  FlatList,
-  TouchableOpacity,
   SafeAreaView,
+  TouchableOpacity,
+  PermissionsAndroid,
 } from 'react-native';
 import React, {useCallback, useState} from 'react';
 import {styled} from 'nativewind';
@@ -14,6 +16,7 @@ import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
 import AppHeader from '../../components/AppHeader';
 import {Address} from '../category/CategoryScreen';
+import GetLocation from 'react-native-get-location';
 import {useNav} from '../../navigation/RootNavigation';
 import {useFocusEffect} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -22,8 +25,12 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {SearchBarComponent} from '../../components/Searchbar';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {fetchLocations, getCityDetails} from '../../utils/location';
 import {savePrimaryAddress} from '../../redux/address/address.slice';
+import {
+  fetchLocations,
+  getCityDetails,
+  getCurrentLocationAddress,
+} from '../../utils/location';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -122,6 +129,60 @@ export const ChangeLocationScreen = () => {
     setFilteredLocations([]);
     setDropdownVisible(false);
   };
+
+  async function _getLocationPermission() {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Location Permission',
+            message: 'Please allow location permission to continue.',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          setIsLoading(true);
+          _getCurrentLocation();
+        } else {
+          console.log('Location permission denied');
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+  }
+
+  async function _getCurrentLocation() {
+    GetLocation.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 60000,
+    })
+      .then(async(location) => {
+        const result: any = await getCurrentLocationAddress(location.latitude, location.longitude);
+        navigation.navigate('AddressDetails', {
+          address: {
+            id: null,
+            type: 'other',
+            line1: result.formatted_address,
+            line2: '',
+            city: result.city,
+            state: result.state,
+            postal_code: result.postal_code,
+            is_primary: false,
+            latitude: location.latitude.toString(),
+            longitude: location.longitude.toString(),
+          },
+          isEdit: false,
+        });
+      })
+      .catch(error => {
+        const {code, message} = error;
+        console.warn(code, message);
+      });
+  }
 
   const _renderAddress = (address: Address) => {
     return (
@@ -228,7 +289,9 @@ export const ChangeLocationScreen = () => {
 
             <StyledTouchableOpacity
               className="mt-5 flex-row items-center gap-x-3"
-              onPress={() => {}}>
+              onPress={() => {
+                _getLocationPermission();
+              }}>
               <MaterialIcons
                 name="my-location"
                 size={20}

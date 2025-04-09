@@ -90,7 +90,7 @@ export const RootNavigator: React.FC = () => {
       linking={linking}
       fallback={<ActivityIndicator animating />}>
       <Stack.Navigator
-        initialRouteName="SelectLocation"
+        initialRouteName="Splash"
         screenOptions={screenOptions}>
         <Stack.Screen
           name="TabNavigator"
