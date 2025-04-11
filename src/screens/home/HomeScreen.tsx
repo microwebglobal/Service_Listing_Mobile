@@ -14,6 +14,7 @@ import {
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {SERVER_BASE} from '@env';
 import {styled} from 'nativewind';
+import {useDispatch} from 'react-redux';
 import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
 import {instance} from '../../api/instance';
@@ -27,6 +28,7 @@ import {FeaturedCard} from '../../components/FeaturedCard';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
 import {Address, Category, City} from '../category/CategoryScreen';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import {saveCityId} from '../../redux/address/address.slice';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -44,6 +46,7 @@ const StyledAnimatedScrollView = styled(Animated.ScrollView);
 
 export const HomeScreen = () => {
   const navigation = useNav();
+  const dispatch = useDispatch();
   const tabBarHeight = useBottomTabBarHeight();
   const user = useAppSelector(state => state.user.user);
   const [hour, setHour] = useState<number>(0);
@@ -100,29 +103,35 @@ export const HomeScreen = () => {
     return true;
   };
 
-  useEffect(() => {
-    instance
+  const fetchCities = useCallback(async () => {
+    await instance
       .get('/cities')
       .then(response => {
         response.data.map((city: City) => {
           setCategories([...city.serviceCategories]);
         });
+        response.data.find((city: City) => {
+          if (city.name === primaryAddress?.city) {
+            dispatch(saveCityId(city.city_id));
+          }
+        });
       })
       .catch(e => {
         console.log('Error ', e);
       });
-  }, []);
+  }, [dispatch, primaryAddress?.city]);
 
   useFocusEffect(
     useCallback(() => {
       getHour();
       fetchUserData();
       fetchAddress();
+      fetchCities();
       BackHandler.addEventListener('hardwareBackPress', handlerBackPress);
       return () => {
         BackHandler.removeEventListener('hardwareBackPress', handlerBackPress);
       };
-    }, [fetchAddress, fetchUserData, getHour]),
+    }, [fetchAddress, fetchUserData, fetchCities, getHour]),
   );
 
   const onRefresh = useCallback(() => {
