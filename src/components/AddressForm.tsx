@@ -18,14 +18,13 @@ import {Controller, useForm} from 'react-hook-form';
 import {ScrollView} from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Address} from '../screens/category/CategoryScreen';
-import {AddressEntity} from '../redux/address/address.entity';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {fetchLocations, getCityDetails} from '../utils/location';
 
 interface AddressFormProps {
   btnTitle: string;
   onClose: () => void;
-  onSubmit?: (data: AddressEntity) => void;
+  onSubmit?: (data: Address) => void;
 }
 
 const screenWidth = Dimensions.get('window').width;
@@ -35,7 +34,7 @@ const RPW = (percentage: number) => {
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledTextInput = React.memo(styled(TextInput));
+const StyledTextInput = styled(TextInput);
 const StyledScrollView = styled(ScrollView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
@@ -47,12 +46,15 @@ export const AddressForm = ({
   const [selectedIndex, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>();
-  // const searchQuery = useRef<string>();
-  // const [postalCode, setPostalCode] = useState<string>();
-  const [selectedState, setSelectedState] = useState<string>();
-  const [filteredLocations, setFilteredLocations] = useState([]);
-  const [dropdownVisible, setDropdownVisible] = useState(false);
   const isFocused = useRef<boolean>(false);
+  // const [postalCode, setPostalCode] = useState<string>();
+  const [selectedState, setSelectedState] = useState<string>('');
+  const [geometry, setGeometry] = useState({
+    longitude: 0,
+    latitude: 0,
+  });
+  const filteredLocations = useRef([]);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
   const {
     control,
     reset,
@@ -60,21 +62,18 @@ export const AddressForm = ({
     formState: {errors},
   } = useForm<Address>();
 
-  const handleTextChange = useCallback(
-    async (text: string) => {
-      setSearchQuery(text);
-      setDropdownVisible(true);
-      setFilteredLocations(await fetchLocations(searchQuery));
-    },
-    [searchQuery],
-  );
+  const handleTextChange = useCallback(async (text: string) => {
+    setDropdownVisible(true);
+    filteredLocations.current = await fetchLocations(text);
+  }, []);
 
   const handleLocationSelect = async (location: any) => {
     getCityDetails(location).then((data: any) => {
       setSearchQuery(data?.city);
       setSelectedState(data?.state);
+      setGeometry({latitude: data?.longitude, longitude: data?.latitude});
     });
-    setFilteredLocations([]);
+    filteredLocations.current = [];
   };
 
   const submit = (data: Address) => {
@@ -98,6 +97,9 @@ export const AddressForm = ({
             state: selectedState,
             postal_code: data.postal_code,
             type: selectedIndex === 0 ? 'home' : 'work',
+            location: {
+              coordinates: [geometry.longitude, geometry.latitude],
+            },
           })
           .then(() => {
             reset();
@@ -188,34 +190,35 @@ export const AddressForm = ({
             }`}`}
             value={searchQuery}
             inputMode={'text'}
-            onChangeText={text => {
-              handleTextChange(text);
-            }}
+            onChangeText={setSearchQuery}
+            onChange={e => handleTextChange(e.nativeEvent.text)}
           />
 
           {/* Location Dropdown */}
-          {dropdownVisible && searchQuery && filteredLocations.length > 0 && (
-            <StyledView className="absolute top-20 w-full bg-white border border-gray rounded-lg z-50">
-              {filteredLocations.map((location, index) => (
-                <StyledTouchableOpacity
-                  key={index}
-                  className="flex-row items-center px-2 py-3 border-b border-gray last:border-b-0"
-                  onPress={() => handleLocationSelect(location)}>
-                  <Ionicons
-                    name="location-outline"
-                    size={20}
-                    color={Colors.Dark}
-                  />
-                  <StyledText
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    className="flex-1 ml-2 text-black font-PoppinsRegular">
-                    {location}
-                  </StyledText>
-                </StyledTouchableOpacity>
-              ))}
-            </StyledView>
-          )}
+          {dropdownVisible &&
+            searchQuery &&
+            filteredLocations.current.length > 0 && (
+              <StyledView className="absolute top-20 w-full bg-white border border-gray rounded-lg z-50">
+                {filteredLocations.current.map((location, index) => (
+                  <StyledTouchableOpacity
+                    key={index}
+                    className="flex-row items-center px-2 py-3 border-b border-gray last:border-b-0"
+                    onPress={() => handleLocationSelect(location)}>
+                    <Ionicons
+                      name="location-outline"
+                      size={20}
+                      color={Colors.Dark}
+                    />
+                    <StyledText
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      className="flex-1 ml-2 text-black font-PoppinsRegular">
+                      {location}
+                    </StyledText>
+                  </StyledTouchableOpacity>
+                ))}
+              </StyledView>
+            )}
         </StyledView>
 
         <StyledView className="mb-3">
@@ -227,12 +230,10 @@ export const AddressForm = ({
           </StyledText>
           <InputField
             placeHolder={'State'}
-            value={selectedState ? selectedState : ''}
+            value={selectedState}
             secure={false}
             inputMode={'text'}
-            onChangeText={text => {
-              setSelectedState(text);
-            }}
+            onChangeText={setSelectedState}
           />
         </StyledView>
 

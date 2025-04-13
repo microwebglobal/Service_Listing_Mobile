@@ -109,8 +109,6 @@ export const ChangeLocationScreen = () => {
     getCityDetails(location).then((data: any) => {
       console.log('City Details: ', data);
       const selectedAddress: any = {
-        latitude: data?.latitude,
-        longitude: data?.longitude,
         type: 'other',
         line1: '',
         line2: '',
@@ -118,6 +116,9 @@ export const ChangeLocationScreen = () => {
         state: data?.state,
         postal_code: data?.postal_code,
         is_primary: false,
+        location: {
+          coordinates: [data?.longitude, data?.latitude],
+        },
       };
       navigation.navigate('AddressDetails', {
         address: selectedAddress,
@@ -160,8 +161,11 @@ export const ChangeLocationScreen = () => {
       enableHighAccuracy: true,
       timeout: 60000,
     })
-      .then(async(location) => {
-        const result: any = await getCurrentLocationAddress(location.latitude, location.longitude);
+      .then(async location => {
+        const result: any = await getCurrentLocationAddress(
+          location.latitude,
+          location.longitude,
+        );
         navigation.navigate('AddressDetails', {
           address: {
             id: null,
@@ -172,8 +176,9 @@ export const ChangeLocationScreen = () => {
             state: result.state,
             postal_code: result.postal_code,
             is_primary: false,
-            latitude: location.latitude.toString(),
-            longitude: location.longitude.toString(),
+            location: {
+              coordinates: [location.longitude, location.latitude],
+            },
           },
           isEdit: false,
         });

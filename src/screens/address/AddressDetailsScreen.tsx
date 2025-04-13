@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useMemo, useRef, useState} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {styled} from 'nativewind';
 import classNames from 'classnames';
 import {Colors} from '../../utils/Colors';
@@ -20,9 +20,11 @@ import {Address} from '../category/CategoryScreen';
 import {Controller, useForm} from 'react-hook-form';
 import InputField from '../../components/InputFeild';
 import Octicons from 'react-native-vector-icons/Octicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Screen, useNav} from '../../navigation/RootNavigation';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import {fetchLocations, getCityDetails} from '../../utils/location';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -47,17 +49,42 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
   const [type, setType] = useState<string>(address.type);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>();
+  const [filteredLocations, setFilteredLocations] = useState([]);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
   const {
     control,
     handleSubmit,
     formState: {errors},
   } = useForm<Address>({defaultValues: address});
   const [state, setState] = useState({
-    latitude: parseFloat(address.latitude),
-    longitude: parseFloat(address.longitude),
+    latitude: address.location.coordinates[1],
+    longitude: address.location.coordinates[0],
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
+
+  const handleTextChange = useCallback(
+    async (text: string) => {
+      setSearchQuery(text);
+      setDropdownVisible(true);
+      setFilteredLocations(await fetchLocations(searchQuery));
+    },
+    [searchQuery],
+  );
+
+  const handleLocationSelect = async (location: any) => {
+    getCityDetails(location).then((data: any) => {
+      setSearchQuery(data?.city);
+      setState({
+        longitude: data?.longitude,
+        latitude: data?.latitude,
+        latitudeDelta: state.latitudeDelta,
+        longitudeDelta: state.longitudeDelta,
+      });
+    });
+    setFilteredLocations([]);
+  };
 
   const submit = (data: Address) => {
     setLoading(true);
@@ -67,8 +94,9 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
           .put(`/users/addresses/${address.id}`, {
             ...data,
             type: type,
-            latitude: state.latitude,
-            longitude: state.longitude,
+            location: {
+              coordinates: [state.longitude, state.latitude],
+            },
           })
           .then(() => {
             navigation.pop();
@@ -78,8 +106,9 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
           .post('/users/addresses', {
             ...data,
             type: type,
-            latitude: state.latitude,
-            longitude: state.longitude,
+            location: {
+              coordinates: [state.longitude, state.latitude],
+            },
           })
           .then(() => {
             navigation.pop();
@@ -178,7 +207,34 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
                   errors={errors.city}
                   required={true}
                   placeHolder={'City'}
+                  onChangeText={handleTextChange}
                 />
+
+                {/* Location Dropdown */}
+                {dropdownVisible &&
+                  searchQuery &&
+                  filteredLocations.length > 0 && (
+                    <StyledView className="absolute top-20 w-full bg-white border border-gray rounded-lg z-50">
+                      {filteredLocations.map((location, index) => (
+                        <StyledTouchableOpacity
+                          key={index}
+                          className="flex-row items-center px-2 py-3 border-b border-gray last:border-b-0"
+                          onPress={() => handleLocationSelect(location)}>
+                          <Ionicons
+                            name="location-outline"
+                            size={20}
+                            color={Colors.Dark}
+                          />
+                          <StyledText
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            className="flex-1 ml-2 text-black font-PoppinsRegular">
+                            {location}
+                          </StyledText>
+                        </StyledTouchableOpacity>
+                      ))}
+                    </StyledView>
+                  )}
               </StyledView>
               <StyledView className="basis-1/2 pl-2">
                 <AddressFormField
@@ -305,6 +361,7 @@ interface AddressFormFieldProps {
   label: string;
   required: boolean;
   placeHolder: string;
+  onChangeText?: (value: string) => void;
 }
 
 const AddressFormField: React.FC<AddressFormFieldProps> = ({
@@ -314,6 +371,7 @@ const AddressFormField: React.FC<AddressFormFieldProps> = ({
   errors,
   required,
   placeHolder,
+  onChangeText,
 }) => {
   return (
     <StyledView className="mb-3">
@@ -331,7 +389,12 @@ const AddressFormField: React.FC<AddressFormFieldProps> = ({
             secure={false}
             inputMode={'text'}
             onBlur={onBlur}
-            onChangeText={onChange}
+            onChangeText={text => {
+              onChange(text);
+              if (onChangeText) {
+                onChangeText(text);
+              }
+            }}
           />
         )}
         rules={{required: required}}
