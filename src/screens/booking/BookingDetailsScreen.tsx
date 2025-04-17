@@ -644,7 +644,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
 
         {booking.status === 'cancelled' && <StyledView className="mb-10" />}
 
-        {/* Logout Dialog */}
+        {/* Booking Cancel Dialog */}
         <Dialog
           isVisible={visible}
           onBackdropPress={toggleDialog}

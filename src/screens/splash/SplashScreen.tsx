@@ -30,7 +30,7 @@ export const SplashScreen: Screen<'Splash'> = () => {
   }, [navigation]);
 
   return (
-    <StyledSafeAreaView className="flex bg-white">
+    <StyledSafeAreaView className="flex-1 bg-white">
       <StyledView className="flex items-center justify-center h-screen ">
         <LottieView
           source={require('../../assets/animations/loading.json')}

@@ -13,21 +13,16 @@ import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
 import {Button} from '../../components/rneui';
 import AppHeader from '../../components/AppHeader';
-// import {AddressForm} from '../../components/AddressForm';
+import {Address} from '../category/CategoryScreen';
+import {useFocusEffect} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {SearchBarComponent} from '../../components/Searchbar';
 import {Screen, useNav} from '../../navigation/RootNavigation';
-import {AddressEntity} from '../../redux/address/address.entity';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {fetchLocations, getCityDetails} from '../../utils/location';
-// import BottomSheet, {
-//   BottomSheetBackdrop,
-//   BottomSheetView,
-// } from '@gorhom/bottom-sheet';
-import {useFocusEffect} from '@react-navigation/native';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
+import {fetchLocations, getCityDetails} from '../../utils/location';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -46,17 +41,11 @@ const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const SelectLocation: Screen<'SelectLocation'> = () => {
   const navigation = useNav();
-  // const snapPoints = useMemo(() => ['98%'], []);
-  // const bottomSheetRef = useRef<BottomSheet>(null);
   const [searchQuery, setSearchQuery] = useState<string>();
-  const [loading, setLoading] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [filteredLocations, setFilteredLocations] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
-  const [addressList, setAddressList] = useState<Array<AddressEntity>>([]);
-  // const handleClosePress = () => {
-  //   bottomSheetRef.current?.close();
-  // };
+  const [addressList, setAddressList] = useState<Array<Address>>([]);
 
   const fetchAddress = useCallback(() => {
     try {
@@ -87,18 +76,6 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
 
   const handleLocationSelect = async (location: any) => {
     getCityDetails(location).then((data: any) => {
-      // setAddressList([
-      //   ...addressList,
-      //   {
-      //     type: 'other',
-      //     line1: '',
-      //     line2: '',
-      //     city: data?.city,
-      //     state: data?.state,
-      //     postal_code: data?.postal_code,
-      //     is_primary: false,
-      //   },
-      // ]);
       const selectedAddress: any = {
         type: 'other',
         line1: '',
@@ -107,8 +84,9 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
         state: data?.state,
         postal_code: data?.postal_code,
         is_primary: false,
-        latitude: data?.latitude,
-        longitude: data?.longitude,
+        location: {
+          coordinates: [data?.longitude, data?.latitude],
+        },
       };
       navigation.navigate('AddressDetails', {
         address: selectedAddress,
@@ -116,40 +94,13 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
       });
     });
 
-    setSearchQuery('');
     setFilteredLocations([]);
     setDropdownVisible(false);
   };
 
   const submitFinish = () => {
     navigation.navigate('LoginSuccess');
-    // setLoading(true);
-    // addressList.map(async (address: AddressEntity) => {
-    //   await instance
-    //     .post('/users/addresses', {
-    //       type: address?.type,
-    //       line1: address?.line1,
-    //       line2: address?.line2,
-    //       city: address?.city,
-    //       state: address?.state,
-    //       postal_code: address?.postal_code,
-    //     })
-    //     .then(() => {
-    //       navigation.navigate('LoginSuccess');
-    //     })
-    //     .catch(error => {
-    //       console.log('Error:', error);
-    //     })
-    //     .finally(() => {
-    //       setLoading(false);
-    //     });
-    // });
   };
-
-  // const submit = (data: AddressEntity) => {
-  //   setAddressList([...addressList, data]);
-  //   handleClosePress();
-  // };
 
   if (isLoading) {
     return <LoadingIndicator />;
@@ -205,18 +156,6 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
               </StyledView>
             )}
           </StyledView>
-
-          {/* <StyledView className="mt-6">
-            <StyledTouchableOpacity
-              className="flex-row items-center"
-              onPress={() => {
-                bottomSheetRef.current?.expand();
-              }}>
-              <StyledText className="mb-5 text-base text-primary mt-2  font-PoppinsRegular">
-                Set Location Manually
-              </StyledText>
-            </StyledTouchableOpacity>
-          </StyledView> */}
 
           <StyledView className="mt-5" />
 
@@ -282,7 +221,6 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
         }}>
         <StyledView className="my-5">
           <Button
-            loading={loading}
             title={'Continue'}
             onPress={() => {
               Keyboard.dismiss();
@@ -292,23 +230,6 @@ export const SelectLocation: Screen<'SelectLocation'> = () => {
           />
         </StyledView>
       </StyledView>
-
-      {/* <BottomSheet
-        index={-1}
-        ref={bottomSheetRef}
-        snapPoints={snapPoints}
-        enablePanDownToClose={true}
-        backdropComponent={backdropProps => (
-          <BottomSheetBackdrop {...backdropProps} enableTouchThrough={true} />
-        )}>
-        <BottomSheetView>
-          <AddressForm
-            btnTitle="Save Address"
-            onClose={handleClosePress}
-            onSubmit={data => submit(data)}
-          />
-        </BottomSheetView>
-      </BottomSheet> */}
     </StyledSafeAreaView>
   );
 };

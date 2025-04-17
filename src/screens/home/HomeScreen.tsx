@@ -11,7 +11,7 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {SERVER_BASE} from '@env';
 import {styled} from 'nativewind';
 import {useDispatch} from 'react-redux';
@@ -25,10 +25,10 @@ import {useNav} from '../../navigation/RootNavigation';
 import {useFocusEffect} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {FeaturedCard} from '../../components/FeaturedCard';
+import {saveCityId} from '../../redux/address/address.slice';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
 import {Address, Category, City} from '../category/CategoryScreen';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import {saveCityId} from '../../redux/address/address.slice';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
