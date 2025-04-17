@@ -98,6 +98,7 @@ export const AddressForm = ({
             postal_code: data.postal_code,
             type: selectedIndex === 0 ? 'home' : 'work',
             location: {
+              type: 'Point',
               coordinates: [geometry.longitude, geometry.latitude],
             },
           })

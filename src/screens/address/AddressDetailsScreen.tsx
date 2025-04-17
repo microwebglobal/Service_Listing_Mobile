@@ -95,6 +95,7 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
             ...data,
             type: type,
             location: {
+              type: 'Point',
               coordinates: [state.longitude, state.latitude],
             },
           })
@@ -107,6 +108,7 @@ export const AddressDetailsScreen: Screen<'AddressDetails'> = ({route}) => {
             ...data,
             type: type,
             location: {
+              type: 'Point',
               coordinates: [state.longitude, state.latitude],
             },
           })
