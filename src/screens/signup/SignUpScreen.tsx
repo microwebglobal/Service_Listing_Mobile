@@ -239,29 +239,13 @@ export const SignUpScreen: Screen<'SignUp'> = () => {
           </StyledView>
         </StyledView>
 
-        <StyledView className="mb-28">
-          <StyledView className="my-5">
-            <Button
-              loading={loading}
-              title={'Continue'}
-              onPress={(Keyboard.dismiss(), handleSubmit(submit))}
-              primary
-            />
-          </StyledView>
-
-          <StyledView className="flex-row justify-center">
-            <StyledText className="text-base text-dark font-PoppinsRegular">
-              Already have an account?{'  '}
-            </StyledText>
-            <StyledTouchableOpacity
-              onPress={() => {
-                navigation.navigate('SignIn');
-              }}>
-              <StyledText className="text-base text-primary font-PoppinsRegular underline">
-                Sign In
-              </StyledText>
-            </StyledTouchableOpacity>
-          </StyledView>
+        <StyledView className="my-5">
+          <Button
+            loading={loading}
+            title={'Continue'}
+            onPress={(Keyboard.dismiss(), handleSubmit(submit))}
+            primary
+          />
         </StyledView>
       </StyledScrollView>
     </StyledSafeAreaView>

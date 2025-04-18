@@ -19,6 +19,7 @@ import {useNav} from '../../navigation/RootNavigation';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Toast from 'react-native-toast-message';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -75,6 +76,7 @@ export const PaymentScreen = ({route}: any) => {
         paymentType: paymentType,
       })
       .then(function () {
+        showToast();
         navigation.navigate('TabNavigator');
       })
       .catch(function (e) {
@@ -84,6 +86,16 @@ export const PaymentScreen = ({route}: any) => {
         setLoading(false);
       });
   }, [bookingId, navigation, paymentType, selectedIndex]);
+
+  const showToast = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Booking Confirmed',
+      text2: 'Place booking successfully',
+      visibilityTime: 2000,
+      autoHide: true,
+    });
+  };
 
   const renderPaymentOptions = (method: string, index: number) => {
     return (

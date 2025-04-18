@@ -25,10 +25,13 @@ import {useNav} from '../../navigation/RootNavigation';
 import {useFocusEffect} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {FeaturedCard} from '../../components/FeaturedCard';
-import {saveCityId} from '../../redux/address/address.slice';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
 import {Address, Category, City} from '../category/CategoryScreen';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
+import {
+  saveCityId,
+  savePrimaryAddress,
+} from '../../redux/address/address.slice';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -127,11 +130,26 @@ export const HomeScreen = () => {
       fetchUserData();
       fetchAddress();
       fetchCities();
+      // Set the address in the redux store
+      if (primaryAddress) {
+        const addressPrefix = primaryAddress.line2
+          ? primaryAddress.line1 + ' ' + primaryAddress.line2
+          : primaryAddress.line1;
+        const addressSuffix = primaryAddress.city + ' ' + primaryAddress.state;
+        dispatch(savePrimaryAddress(addressPrefix + ', ' + addressSuffix));
+      }
       BackHandler.addEventListener('hardwareBackPress', handlerBackPress);
       return () => {
         BackHandler.removeEventListener('hardwareBackPress', handlerBackPress);
       };
-    }, [fetchAddress, fetchUserData, fetchCities, getHour]),
+    }, [
+      getHour,
+      fetchUserData,
+      fetchAddress,
+      fetchCities,
+      primaryAddress,
+      dispatch,
+    ]),
   );
 
   const onRefresh = useCallback(() => {
@@ -143,7 +161,7 @@ export const HomeScreen = () => {
 
   const _renderOfferItem = ({item}: any) => {
     return (
-      <StyledView className="mb-5 p-2 rounded-xl">
+      <StyledView className="mb-5 p-2 rounded-xl bg-white">
         <StyledTouchableOpacity
           className="pb-3 bg-lightGrey rounded-xl shadow-md shadow-black"
           onPress={() => {}}>
