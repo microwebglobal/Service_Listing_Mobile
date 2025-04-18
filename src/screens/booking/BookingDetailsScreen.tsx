@@ -400,9 +400,9 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
               </>
             ) : (
               <StyledView
-                className="mt-3 mb-2"
+                className="mt-3"
                 style={{paddingHorizontal: RPW(4)}}>
-                <StyledView className="p-2 rounded-lg space-y-1 border border-primaryBlackRGBA">
+                <StyledView className="p-2 rounded-lg space-y-1">
                   <StyledView className="flex-row items-center space-x-2">
                     <StyledText className="text-base text-dark font-PoppinsRegular">
                       Name:{' '}
