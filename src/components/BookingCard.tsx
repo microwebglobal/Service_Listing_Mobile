@@ -108,7 +108,7 @@ export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
                         ? 'bg-blue-100 rounded-2xl'
                         : booking.BookingPayment.payment_status ===
                           'advance_only_paid'
-                        ? 'bg-yellow-200 rounded-2xl'
+                        ? 'bg-yellow-100 rounded-2xl'
                         : 'bg-red-100'
                     }`,
                   )}>

@@ -11,54 +11,13 @@ import React, {useEffect, useState} from 'react';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {SERVER_BASE} from '@env';
 import {styled} from 'nativewind';
+import {ServiceType} from './types';
 import {instance} from '../../api/instance';
 import AppHeader from '../../components/AppHeader';
 import {Screen} from '../../navigation/RootNavigation';
 import {RenderService} from '../../components/RenderService';
 import {RenderPackage} from '../../components/RenderPackage';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
-
-interface CitySpecificPricing {
-  id: number;
-  city_id: string;
-  item_id: string;
-  item_type: string;
-  price: string;
-}
-
-export interface ServiceItem {
-  item_id: string;
-  service_id: string;
-  name: string;
-  description: string;
-  duration_hours: number;
-  duration_minutes: number;
-  overview: string;
-  base_price: string;
-  advance_percentage: string;
-  is_home_visit: boolean;
-  icon_url: string;
-  CitySpecificPricings: Array<CitySpecificPricing>;
-}
-
-export interface Service {
-  service_id: string;
-  type_id: string;
-  name: string;
-  description: string;
-  display_order: number;
-  icon_url: string;
-}
-
-export interface ServiceType {
-  type_id: string;
-  sub_category_id: string;
-  name: string;
-  icon_url: string;
-  description: string;
-  display_order: number;
-  Services: Array<Service>;
-}
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {

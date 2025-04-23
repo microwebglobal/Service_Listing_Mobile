@@ -11,21 +11,11 @@ import {
 import React, {useEffect, useState} from 'react';
 import {SERVER_BASE} from '@env';
 import {styled} from 'nativewind';
+import {SubCategory} from './types';
 import {instance} from '../../api/instance';
-import {ServiceType} from './ServiceTypeScreen';
 import AppHeader from '../../components/AppHeader';
 import {Screen, useNav} from '../../navigation/RootNavigation';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
-
-export interface SubCategory {
-  sub_category_id: string;
-  category_id: string;
-  name: string;
-  slug: string;
-  icon_url: string;
-  display_order: number;
-  ServiceTypes: Array<ServiceType>;
-}
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {

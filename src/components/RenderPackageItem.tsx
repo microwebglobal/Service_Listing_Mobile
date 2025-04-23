@@ -1,10 +1,10 @@
 import {View, Text} from 'react-native';
 import React from 'react';
-import { styled } from 'nativewind';
+import {styled} from 'nativewind';
 import {CheckBox} from '@rneui/themed';
 import {Colors} from '../utils/Colors';
-import {PackageItem} from './RenderPackage';
 import {ItemEntity} from '../redux/cart/cart.entity';
+import {PackageItem} from '../screens/category/types';
 
 interface RenderPackageItemProps {
   packageItems: Array<PackageItem>;
@@ -71,7 +71,9 @@ export const RenderPackageItem = ({
           </StyledView>
           <StyledText className="text-base text-black font-PoppinsMedium">
             {'₹'}
-            {item.price}
+            {item.CitySpecificPricings.length > 0
+              ? item.CitySpecificPricings[0].price
+              : item.price}
           </StyledText>
         </StyledView>
       ))}

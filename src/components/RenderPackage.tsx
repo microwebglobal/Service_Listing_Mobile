@@ -11,45 +11,7 @@ import {ItemEntity} from '../redux/cart/cart.entity';
 import {RenderPackageItem} from './RenderPackageItem';
 import Feather from 'react-native-vector-icons/Feather';
 import {addMultipleItems} from '../redux/cart/cart.slice';
-
-export interface PackageItem {
-  item_id: string;
-  section_id: string;
-  name: string;
-  description: string;
-  price: string;
-  is_default: boolean;
-  is_none_option: boolean;
-  display_order: number;
-  icon_url: string;
-}
-
-export interface PackageSections {
-  section_id: string;
-  package_id: string;
-  name: string;
-  description: string;
-  display_order: number;
-  icon_url: string;
-  PackageItems: Array<PackageItem>;
-}
-
-export interface Package {
-  package_id: string;
-  type_id: string;
-  name: string;
-  description: string;
-  duration_hours: number;
-  duration_minutes: number;
-  display_order: number;
-  icon_url: string;
-  ServiceType: {
-    name: string;
-    description: string;
-  };
-  PackageSections: Array<PackageSections>;
-  default_price: number;
-}
+import {Package, PackageItem, PackageSections} from '../screens/category/types';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -166,6 +128,12 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
                   </StyledView>
                 </StyledView>
               </StyledView>
+              {parseInt(item.advance_percentage, 10) !== 0 && (
+                <StyledText className="my-1 text-xs font-PoppinsRegular text-error">
+                  {item.advance_percentage}
+                  {'% Advanced Payment Required'}
+                </StyledText>
+              )}
             </>
           )}
 

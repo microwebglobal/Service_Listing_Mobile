@@ -10,8 +10,8 @@ import {useDispatch} from 'react-redux';
 import {instance} from '../api/instance';
 import Toast from 'react-native-toast-message';
 import {addItem} from '../redux/cart/cart.slice';
+import {Service, ServiceItem} from '../screens/category/types';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import {Service, ServiceItem} from '../screens/category/ServiceTypeScreen';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -92,7 +92,9 @@ export const RenderService = ({service}: {service: Service}) => {
               </StyledText>
               <StyledText className="my-1 text-base text-black font-PoppinsSemiBold">
                 {'₹'}
-                {item.base_price}
+                {item.CitySpecificPricings.length > 0
+                  ? item.CitySpecificPricings[0].price
+                  : item.base_price}
               </StyledText>
               {parseInt(item.advance_percentage, 10) !== 0 && (
                 <StyledText className="my-1 text-xs font-PoppinsRegular text-error">
