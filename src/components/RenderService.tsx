@@ -22,6 +22,7 @@ export const RenderService = ({service}: {service: Service}) => {
   const LocalCart = useAppSelector(state => state.cart.cart);
   const [isItemClicked, setIsItemClicked] = useState<boolean>(true);
   const [serviceItemData, setServiceItemData] = useState<ServiceItem[]>();
+  const cityId = useAppSelector((state: any) => state.address.cityId);
 
   useEffect(() => {
     instance
@@ -93,7 +94,11 @@ export const RenderService = ({service}: {service: Service}) => {
               <StyledText className="my-1 text-base text-black font-PoppinsSemiBold">
                 {'₹'}
                 {item.CitySpecificPricings.length > 0
-                  ? item.CitySpecificPricings[0].price
+                  ? item.CitySpecificPricings.map(element => {
+                      if (element.city_id === cityId) {
+                        return element.price;
+                      }
+                  })
                   : item.base_price}
               </StyledText>
               {parseInt(item.advance_percentage, 10) !== 0 && (

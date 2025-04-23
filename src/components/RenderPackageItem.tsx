@@ -3,6 +3,7 @@ import React from 'react';
 import {styled} from 'nativewind';
 import {CheckBox} from '@rneui/themed';
 import {Colors} from '../utils/Colors';
+import {useAppSelector} from '../redux';
 import {ItemEntity} from '../redux/cart/cart.entity';
 import {PackageItem} from '../screens/category/types';
 
@@ -21,6 +22,7 @@ export const RenderPackageItem = ({
   onPress,
 }: RenderPackageItemProps) => {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const cityId = useAppSelector((state: any) => state.address.cityId);
 
   const handleAddToCart = (item: PackageItem) => {
     cartItems.current = cartItems.current.filter(
@@ -72,7 +74,11 @@ export const RenderPackageItem = ({
           <StyledText className="text-base text-black font-PoppinsMedium">
             {'₹'}
             {item.CitySpecificPricings.length > 0
-              ? item.CitySpecificPricings[0].price
+              ? item.CitySpecificPricings.map(element => {
+                  if (element.city_id === cityId) {
+                    return element.price;
+                  }
+                })
               : item.price}
           </StyledText>
         </StyledView>
