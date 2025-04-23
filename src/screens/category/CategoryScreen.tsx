@@ -1,30 +1,20 @@
 import {
   View,
-  Text,
-  Image,
   FlatList,
   ScrollView,
   Dimensions,
   SafeAreaView,
-  TouchableOpacity,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {SERVER_BASE} from '@env';
+import {Category} from './types';
 import {styled} from 'nativewind';
+import {useAppSelector} from '../../redux';
 import {instance} from '../../api/instance';
 import AppHeader from '../../components/AppHeader';
-import {useNav} from '../../navigation/RootNavigation';
 import {useFocusEffect} from '@react-navigation/native';
+import {ServiceCard} from '../../components/ServiceCard';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-
-export interface Category {
-  category_id: string;
-  name: string;
-  slug: string;
-  icon_url: string;
-  display_order: number;
-}
 
 export interface City {
   city_id: string;
@@ -51,8 +41,6 @@ export interface Address {
 }
 
 const StyledView = styled(View);
-const StyledText = styled(Text);
-const StyledImage = styled(Image);
 const StyledFlatList = styled(FlatList);
 const StyledScrollView = styled(ScrollView);
 const StyledSafeAreaView = styled(SafeAreaView);
@@ -63,34 +51,17 @@ const RPW = (percentage: number) => {
 };
 
 export const CategoryScreen = () => {
-  const navigation = useNav();
   const tabBarHeight = useBottomTabBarHeight();
   const [isLoading, setIsLoading] = useState(true);
   const [categoryData, setCategoryData] = useState<Array<Category>>([]);
   const [cities, setCities] = useState<Array<City>>([]);
-  const [primaryAddress, setPrimaryAddress] = useState<Address>();
+  const cityId = useAppSelector((state: any) => state.address.cityId);
 
   useEffect(() => {
     instance
       .get('/cities')
       .then(response => {
         setCities(response.data);
-      })
-      .catch(e => {
-        console.log('Error ', e);
-      });
-  }, []);
-
-  const fetchAddress = useCallback(async () => {
-    setIsLoading(true);
-    await instance
-      .get('/users/addresses')
-      .then(response => {
-        setPrimaryAddress(
-          response.data.find((address: Address) => {
-            return address.is_primary === true;
-          }),
-        );
       })
       .catch(e => {
         console.log('Error ', e);
@@ -102,9 +73,8 @@ export const CategoryScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      fetchAddress();
       let cityData: any = cities.find((city: City) => {
-        return city.name === primaryAddress?.city;
+        return city.city_id === cityId;
       });
       if (cityData !== undefined) {
         setCategoryData(cityData.serviceCategories);
@@ -113,35 +83,8 @@ export const CategoryScreen = () => {
           setCategoryData([...city.serviceCategories]);
         });
       }
-    }, [cities, fetchAddress, primaryAddress?.city]),
+    }, [cities, cityId]),
   );
-
-  const _renderCategoryItem = ({item}: any) => {
-    return (
-      <StyledView className="basis-1/2 p-2 mt-2">
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('SubCategory', {
-              categoryId: item.category_id,
-              category: item.name,
-              imageUrl: item.icon_url,
-            });
-          }}>
-          <StyledView className="flex-1 items-center justify-center shadow-md shadow-black rounded-xl">
-            <StyledImage
-              className="w-full h-32 rounded-t-lg"
-              source={{uri: `${SERVER_BASE}${item.icon_url}`}}
-            />
-            <StyledView className="w-full px-3 items-center bg-white rounded-b-xl">
-              <StyledText className="my-2 text-sm text-black font-PoppinsRegular">
-                {item.name}
-              </StyledText>
-            </StyledView>
-          </StyledView>
-        </TouchableOpacity>
-      </StyledView>
-    );
-  };
 
   if (isLoading) {
     return <LoadingIndicator />;
@@ -162,7 +105,9 @@ export const CategoryScreen = () => {
             showsHorizontalScrollIndicator={false}
             data={categoryData}
             keyExtractor={(item: any) => item.category_id}
-            renderItem={_renderCategoryItem}
+            renderItem={({item}: any) => {
+              return <ServiceCard mode="category" category={item} />;
+            }}
           />
         </StyledView>
       </StyledScrollView>

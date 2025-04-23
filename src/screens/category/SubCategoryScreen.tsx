@@ -6,7 +6,6 @@ import {
   ScrollView,
   Dimensions,
   SafeAreaView,
-  TouchableOpacity,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SERVER_BASE} from '@env';
@@ -14,6 +13,7 @@ import {styled} from 'nativewind';
 import {SubCategory} from './types';
 import {instance} from '../../api/instance';
 import AppHeader from '../../components/AppHeader';
+import {ServiceCard} from '../../components/ServiceCard';
 import {Screen, useNav} from '../../navigation/RootNavigation';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
 
@@ -45,34 +45,6 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
       setIsLoading(false);
     }
   }, [categoryId, navigation]);
-
-  const _renderSubCategoryItem = ({item}: any) => {
-    return (
-      <StyledView className="basis-1/2 p-2 bg-white">
-        <TouchableOpacity
-          onPress={() => {
-            if (item.ServiceTypes.length > 0) {
-              navigation.navigate('ServiceType', {
-                subCategoryId: item.sub_category_id,
-                subCategory: item.name,
-              });
-            }
-          }}>
-          <StyledView className="flex-1 items-center justify-center bg-white shadow-md shadow-black rounded-xl">
-            <StyledImage
-              className="w-full h-32 rounded-t-lg"
-              source={{uri: `${SERVER_BASE}${item.icon_url}`}}
-            />
-            <StyledView className="w-full px-3 items-center bg-white rounded-b-xl">
-              <StyledText className="my-2 text-sm text-black font-PoppinsRegular">
-                {item.name}
-              </StyledText>
-            </StyledView>
-          </StyledView>
-        </TouchableOpacity>
-      </StyledView>
-    );
-  };
 
   if (isLoading) {
     return <LoadingIndicator />;
@@ -113,7 +85,9 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
                 showsHorizontalScrollIndicator={false}
                 data={subCategoryData}
                 keyExtractor={(item: any) => item.category_id}
-                renderItem={_renderSubCategoryItem}
+                renderItem={({item}: any) => {
+                  return <ServiceCard mode="subCategory" subCategory={item} />;
+                }}
               />
             ) : (
               <StyledView className="my-5">
