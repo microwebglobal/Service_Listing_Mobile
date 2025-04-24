@@ -11,14 +11,32 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {styled} from 'nativewind';
 import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
-import LottieView from 'lottie-react-native';
 import {Button} from '../../components/rneui';
-// import AppHeader from '../../components/AppHeader';
 import {useNav} from '../../navigation/RootNavigation';
 import {useFocusEffect} from '@react-navigation/native';
-import {Booking, BookingCard} from '../../components/BookingCard';
+import {BookingCard} from '../../components/BookingCard';
+import {BookingPayment, Provider} from '../booking/types';
+import {BookingItem} from '../booking/BookingDetailsScreen';
+import {LoadingIndicator} from '../../components/LoadingIndicator';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+
+export interface Booking {
+  booking_id: string;
+  user_id: number;
+  provider_id: string;
+  employee_id: number;
+  city_id: string;
+  booking_date: string;
+  start_time: string;
+  end_time: string;
+  status: string;
+  service_address: string;
+  customer_notes: string;
+  BookingItems: Array<BookingItem>;
+  BookingPayment: BookingPayment;
+  provider: Provider;
+}
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -82,7 +100,6 @@ export const BookingScreen = () => {
 
   return (
     <StyledSafeAreaView className="flex-1 bg-white">
-      {/* <AppHeader back={false} title="Your Activities" historyIcon={true}  /> */}
       <StyledView className="flex-row items-center pt-8 pb-2 bg-white ">
         <StyledView className="basis-1/4" />
         <StyledView className="basis-1/2 items-center">
@@ -180,16 +197,7 @@ const FetchBooking: React.FC<FetchBookingProps> = ({status, badgeCountRef}) => {
   );
 
   if (isLoading) {
-    return (
-      <StyledView className="items-center justify-center flex-1 bg-white">
-        <LottieView
-          source={require('../../assets/animations/loading.json')}
-          autoPlay
-          loop
-          style={{width: '60%', height: '10%'}}
-        />
-      </StyledView>
-    );
+    return <LoadingIndicator />;
   }
   return (
     <StyledSafeAreaView className="flex-1 bg-white">
@@ -217,16 +225,7 @@ const FetchBooking: React.FC<FetchBookingProps> = ({status, badgeCountRef}) => {
               showsVerticalScrollIndicator={false}
               keyExtractor={booking => booking.booking_id}
               renderItem={({item}) => <BookingCard booking={item} />}
-              ListFooterComponent={
-                isLoading ? (
-                  <LottieView
-                    source={require('../../assets/animations/loading.json')}
-                    autoPlay
-                    loop
-                    style={{width: '60%', height: '10%'}}
-                  />
-                ) : null
-              }
+              ListFooterComponent={isLoading ? <LoadingIndicator /> : null}
             />
           )}
         </StyledView>

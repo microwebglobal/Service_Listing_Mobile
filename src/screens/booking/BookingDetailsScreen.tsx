@@ -19,11 +19,12 @@ import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
 import {Button} from '../../components/rneui';
 import AppHeader from '../../components/AppHeader';
-import {Screen, useNav} from '../../navigation/RootNavigation';
+import {Package, ServiceItem} from '../category/types';
 import Feather from 'react-native-vector-icons/Feather';
+import {convertTo12HourFormat} from '../../utils/common';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import {ServiceItem} from '../category/ServiceTypeScreen';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {Screen, useNav} from '../../navigation/RootNavigation';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -37,6 +38,8 @@ export interface BookingItem {
   unit_price: string;
   special_price: number;
   total_price: number;
+  advance_payment: string;
+  service_commition: string;
   serviceItem: ServiceItem;
   packageItem: PackageItem;
 }
@@ -62,17 +65,6 @@ interface PackageSection {
   display_order: number;
   icon_url: string;
   Package: Package;
-}
-
-interface Package {
-  package_id: string;
-  type_id: string;
-  name: string;
-  description: string;
-  duration_hours: number;
-  duration_minutes: number;
-  display_order: number;
-  icon_url: string;
 }
 
 const screenWidth = Dimensions.get('window').width;
@@ -137,26 +129,6 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
           console.log(e.message);
         });
   }, [booking]);
-
-  function convertTo12HourFormat(timeString: string) {
-    const [hour, minute] = timeString.split(':');
-    let formattedHour = parseInt(hour, 10);
-    if (formattedHour > 12) {
-      formattedHour -= 12;
-      return `${formattedHour}:${minute} PM`;
-    }
-    return `${formattedHour}:${minute} AM`;
-  }
-
-  // function calculateDuration(startTime: string, endTime: string) {
-  //   const [startHour, startMinute] = startTime.split(':');
-  //   const [endHour, endMinute] = endTime.split(':');
-
-  //   return (
-  //     (parseInt(endHour, 10) - parseInt(startHour, 10)) * 60 +
-  //     Math.abs(parseInt(endMinute, 10) - parseInt(startMinute, 10))
-  //   );
-  // }
 
   const makeCall = (phone: string) => {
     let formattedPhoneNumber = `tel:${phone}`;
@@ -399,9 +371,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                 </StyledView>
               </>
             ) : (
-              <StyledView
-                className="mt-3"
-                style={{paddingHorizontal: RPW(4)}}>
+              <StyledView className="mt-3" style={{paddingHorizontal: RPW(4)}}>
                 <StyledView className="p-2 rounded-lg space-y-1">
                   <StyledView className="flex-row items-center space-x-2">
                     <StyledText className="text-base text-dark font-PoppinsRegular">

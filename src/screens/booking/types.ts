@@ -1,5 +1,4 @@
-import {PackageItem} from '../../components/RenderPackage';
-import {ServiceItem} from '../category/ServiceTypeScreen';
+import {PackageItem, ServiceItem} from '../category/types';
 
 export interface Booking {
   booking_id: string;
@@ -43,6 +42,13 @@ export interface BookingPayment {
   advance_payment: string;
   payment_method: string;
   payment_status: string;
+  transaction_id: string;
+  refund_id: string;
+  refund_amount: string;
+  service_commition: string;
+  refund_status: string;
+  cash_collected_at: string;
+  cash_collected_by: string;
 }
 
 export interface User {
@@ -85,7 +91,7 @@ export interface Employee {
   ServiceCategories: Array<ServiceCategory>;
 }
 
-interface Provider {
+export interface Provider {
   provider_id: number;
   user_id: number;
   enquiry_id: null;
