@@ -17,16 +17,17 @@ import {styled} from 'nativewind';
 import {useDispatch} from 'react-redux';
 import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
+import {Category} from '../category/types';
 import {instance} from '../../api/instance';
 import offerCardData from '../../data/offerList';
 import featuredData from '../../data/featuredData';
 import {Carousel} from '../../components/Carousel';
 import {useNav} from '../../navigation/RootNavigation';
 import {useFocusEffect} from '@react-navigation/native';
+import {Address, City} from '../category/CategoryScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {FeaturedCard} from '../../components/FeaturedCard';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
-import {Address, Category, City} from '../category/CategoryScreen';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {
   saveCityId,
@@ -114,7 +115,9 @@ export const HomeScreen = () => {
           setCategories([...city.serviceCategories]);
         });
         response.data.find((city: City) => {
-          if (city.name === primaryAddress?.city) {
+          if (
+            city.name.toLowerCase() === primaryAddress?.city.toLocaleLowerCase()
+          ) {
             dispatch(saveCityId(city.city_id));
           }
         });
@@ -142,14 +145,8 @@ export const HomeScreen = () => {
       return () => {
         BackHandler.removeEventListener('hardwareBackPress', handlerBackPress);
       };
-    }, [
-      getHour,
-      fetchUserData,
-      fetchAddress,
-      fetchCities,
-      primaryAddress,
-      dispatch,
-    ]),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [getHour, fetchUserData, fetchAddress, fetchCities, dispatch]),
   );
 
   const onRefresh = useCallback(() => {
