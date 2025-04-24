@@ -1,13 +1,11 @@
-import {Dispatch} from '@reduxjs/toolkit';
-import {dispatchable} from '../dispatchable';
 import {setId} from './user.slice';
 import {AxiosResponse} from 'axios';
+import {Dispatch} from '@reduxjs/toolkit';
 import {instance} from '../../api/instance';
+import {dispatchable} from '../dispatchable';
 import {LoginParams, LoginResponse} from './user.entity';
 import {saveTokenToStorage} from '../../utils/token-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import {AddressEntity} from '../address/address.entity';
-// import {clearAddressList} from '../address/address.slice';
 
 export function extractToken(cookieString: string, tokenName: string) {
   const tokenRegex = new RegExp(`${tokenName}=([^;]+)`);
@@ -23,7 +21,14 @@ export const userLogin = dispatchable(({mobile, otp}: LoginParams) => {
         {mobile, otp},
       );
 
-      const cookieString: Array<string> = response.headers['set-cookie'];
+      const cookieString: Array<string> | undefined =
+        response.headers['set-cookie'];
+      if (!cookieString) {
+        return {
+          success: false,
+          error: 'No cookies found in the response',
+        };
+      }
       const accessToken = extractToken(cookieString[0], 'accessToken');
       const refreshToken = extractToken(cookieString[0], 'refreshToken');
 
@@ -53,7 +58,14 @@ export const refreshTokens = dispatchable(() => {
     try {
       const response = await instance.post('/auth/refresh');
 
-      const cookieString: Array<string> = response.headers['set-cookie'];
+      const cookieString: Array<string> | undefined =
+        response.headers['set-cookie'];
+      if (!cookieString) {
+        return {
+          success: false,
+          error: 'No cookies found in the response',
+        };
+      }
       const accessToken = extractToken(cookieString[0], 'accessToken');
       const refreshToken = extractToken(cookieString[0], 'refreshToken');
 
@@ -85,35 +97,3 @@ export const userLogout = dispatchable(() => {
     }
   };
 });
-
-// export const addressUpdate = dispatchable(
-//   (addressList: Array<AddressEntity>) => {
-//     return async (dispatch: Dispatch) => {
-//       addressList.map(async (address: AddressEntity) => {
-//         try {
-//           const result = await instance.post('/users/addresses', {
-//             type: address?.type,
-//             line1: address?.line1,
-//             line2: address?.line2,
-//             city: address?.city,
-//             state: address?.state,
-//             postal_code: address?.postal_code,
-//           });
-
-//           if (result.status === 200) {
-//             return {
-//               success: true,
-//             };
-//           }
-//         } catch (error: any) {
-//           return {
-//             success: false,
-//             error: error.message,
-//           };
-//         }
-//       });
-//       dispatch(clearAddressList());
-//       return {success: true};
-//     };
-//   },
-// );

@@ -27,5 +27,5 @@ export interface LoginResponse {
 }
 
 export interface UserState {
-  user: UserDetailEntity;
+  user: UserDetailEntity | null;
 }
