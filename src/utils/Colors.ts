@@ -5,6 +5,9 @@ export enum Colors {
   White = '#FFFFFF',
   LightGrey = '#EFEFFA',
   Yellow = '#eab308',
+  Green = '#22c55e',
   Error = '#d33646',
   Black = '#000',
+  primaryGreyHex = '#252A32',
+  primaryBlackHex = '#0C0F14',
 }

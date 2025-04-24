@@ -227,9 +227,13 @@ export const AccountScreen = () => {
             icon_name: 'help-circle-outline',
           })}
           {sectionItem({
-            title: 'Payment',
+            title: 'Wallet',
             edit: true,
             icon_name: 'wallet-outline',
+            onPress: () =>
+              navigation.navigate('Wallet', {
+                accBalance: userData?.acc_balance || '0',
+              }),
           })}
           {sectionItem({
             title: 'About Us',

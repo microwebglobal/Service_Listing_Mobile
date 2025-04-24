@@ -36,6 +36,8 @@ export interface UserData {
   gender: string;
   email_verified: boolean;
   mobile_verified: boolean;
+  acc_balance: string;
+  balance_updated_at: string;
 }
 
 interface sectionItemProps {

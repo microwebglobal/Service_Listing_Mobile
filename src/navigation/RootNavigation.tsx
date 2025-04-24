@@ -33,6 +33,7 @@ export type RootStackParamList = {
   AboutUs: undefined;
   Terms: undefined;
   Privacy: undefined;
+  Wallet: {accBalance: string};
 };
 
 export type NavigationHookType = NativeStackNavigationProp<RootStackParamList>;

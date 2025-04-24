@@ -33,6 +33,7 @@ import {BookingHistoryScreen} from '../screens/booking/BookingHistoryScreen';
 import {AccountScreen} from '../screens/profile/AccountScreen';
 import {TermsScreen} from '../screens/profile/TermsScreen';
 import {AboutUsScreen} from '../screens/profile/AboutUsScreen';
+import {WalletScreen} from '../screens/profile/WalletScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -89,9 +90,7 @@ export const RootNavigator: React.FC = () => {
     <NavigationContainer
       linking={linking}
       fallback={<ActivityIndicator animating />}>
-      <Stack.Navigator
-        initialRouteName="Splash"
-        screenOptions={screenOptions}>
+      <Stack.Navigator initialRouteName="Splash" screenOptions={screenOptions}>
         <Stack.Screen
           name="TabNavigator"
           component={TabNavigator}
@@ -120,6 +119,7 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="AboutUs" component={AboutUsScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+        <Stack.Screen name="Wallet" component={WalletScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
