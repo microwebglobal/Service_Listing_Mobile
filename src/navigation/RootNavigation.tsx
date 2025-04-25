@@ -14,7 +14,7 @@ export type RootStackParamList = {
   TabNavigator: undefined;
   HomeScreen: undefined;
   AccountScreen: undefined;
-  Profile: undefined;
+  Profile: {completedCount: number; totalCount: number};
   Category: undefined;
   SubCategory: {categoryId: string; category: string; imageUrl: string};
   ServiceType: {subCategoryId: string; subCategory: string};

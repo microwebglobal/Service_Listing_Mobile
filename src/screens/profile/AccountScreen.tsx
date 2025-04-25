@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {styled} from 'nativewind';
 import {Dialog} from '@rneui/base';
 import {useDispatch} from 'react-redux';
@@ -30,6 +30,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import classNames from 'classnames';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -59,15 +60,43 @@ export const AccountScreen = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userData, setUserData] = React.useState<UserData>();
   const user = useAppSelector(state => state.user.user);
+  const [count, setCount] = useState<number>(0);
+  const optionalFields = useMemo(
+    () => ['email_verified', 'mobile_verified'],
+    [],
+  );
+  const requiredFields = useMemo(
+    () => ['email', 'gender', 'nic', 'dob', 'mobile', 'photo'],
+    [],
+  );
+
+  const calProgressBarCount = useCallback(
+    (userDetails: UserData) => {
+      let completedCount = 0;
+      requiredFields.forEach(field => {
+        if (userDetails?.[field as keyof UserData]) {
+          completedCount++;
+        }
+      });
+      optionalFields.forEach(field => {
+        if (userDetails?.[field as keyof UserData]) {
+          completedCount++;
+        }
+      });
+      setCount(completedCount);
+    },
+    [optionalFields, requiredFields],
+  );
 
   useFocusEffect(
     useCallback(() => {
       instance.get(`/customer-profiles/user/${user?.id}`).then(response => {
         setUserData(response.data);
+        calProgressBarCount(response.data);
         dispatch(setId(response.data.u_id));
         setIsLoading(false);
       });
-    }, [dispatch, user?.id]),
+    }, [calProgressBarCount, dispatch, user?.id]),
   );
 
   const toggleDialog = () => {
@@ -164,7 +193,12 @@ export const AccountScreen = () => {
           <StyledView className="-mt-6 items-center justify-center">
             <StyledTouchableOpacity
               className="flex-row items-center space-x-1"
-              onPress={() => navigation.navigate('Profile')}>
+              onPress={() =>
+                navigation.navigate('Profile', {
+                  completedCount: count,
+                  totalCount: requiredFields.length + optionalFields.length,
+                })
+              }>
               <StyledText className="text-black text-lg font-PoppinsMedium">
                 {userData?.name ? userData.name : 'Your Name'}
               </StyledText>
@@ -180,14 +214,19 @@ export const AccountScreen = () => {
             <Button
               size="sm"
               title="Premium Plus User"
-              onPress={() => navigation.navigate('Profile')}
+              onPress={() =>
+                navigation.navigate('Profile', {
+                  completedCount: count,
+                  totalCount: requiredFields.length + optionalFields.length,
+                })
+              }
             />
           </StyledView>
 
           <StyledView className="p-3 bg-lightGrey rounded-lg">
             <StyledView className="flex-row justify-between">
               <StyledText className="text-black font-PoppinsRegular">
-                8 of 10{' '}
+                {count} of {requiredFields.length + optionalFields.length}{' '}
                 <StyledText className="text-primary font-PoppinsRegular">
                   complete
                 </StyledText>
@@ -196,9 +235,31 @@ export const AccountScreen = () => {
                 Complete now
               </StyledText>
             </StyledView>
-            <StyledView className="my-3 flex-row items-center">
-              <StyledView className="basis-10/12 h-1 bg-primary rounded-full" />
-              <StyledView className="basis-2/12 h-1 bg-white rounded-full" />
+            <StyledView className="flex-1 my-3 flex-row items-center">
+              <StyledView
+                className={classNames(
+                  `h-1 bg-primary rounded-full , ${
+                    count === 0
+                      ? 'basis-0'
+                      : count === 1
+                      ? 'basis-1/12'
+                      : count === 2
+                      ? 'basis-2/12'
+                      : count === 3
+                      ? 'basis-4/12'
+                      : count === 4
+                      ? 'basis-6/12'
+                      : count === 5
+                      ? 'basis-7/12'
+                      : count === 6
+                      ? 'basis-9/12'
+                      : count === 7
+                      ? 'basis-11/12'
+                      : 'basis-full'
+                  }`,
+                )}
+              />
+              <StyledView className={'flex-1 h-1 bg-white rounded-full'} />
             </StyledView>
             <StyledText className="text-black text-sm font-PoppinsRegular">
               {

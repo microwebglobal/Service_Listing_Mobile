@@ -8,14 +8,15 @@ import {
 } from 'react-native';
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {styled} from 'nativewind';
+import classNames from 'classnames';
 import {useDispatch} from 'react-redux';
 import {Colors} from '../../utils/Colors';
 import {useAppSelector} from '../../redux';
 import {instance} from '../../api/instance';
 import {setId} from '../../redux/user/user.slice';
 import AppHeader from '../../components/AppHeader';
-import {useNav} from '../../navigation/RootNavigation';
 import {useFocusEffect} from '@react-navigation/native';
+import {Screen, useNav} from '../../navigation/RootNavigation';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import BottomSheet, {
@@ -59,7 +60,8 @@ const StyledScrollView = styled(ScrollView);
 const StyledSafeAreaView = styled(SafeAreaView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
-export const ProfileScreen = () => {
+export const ProfileScreen: Screen<'Profile'> = ({route}) => {
+  const {completedCount, totalCount} = route.params;
   const navigation = useNav();
   const dispatch = useDispatch();
   const snapPoints = useMemo(() => ['30%'], []);
@@ -187,13 +189,36 @@ export const ProfileScreen = () => {
               'Additional information you give will help us provide you a more personalized experience.'
             }
           </StyledText>
-          <StyledView className="my-3 flex-row items-center">
-            <StyledView className="basis-10/12 h-1 bg-primary rounded-full" />
-            <StyledView className="basis-2/12 h-1 bg-white rounded-full" />
+          <StyledView className="flex-1 my-3 flex-row items-center">
+            <StyledView
+              className={classNames(
+                `h-1 bg-primary rounded-full , ${
+                  completedCount === 0
+                    ? 'basis-0'
+                    : completedCount === 1
+                    ? 'basis-1/12'
+                    : completedCount === 2
+                    ? 'basis-2/12'
+                    : completedCount === 3
+                    ? 'basis-4/12'
+                    : completedCount === 4
+                    ? 'basis-6/12'
+                    : completedCount === 5
+                    ? 'basis-7/12'
+                    : completedCount === 6
+                    ? 'basis-9/12'
+                    : completedCount === 7
+                    ? 'basis-11/12'
+                    : 'basis-full'
+                }`,
+              )}
+            />
+            <StyledView className={'flex-1 h-1 bg-white rounded-full'} />
           </StyledView>
           <StyledView className="flex-row justify-between">
             <StyledText className="text-black font-PoppinsRegular">
-              8 of 10 <StyledText className="text-primary">complete</StyledText>
+              {completedCount} of {totalCount}{' '}
+              <StyledText className="text-primary">complete</StyledText>
             </StyledText>
             <StyledView className="flex-row items-center space-x-1">
               <Text className="text-primary">Your information is secure</Text>

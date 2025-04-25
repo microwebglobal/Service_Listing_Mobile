@@ -29,7 +29,9 @@ const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const WalletScreen: Screen<'Wallet'> = ({route}) => {
   const {accBalance} = route.params;
-  const isMinus = useState<boolean>(parseFloat(accBalance) < 0 ? true : false);
+  const [isMinus, setIsMinus] = useState<boolean>(
+    parseFloat(accBalance) < 0 ? true : false,
+  );
 
   return (
     <StyledSafeAreaView className="flex-1 bg-white">
