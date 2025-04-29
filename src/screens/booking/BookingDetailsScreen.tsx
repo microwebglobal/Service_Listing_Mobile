@@ -587,7 +587,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                         Total
                       </StyledText>
                     </StyledView>
-                    <StyledText className="text-base text-black font-semibold">
+                    <StyledText className="text-base text-black font-PoppinsSemiBold">
                       {'₹'}
                       {(
                         parseFloat(booking.BookingPayment.total_amount) -

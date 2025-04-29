@@ -57,6 +57,7 @@ export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
                   'confirmed',
                   'accepted',
                   'in_progress',
+                  'assigned',
                 ].some(status => booking.status === status) ? (
                   <StyledText className="text-sm text-dark font-PoppinsRegular">
                     {new Date(booking.booking_date).toLocaleString('en-us', {
@@ -85,9 +86,13 @@ export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
               </StyledView>
             </StyledView>
 
-            {['payment_pending', 'confirmed', 'accepted', 'in_progress'].some(
-              status => booking.status === status,
-            ) && (
+            {[
+              'payment_pending',
+              'confirmed',
+              'accepted',
+              'in_progress',
+              'assigned',
+            ].some(status => booking.status === status) && (
               <StyledView className="mt-1 flex-row justify-between items-center">
                 <StyledText className="text-sm text-black font-PoppinsRegular">
                   Payment status

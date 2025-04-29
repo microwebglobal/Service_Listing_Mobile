@@ -176,7 +176,9 @@ const FetchBooking: React.FC<FetchBookingProps> = ({status, badgeCountRef}) => {
       .then(res => {
         let temp = res.data.filter((booking: Booking) => {
           return status === 'confirmed'
-            ? booking.status === status || booking.status === 'payment_pending'
+            ? booking.status === status ||
+                booking.status === 'payment_pending' ||
+                booking.status === 'assigned'
             : booking.status === status;
         });
         setBookings(temp);
@@ -243,7 +245,7 @@ const Pending: React.FC<TabProps> = ({badgeCountRef}) => {
 };
 
 const Assigned: React.FC<TabProps> = ({badgeCountRef}) => {
-  return <FetchBooking status="assigned" badgeCountRef={badgeCountRef} />;
+  return <FetchBooking status="accepted" badgeCountRef={badgeCountRef} />;
 };
 
 const InProgress: React.FC<TabProps> = ({badgeCountRef}) => {
