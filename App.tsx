@@ -7,6 +7,7 @@ import {Colors} from './src/utils/Colors';
 import {useColorScheme} from 'nativewind';
 import {persistor, store} from './src/redux';
 import messaging from '@react-native-firebase/messaging';
+import {socket, SocketContext} from './src/context/socket';
 import {PersistGate} from 'redux-persist/integration/react';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {ButtonProps, createTheme, ThemeProvider} from '@rneui/themed';
@@ -174,14 +175,16 @@ function App(): React.JSX.Element {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <GestureHandlerRootView>
-          <ThemeProvider theme={theme}>
-            <SafeAreaProvider>
-              <RootNavigator />
-              <Toast config={toastConfig} position="top" topOffset={60} />
-            </SafeAreaProvider>
-          </ThemeProvider>
-        </GestureHandlerRootView>
+        <SocketContext.Provider value={socket}>
+          <GestureHandlerRootView>
+            <ThemeProvider theme={theme}>
+              <SafeAreaProvider>
+                <RootNavigator />
+                <Toast config={toastConfig} position="top" topOffset={60} />
+              </SafeAreaProvider>
+            </ThemeProvider>
+          </GestureHandlerRootView>
+        </SocketContext.Provider>
       </PersistGate>
     </Provider>
   );
