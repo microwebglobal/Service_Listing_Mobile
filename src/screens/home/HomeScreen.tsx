@@ -11,7 +11,7 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useContext, useRef, useState} from 'react';
 import {SERVER_BASE} from '@env';
 import {styled} from 'nativewind';
 import {useDispatch} from 'react-redux';
@@ -33,6 +33,8 @@ import {
   saveCityId,
   savePrimaryAddress,
 } from '../../redux/address/address.slice';
+import { SocketContext } from '../../context/socket';
+import { getOtpFromSocket } from '../../utils/common';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -68,6 +70,7 @@ export const HomeScreen = () => {
     outputRange: [0, -100],
     extrapolate: 'clamp',
   });
+  const socket = useContext(SocketContext);
 
   const fetchUserData = useCallback(async () => {
     await instance.get(`/customer-profiles/user/${user?.id}`).then(response => {
@@ -133,6 +136,7 @@ export const HomeScreen = () => {
       fetchUserData();
       fetchAddress();
       fetchCities();
+      getOtpFromSocket({socket, userId: user?.id!});
       // Set the address in the redux store
       if (primaryAddress) {
         const addressPrefix = primaryAddress.line2
