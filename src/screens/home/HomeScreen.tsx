@@ -33,8 +33,8 @@ import {
   saveCityId,
   savePrimaryAddress,
 } from '../../redux/address/address.slice';
-import { SocketContext } from '../../context/socket';
-import { getOtpFromSocket } from '../../utils/common';
+import {SocketContext} from '../../context/socket';
+import {getOtpFromSocket} from '../../utils/common';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -114,13 +114,11 @@ export const HomeScreen = () => {
     await instance
       .get('/cities')
       .then(response => {
-        response.data.map((city: City) => {
-          setCategories([...city.serviceCategories]);
-        });
         response.data.find((city: City) => {
           if (
             city.name.toLowerCase() === primaryAddress?.city.toLocaleLowerCase()
           ) {
+            setCategories(city.serviceCategories);
             dispatch(saveCityId(city.city_id));
           }
         });
@@ -191,7 +189,7 @@ export const HomeScreen = () => {
         <StyledTouchableOpacity
           className="mx-[6]"
           onPress={() => {
-            navigation.navigate('TabNavigator', {
+            navigation.navigate('TabNavigator' as any, {
               screen: 'Service',
             });
           }}>

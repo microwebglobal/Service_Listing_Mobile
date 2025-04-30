@@ -102,7 +102,7 @@ export const RenderService = ({service}: {service: Service}) => {
                   : item.base_price}
               </StyledText>
               {parseInt(item.advance_percentage, 10) !== 0 && (
-                <StyledText className="my-1 text-xs font-PoppinsRegular text-error">
+                <StyledText className="my-1 text-xs font-PoppinsRegular text-primary">
                   {item.advance_percentage}
                   {'% Advanced Payment Required'}
                 </StyledText>
@@ -111,8 +111,8 @@ export const RenderService = ({service}: {service: Service}) => {
                 {item.description}
               </StyledText>
               {item.is_home_visit && (
-                <StyledText className="my-2 text-xs font-PoppinsRegular text-error">
-                  You need to visit service provider to get an service
+                <StyledText className="my-2 text-xs font-PoppinsRegular text-primary">
+                  You need to visit service provider to get this service
                 </StyledText>
               )}
             </StyledView>

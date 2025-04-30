@@ -129,7 +129,7 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
                 </StyledView>
               </StyledView>
               {parseInt(item.advance_percentage, 10) !== 0 && (
-                <StyledText className="my-1 text-xs font-PoppinsRegular text-error">
+                <StyledText className="my-1 text-xs font-PoppinsRegular text-primary">
                   {item.advance_percentage}
                   {'% Advanced Payment Required'}
                 </StyledText>

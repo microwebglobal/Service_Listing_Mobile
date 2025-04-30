@@ -69,7 +69,7 @@ export const SignUpScreen: Screen<'SignUp'> = () => {
     // imageURI && (data.photo = imageURI);
 
     await instance
-      .put(`/users/profile/${user.id}`, {
+      .put(`/users/profile/${user?.id}`, {
         name: data.name,
         email: data.email,
         gender: genValue,
