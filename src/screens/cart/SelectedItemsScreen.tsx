@@ -76,7 +76,7 @@ export const SelectedItemsScreen = () => {
                   size="md"
                   title="Explore Services"
                   onPress={() => {
-                    navigation.navigate('TabNavigator', {
+                    navigation.navigate('TabNavigator' as any, {
                       screen: 'Service',
                     });
                   }}
