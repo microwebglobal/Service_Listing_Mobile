@@ -134,5 +134,6 @@ export interface Provider {
     name: string;
     email: string;
     mobile: string;
+    photo: string;
   };
 }

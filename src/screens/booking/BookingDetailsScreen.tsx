@@ -269,129 +269,122 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                 Provider Details
               </StyledText>
             </StyledView>
-            {booking.provider.business_type === 'business' ? (
-              <>
-                <StyledView
-                  className="mt-3"
-                  style={{paddingHorizontal: RPW(4)}}>
-                  <StyledView className="space-y-1">
-                    {/* <StyledView className="flex-row items-center space-x-2">
-                      <Text className="text-base text-dark">
-                        Business Name:{' '}
-                      </Text>
-                      <Text className="text-base text-black">
-                        {booking.provider.business_name}
-                      </Text>
-                    </StyledView>
-                    <StyledView className="flex-row items-center space-x-2">
-                      <Text className="text-base text-dark">Whatsapp:</Text>
-                      <Text className="text-base text-black">
-                        {booking.provider.whatsapp_number}
-                      </Text>
-                    </StyledView> */}
-
-                    <StyledView>
-                      {/* <TouchableOpacity
-                        className="flex-row space-x-2"
-                        onPress={() => {
-                          setIsChecked(!isChecked);
-                        }}>
-                        {booking.employee_id !== null && !isChecked && (
-                          <Text className="text-base text-primary">
-                            StyledView more...
-                          </Text>
-                        )}
-                      </TouchableOpacity> */}
-
-                      {booking.employee_id !== null &&
-                        employee !== undefined && (
+            <StyledView className="mt-3" style={{paddingHorizontal: RPW(4)}}>
+              <StyledView className="space-y-1">
+                {booking.provider.business_type === 'business' ? (
+                  <StyledView>
+                    {booking.employee_id !== null && employee !== undefined && (
+                      <StyledView>
+                        <StyledView className="flex-row items-center space-x-4">
                           <StyledView>
-                            <StyledView className="flex-row items-center space-x-4">
+                            {employee.User.photo !== null ? (
+                              <StyledImage
+                                source={{
+                                  uri: `${SERVER_BASE}${booking.employee.User.photo}`,
+                                }}
+                                className="w-16 h-16"
+                              />
+                            ) : (
+                              <StyledImage
+                                source={require('../../assets/app-images/emptyProfile.png')}
+                                className="w-16 h-16"
+                              />
+                            )}
+                          </StyledView>
+
+                          <StyledView className="flex-1 space-y-1">
+                            <StyledView className="flex-row items-center space-x-2">
+                              <StyledText className="text-base text-black font-PoppinsRegular">
+                                {employee.User.name}
+                              </StyledText>
+                            </StyledView>
+                            <StyledView className="flex-row items-center space-x-2">
+                              <StyledText className="text-base text-black font-PoppinsRegular">
+                                {booking.provider.business_name}
+                              </StyledText>
+                            </StyledView>
+
+                            <StyledView className="flex-row items-center justify-between">
                               <StyledView>
-                                {employee.User.photo !== null ? (
-                                  <StyledImage
-                                    source={{
-                                      uri: `${SERVER_BASE}${booking.employee.User.photo}`,
-                                    }}
-                                    className="w-16 h-16"
-                                  />
-                                ) : (
-                                  <StyledImage
-                                    source={require('../../assets/app-images/emptyProfile.png')}
-                                    className="w-16 h-16"
-                                  />
-                                )}
+                                <StyledText className="text-base text-dark font-PoppinsRegular">
+                                  {employee.User.mobile}
+                                </StyledText>
                               </StyledView>
-
-                              <StyledView className="flex-1 space-y-1">
-                                <StyledView className="flex-row items-center space-x-2">
-                                  <StyledText className="text-base text-black font-PoppinsRegular">
-                                    {employee.User.name}
-                                  </StyledText>
-                                </StyledView>
-                                <StyledView className="flex-row items-center space-x-2">
-                                  <StyledText className="text-base text-black font-PoppinsRegular">
-                                    {booking.provider.business_name}
-                                  </StyledText>
-                                </StyledView>
-
-                                <StyledView className="flex-row items-center justify-between">
-                                  <StyledView>
-                                    <StyledText className="text-base text-dark font-PoppinsRegular">
-                                      {employee.User.mobile}
-                                    </StyledText>
-                                  </StyledView>
-                                  <StyledView className="mr-1">
-                                    <StyledTouchableOpacity
-                                      onPress={() =>
-                                        makeCall(employee.User.mobile)
-                                      }>
-                                      <Feather
-                                        name="phone-call"
-                                        size={20}
-                                        color={Colors.Primary}
-                                      />
-                                    </StyledTouchableOpacity>
-                                  </StyledView>
-                                </StyledView>
+                              <StyledView className="mr-1">
+                                <StyledTouchableOpacity
+                                  onPress={() =>
+                                    makeCall(employee.User.mobile)
+                                  }>
+                                  <Feather
+                                    name="phone-call"
+                                    size={20}
+                                    color={Colors.Primary}
+                                  />
+                                </StyledTouchableOpacity>
                               </StyledView>
                             </StyledView>
-                            {/* <TouchableOpacity
-                              onPress={() => {
-                                setIsChecked(!isChecked);
-                              }}>
-                              <Text className="mt-2 text-base text-primary">
-                                StyledView less
-                              </Text>
-                            </TouchableOpacity> */}
                           </StyledView>
+                        </StyledView>
+                      </StyledView>
+                    )}
+                  </StyledView>
+                ) : (
+                  <StyledView>
+                    <StyledView className="flex-row items-center space-x-4">
+                      <StyledView>
+                        {booking.provider.User.photo !== null &&
+                        booking.provider.User.photo ? (
+                          <StyledImage
+                            source={{
+                              uri: `${SERVER_BASE}${booking.provider.User.photo}`,
+                            }}
+                            className="w-16 h-16"
+                          />
+                        ) : (
+                          <StyledImage
+                            source={require('../../assets/app-images/emptyProfile.png')}
+                            className="w-16 h-16"
+                          />
                         )}
+                      </StyledView>
+
+                      <StyledView className="flex-1 space-y-1">
+                        <StyledView className="flex-row items-center space-x-2">
+                          <StyledText className="text-base text-black font-PoppinsRegular">
+                            {booking.provider.User.name}
+                          </StyledText>
+                        </StyledView>
+                        <StyledView className="flex-row items-center space-x-2">
+                          <StyledText className="text-base text-black font-PoppinsRegular">
+                            {booking.provider.User.email}
+                          </StyledText>
+                        </StyledView>
+
+                        <StyledView className="flex-row items-center justify-between">
+                          <StyledView>
+                            <StyledText className="text-base text-dark font-PoppinsRegular">
+                              {booking.provider.User.mobile}
+                            </StyledText>
+                          </StyledView>
+                          <StyledView className="mr-1">
+                            <StyledTouchableOpacity
+                              onPress={() =>
+                                makeCall(booking.provider.User.mobile)
+                              }>
+                              <Feather
+                                name="phone-call"
+                                size={20}
+                                color={Colors.Primary}
+                              />
+                            </StyledTouchableOpacity>
+                          </StyledView>
+                        </StyledView>
+                      </StyledView>
                     </StyledView>
                   </StyledView>
-                </StyledView>
-              </>
-            ) : (
-              <StyledView className="mt-3" style={{paddingHorizontal: RPW(4)}}>
-                <StyledView className="p-2 rounded-lg space-y-1">
-                  <StyledView className="flex-row items-center space-x-2">
-                    <StyledText className="text-base text-dark font-PoppinsRegular">
-                      Name:{' '}
-                    </StyledText>
-                    <StyledText className="text-base text-black font-PoppinsRegular">
-                      {booking.provider.User.name}
-                    </StyledText>
-                  </StyledView>
-                  <StyledView className="flex-row items-center space-x-2">
-                    <StyledText className="text-base text-dark font-PoppinsRegular">
-                      Mobile:
-                    </StyledText>
-                    <StyledText className="text-base text-black font-PoppinsRegular">
-                      {booking.provider.User.mobile}
-                    </StyledText>
-                  </StyledView>
-                </StyledView>
+                )}
               </StyledView>
-            )}
+            </StyledView>
           </StyledView>
         )}
         <StyledView className="h-1 bg-lightGrey" />
