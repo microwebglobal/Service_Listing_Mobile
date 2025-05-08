@@ -14,12 +14,12 @@ import {Booking} from '../booking/types';
 import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
 import {Button} from '../../components/rneui';
+import Toast from 'react-native-toast-message';
 import AppHeader from '../../components/AppHeader';
 import {useNav} from '../../navigation/RootNavigation';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Toast from 'react-native-toast-message';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -40,7 +40,6 @@ export const PaymentScreen = ({route}: any) => {
     'Bank Transfer',
     'Pay After Service Completed',
   ];
-  //   const [paymentMethod, setPaymentMethod] = useState<string>();
   const [selectedIndex, setIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [booking, setBooking] = useState<Booking>();
@@ -64,7 +63,6 @@ export const PaymentScreen = ({route}: any) => {
   const submit = useCallback(async () => {
     setLoading(true);
     await instance
-      // .post(`/booking/${bookingId}/complete-cash-payment`)
       .post('/book/payment', {
         bookingId: bookingId,
         paymentMethod:
@@ -75,9 +73,18 @@ export const PaymentScreen = ({route}: any) => {
             : 'cash',
         paymentType: paymentType,
       })
-      .then(function () {
-        showToast();
-        navigation.navigate('TabNavigator');
+      .then(response => {
+        if (selectedIndex === 0) {
+          navigation.navigate('PGScreen', {
+            url: response.data.checkoutPageUrl,
+            bookingId: bookingId,
+          });
+        } else {
+          showToast();
+          navigation.navigate('TabNavigator' as any, {
+            screen: 'Booking',
+          });
+        }
       })
       .catch(function (e) {
         console.log(e.message);
@@ -102,7 +109,6 @@ export const PaymentScreen = ({route}: any) => {
       <StyledTouchableOpacity
         key={index}
         onPress={() => {
-          //   setPaymentMethod(method);
           setIndex(index);
         }}>
         <StyledView className="flex-row border-0 rounded-lg items-center">
@@ -313,7 +319,7 @@ export const PaymentScreen = ({route}: any) => {
             <Button
               loading={loading}
               primary
-              title="Confirm cash payment"
+              title="Confirm payment"
               onPress={() => {
                 submit();
               }}
