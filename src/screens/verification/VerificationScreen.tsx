@@ -38,7 +38,7 @@ const StyledKeyboardAvoidingView = styled(KeyboardAvoidingView);
 const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const VerificationScreen: Screen<'Verification'> = ({route}) => {
-  const {phone} = route.params;
+  const {phone, method} = route.params;
   const navigation = useNav();
   const [loading, setLoading] = useState<boolean>(false);
   const [count, setCount] = useState<number>(60);
@@ -72,6 +72,7 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
     axios
       .post(`${API_BASE}/auth/customer/login/send-otp`, {
         mobile: phone,
+        method: method,
       })
       .then(response => {
         console.log(response.data);

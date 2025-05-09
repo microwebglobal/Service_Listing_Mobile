@@ -7,15 +7,20 @@ import {
   ScrollView,
   SafeAreaView,
   KeyboardAvoidingView,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useState} from 'react';
 import axios from 'axios';
 import {API_BASE} from '@env';
 import {styled} from 'nativewind';
+import classNames from 'classnames';
+import {Colors} from '../../utils/Colors';
 import {Button} from '../../components/rneui';
 import {Controller, useForm} from 'react-hook-form';
 import InputField from '../../components/InputFeild';
 import {useNav} from '../../navigation/RootNavigation';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 interface SignInData {
   phone: string;
@@ -35,6 +40,7 @@ const StyledText = styled(Text);
 const StyledImage = styled(Image);
 const StyledScrollView = styled(ScrollView);
 const StyledSafeAreaView = styled(SafeAreaView);
+const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const SignInScreen = () => {
   const navigation = useNav();
@@ -44,15 +50,20 @@ export const SignInScreen = () => {
     handleSubmit,
     formState: {errors},
   } = useForm<SignInData>();
+  const [method, setMethod] = useState<'sms' | 'whatsapp'>('sms');
 
   const submit = (data: SignInData) => {
     setLoading(true);
     axios
       .post(`${API_BASE}/auth/customer/login/send-otp`, {
         mobile: data.phone,
+        method: method,
       })
       .then(() => {
-        navigation.navigate('Verification', {phone: data.phone});
+        navigation.navigate('Verification', {
+          phone: data.phone,
+          method: method,
+        });
       })
       .catch(error => {
         console.log(error);
@@ -60,6 +71,26 @@ export const SignInScreen = () => {
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  const renderOTPMethod = (methodName: 'sms' | 'whatsapp') => {
+    return (
+      <StyledTouchableOpacity
+        className={classNames({
+          'flex-row items-center my-1 space-x-2 p-2 rounded-full': true,
+          'bg-lightGrey': methodName === method,
+        })}
+        onPress={() => setMethod(methodName)}>
+        {methodName === 'whatsapp' ? (
+          <Ionicons name="logo-whatsapp" size={25} color={Colors.Primary} />
+        ) : (
+          <AntDesign name="message1" size={23} color={Colors.Primary} />
+        )}
+        <StyledText className="text-sm text-black font-PoppinsRegular first-letter:capitalize">
+          {methodName}
+        </StyledText>
+      </StyledTouchableOpacity>
+    );
   };
 
   return (
@@ -106,13 +137,20 @@ export const SignInScreen = () => {
                     onChangeText={onChange}
                   />
                 )}
-                rules={{required: true, minLength: 10, maxLength: 10}}
+                rules={{required: true, minLength: 10, maxLength: 12}}
               />
               {errors.phone && (
                 <StyledText className="text-error">
                   {'Please enter valid mobile number'}
                 </StyledText>
               )}
+            </StyledView>
+          </StyledView>
+
+          <StyledView className="mb-5 items-center">
+            <StyledView className="flex-row items-center space-x-2">
+              {renderOTPMethod('sms')}
+              {renderOTPMethod('whatsapp')}
             </StyledView>
           </StyledView>
 

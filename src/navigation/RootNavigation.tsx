@@ -8,7 +8,7 @@ export type RootStackParamList = {
   Onboarding: undefined;
   SignIn: undefined;
   SignUp: undefined;
-  Verification: {phone: string};
+  Verification: {phone: string; method: 'sms' | 'whatsapp'};
   LoginSuccess: undefined;
   SelectLocation: undefined;
   TabNavigator: undefined;
@@ -34,7 +34,7 @@ export type RootStackParamList = {
   Terms: undefined;
   Privacy: undefined;
   Wallet: {accBalance: string};
-  PGScreen: {url: string, bookingId: string, orderId: string};
+  PGScreen: {url: string; bookingId: string; orderId: string};
   PaymentSuccess: {bookingId: string; merchantOrderId: string};
 };
 
