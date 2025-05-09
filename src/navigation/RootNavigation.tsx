@@ -34,7 +34,8 @@ export type RootStackParamList = {
   Terms: undefined;
   Privacy: undefined;
   Wallet: {accBalance: string};
-  PGScreen: {url: string, bookingId: string};
+  PGScreen: {url: string, bookingId: string, orderId: string};
+  PaymentSuccess: {bookingId: string; merchantOrderId: string};
 };
 
 export type NavigationHookType = NativeStackNavigationProp<RootStackParamList>;

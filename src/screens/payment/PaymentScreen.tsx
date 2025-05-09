@@ -78,6 +78,7 @@ export const PaymentScreen = ({route}: any) => {
           navigation.navigate('PGScreen', {
             url: response.data.checkoutPageUrl,
             bookingId: bookingId,
+            orderId: response.data.merchantOrderId,
           });
         } else {
           showToast();
