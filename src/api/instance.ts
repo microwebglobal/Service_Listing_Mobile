@@ -2,6 +2,8 @@ import axios from 'axios';
 import {API_BASE} from '@env';
 import {getToken} from '../utils/token-storage';
 
+console.log(API_BASE);
+
 export const instance = axios.create({
   baseURL: API_BASE,
   headers: {

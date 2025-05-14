@@ -10,11 +10,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useState} from 'react';
-import axios from 'axios';
-import {API_BASE} from '@env';
 import {styled} from 'nativewind';
 import classNames from 'classnames';
 import {Colors} from '../../utils/Colors';
+import {instance} from '../../api/instance';
 import {Button} from '../../components/rneui';
 import {Controller, useForm} from 'react-hook-form';
 import InputField from '../../components/InputFeild';
@@ -54,8 +53,8 @@ export const SignInScreen = () => {
 
   const submit = (data: SignInData) => {
     setLoading(true);
-    axios
-      .post(`${API_BASE}/auth/customer/login/send-otp`, {
+    instance
+      .post('/auth/customer/login/send-otp', {
         mobile: data.phone,
         method: method,
       })

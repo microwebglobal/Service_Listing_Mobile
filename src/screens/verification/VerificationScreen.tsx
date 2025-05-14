@@ -10,10 +10,9 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import React, {useState} from 'react';
-import axios from 'axios';
-import {API_BASE} from '@env';
 import {styled} from 'nativewind';
 import {Colors} from '../../utils/Colors';
+import {instance} from '../../api/instance';
 import {Button} from '../../components/rneui';
 import AppHeader from '../../components/AppHeader';
 import {userLogin} from '../../redux/user/user.action';
@@ -69,8 +68,8 @@ export const VerificationScreen: Screen<'Verification'> = ({route}) => {
   };
 
   const resendOTP = () => {
-    axios
-      .post(`${API_BASE}/auth/customer/login/send-otp`, {
+    instance
+      .post('/auth/customer/login/send-otp', {
         mobile: phone,
         method: method,
       })
