@@ -11,11 +11,14 @@ import React, {useEffect, useState} from 'react';
 import {SERVER_BASE} from '@env';
 import {styled} from 'nativewind';
 import {SubCategory} from './types';
+import {useDispatch} from 'react-redux';
 import {instance} from '../../api/instance';
 import AppHeader from '../../components/AppHeader';
+import {clearCart} from '../../redux/cart/cart.slice';
 import {ServiceCard} from '../../components/ServiceCard';
 import {Screen, useNav} from '../../navigation/RootNavigation';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
+import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => {
@@ -29,10 +32,12 @@ const StyledScrollView = styled(ScrollView);
 const StyledSafeAreaView = styled(SafeAreaView);
 
 export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
-  const {categoryId, category, imageUrl} = route.params;
   const navigation = useNav();
-  const [subCategoryData, setSubCategoryData] = useState<SubCategory[]>([]);
+  const dispatch = useDispatch();
+  const tabBarHeight = useBottomTabBarHeight();
   const [isLoading, setIsLoading] = useState(true);
+  const {categoryId, category, imageUrl} = route.params;
+  const [subCategoryData, setSubCategoryData] = useState<SubCategory[]>([]);
 
   useEffect(() => {
     try {
@@ -43,8 +48,9 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
       console.log('Error ', e);
     } finally {
       setIsLoading(false);
+      dispatch(clearCart());
     }
-  }, [categoryId, navigation]);
+  }, [categoryId, dispatch, navigation]);
 
   if (isLoading) {
     return <LoadingIndicator />;
@@ -53,6 +59,7 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
     <StyledSafeAreaView className="flex-1 bg-white">
       <StyledScrollView
         className="flex-grow"
+        style={{marginBottom: tabBarHeight}}
         showsVerticalScrollIndicator={false}>
         <AppHeader title={category} back={true} cartVisible={true} />
         <StyledView>
@@ -75,7 +82,7 @@ export const SubCategoryScreen: Screen<'SubCategory'> = ({route}) => {
               {'Subcategories and available services'}
             </StyledText>
           </StyledView>
-          <StyledView className="-mx-2">
+          <StyledView className="mb-4">
             {subCategoryData.length > 0 ? (
               <FlatList
                 className="mt-2"

@@ -94,9 +94,9 @@ export const CategoryScreen = () => {
       <StyledScrollView
         showsVerticalScrollIndicator={false}
         style={{marginBottom: tabBarHeight}}>
-        <AppHeader back={false} title="Our Services" cartVisible={true} />
+        <AppHeader back={false} title="Our Services" cartVisible={false} />
         <StyledView
-          className="flex-1 justify-between"
+          className="flex-1 mb-4 justify-between"
           style={{marginHorizontal: RPW(3)}}>
           <StyledFlatList
             horizontal={false}

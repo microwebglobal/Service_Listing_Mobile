@@ -25,7 +25,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
   const item: any = mode === 'category' ? category : subCategory;
 
   return (
-    <StyledView className="basis-1/2 p-2 mt-2">
+    <StyledView className="basis-1/2 p-[6px] mt-2">
       <StyledTouchableOpacity
         className="shadow-sm shadow-black rounded-xl"
         onPress={() => {
