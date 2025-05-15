@@ -12,31 +12,13 @@ import {styled} from 'nativewind';
 import {Colors} from '../../utils/Colors';
 import {instance} from '../../api/instance';
 import {Button} from '../../components/rneui';
+import {Booking} from './BookingDetailsScreen';
 import {useNav} from '../../navigation/RootNavigation';
 import {useFocusEffect} from '@react-navigation/native';
 import {BookingCard} from '../../components/BookingCard';
-import {BookingPayment, Provider} from '../booking/types';
-import {BookingItem} from '../booking/BookingDetailsScreen';
 import {LoadingIndicator} from '../../components/LoadingIndicator';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-
-export interface Booking {
-  booking_id: string;
-  user_id: number;
-  provider_id: string;
-  employee_id: number;
-  city_id: string;
-  booking_date: string;
-  start_time: string;
-  end_time: string;
-  status: string;
-  service_address: string;
-  customer_notes: string;
-  BookingItems: Array<BookingItem>;
-  BookingPayment: BookingPayment;
-  provider: Provider;
-}
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;

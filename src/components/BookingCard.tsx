@@ -5,7 +5,7 @@ import {styled} from 'nativewind';
 import classNames from 'classnames';
 import {useNav} from '../navigation/RootNavigation';
 import {convertTo12HourFormat} from '../utils/common';
-import {Booking} from '../screens/booking/BookingScreen';
+import {Booking} from '../screens/booking/BookingDetailsScreen';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -19,7 +19,9 @@ export const BookingCard: React.FC<{booking: Booking}> = ({booking}) => {
     <StyledView className="my-1 mx-1 bg-white rounded-lg border border-lightGrey shadow-sm shadow-black">
       <StyledTouchableOpacity
         onPress={() => {
-          navigation.navigate('BookingDetails', {booking});
+          navigation.navigate('BookingDetails', {
+            bookingId: booking.booking_id,
+          });
         }}>
         <StyledView className="p-3 rounded-lg">
           <StyledView className="">

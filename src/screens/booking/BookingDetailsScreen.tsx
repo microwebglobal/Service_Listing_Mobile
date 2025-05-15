@@ -8,8 +8,7 @@ import {
   Linking,
   StyleSheet,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {Employee} from './types';
+import React, {useCallback, useEffect, useState} from 'react';
 import {SERVER_BASE} from '@env';
 import {styled} from 'nativewind';
 import {Dialog} from '@rneui/base';
@@ -23,11 +22,30 @@ import {Package, ServiceItem} from '../category/types';
 import Feather from 'react-native-vector-icons/Feather';
 import {convertTo12HourFormat} from '../../utils/common';
 import Icon from 'react-native-vector-icons/FontAwesome6';
+import {BookingPayment, Employee, Provider} from './types';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Screen, useNav} from '../../navigation/RootNavigation';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {LoadingIndicator} from '../../components/LoadingIndicator';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+
+export interface Booking {
+  booking_id: string;
+  user_id: number;
+  provider_id: string;
+  employee_id: number;
+  city_id: string;
+  booking_date: string;
+  start_time: string;
+  end_time: string;
+  status: string;
+  service_address: string;
+  customer_notes: string;
+  BookingItems: Array<BookingItem>;
+  BookingPayment: BookingPayment;
+  provider: Provider;
+}
 
 export interface BookingItem {
   id: number;
@@ -81,11 +99,13 @@ const StyledTouchableOpacity = styled(TouchableOpacity);
 
 export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
   const navigation = useNav();
-  const {booking} = route.params;
+  const {bookingId} = route.params;
+  const [booking, setBooking] = useState<Booking>();
   const [employee, setEmployee] = useState<Employee>();
   const [visible, setVisible] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [penaltyAmount, setPenaltyAmount] = useState<string>('');
-  // const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const toggleDialog = () => {
     setVisible(!visible);
@@ -93,7 +113,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
 
   const CancelBooking = async () => {
     await instance
-      .put(`/booking/cancel/confirm/${booking.booking_id}`, {
+      .put(`/booking/cancel/confirm/${booking?.booking_id}`, {
         penalty: penaltyAmount,
       })
       .then(() => {
@@ -104,7 +124,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
 
   const checkPenaltyAmount = async () => {
     await instance
-      .get(`/booking/cancel/${booking.booking_id}`)
+      .get(`/booking/cancel/${booking?.booking_id}`)
       .then(res => {
         setPenaltyAmount(res.data.penalty);
       })
@@ -113,35 +133,79 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
       });
   };
 
-  useEffect(() => {
-    booking.provider &&
+  const getProviderDetails = useCallback((bookingData: Booking) => {
+    bookingData?.provider_id &&
       instance
-        .get(`/providers/${booking.provider_id}/employees`)
+        .get(`/providers/${bookingData.provider_id}/employees`)
         .then(res => {
           let employees: Array<Employee> = res.data;
           employees.forEach((emp: Employee) => {
-            if (emp.employee_id === booking.employee_id) {
+            if (emp.employee_id === bookingData.employee_id) {
               setEmployee(emp);
             }
           });
         })
         .catch(function (e) {
           console.log(e.message);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
-  }, [booking]);
+  }, []);
+
+  useEffect(() => {
+    instance
+      .get(`/booking/${bookingId}`)
+      .then(res => {
+        setBooking(res.data);
+        getProviderDetails(res.data);
+      })
+      .catch(function (e) {
+        console.log(e.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [bookingId, getProviderDetails]);
+
+  const completePayment = async () => {
+    setLoading(true);
+    await instance
+      .post('/book/payment', {
+        bookingId: booking!.booking_id,
+        paymentMethod: 'card',
+        paymentType: 'full',
+      })
+      .then(response => {
+        navigation.navigate('PGScreen', {
+          url: response.data.checkoutPageUrl,
+          bookingId: booking!.booking_id,
+          orderId: response.data.merchantOrderId,
+        });
+      })
+      .catch(function (e) {
+        console.log(e.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   const makeCall = (phone: string) => {
     let formattedPhoneNumber = `tel:${phone}`;
     Linking.openURL(formattedPhoneNumber);
   };
 
+  if (isLoading) {
+    return <LoadingIndicator />;
+  }
   return (
     <StyledSafeAreaView className="flex-1 bg-white">
       <AppHeader back={true} title="Booking Details" />
       <StyledScrollView
         className="flex-grow"
         showsVerticalScrollIndicator={false}>
-        {booking.status === 'completed' && (
+        {booking?.status === 'completed' && (
           <>
             <StyledView
               className="my-6 flex-row justify-start items-center"
@@ -162,7 +226,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
           </>
         )}
 
-        {booking.status === 'cancelled' && (
+        {booking?.status === 'cancelled' && (
           <>
             <StyledView
               className="my-6 flex-row justify-start items-center space-x-5"
@@ -183,7 +247,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
           </>
         )}
 
-        {booking.status !== 'completed' && booking.status !== 'cancelled' && (
+        {booking?.status !== 'completed' && booking?.status !== 'cancelled' && (
           <>
             <StyledView
               className="my-5 flex-row justify-between items-center"
@@ -194,7 +258,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                     Booking ID:
                   </StyledText>
                   <StyledText className="text-base text-black font-PoppinsMedium">
-                    {booking.booking_id}
+                    {booking?.booking_id}
                   </StyledText>
                 </StyledView>
                 <StyledView className="flex-row items-center space-x-1">
@@ -202,11 +266,11 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                     Booking status:
                   </StyledText>
                   <StyledText className="text-base text-primary font-PoppinsMedium first-letter:capitalize">
-                    {booking.status === 'payment_pending'
+                    {booking?.status === 'payment_pending'
                       ? 'Confirmed'
-                      : booking.status === 'in_progress'
+                      : booking?.status === 'in_progress'
                       ? 'In Progress'
-                      : booking.status}
+                      : booking?.status}
                   </StyledText>
                 </StyledView>
                 <StyledView className="flex-row items-center space-x-1">
@@ -216,32 +280,32 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                   <StyledView
                     className={classNames(
                       `px-2 , ${
-                        booking.BookingPayment.payment_status === 'completed'
+                        booking?.BookingPayment.payment_status === 'completed'
                           ? 'bg-lime-100 rounded-2xl'
-                          : booking.BookingPayment.payment_status === 'pending'
+                          : booking?.BookingPayment.payment_status === 'pending'
                           ? 'bg-blue-100 rounded-2xl'
-                          : booking.BookingPayment.payment_status ===
+                          : booking?.BookingPayment.payment_status ===
                             'advance_only_paid'
                           ? 'bg-yellow-100 rounded-2xl'
                           : 'bg-red-100'
                       }`,
                     )}>
                     <StyledText className="text-base text-black font-PoppinsRegular first-letter:capitalize">
-                      {booking.BookingPayment.payment_status ===
+                      {booking?.BookingPayment.payment_status ===
                       'advance_only_paid'
                         ? 'Advance Paid'
-                        : booking.BookingPayment.payment_status}
+                        : booking?.BookingPayment.payment_status}
                     </StyledText>
                   </StyledView>
                 </StyledView>
               </StyledView>
 
               <StyledView>
-                {(booking.status === 'payment_pending' ||
-                  booking.status === 'confirmed' ||
-                  booking.status === 'accepted' ||
-                  booking.status === 'assigned' ||
-                  booking.status === 'in_progress') && (
+                {(booking?.status === 'payment_pending' ||
+                  booking?.status === 'confirmed' ||
+                  booking?.status === 'accepted' ||
+                  booking?.status === 'assigned' ||
+                  booking?.status === 'in_progress') && (
                   <StyledView>
                     <Button
                       size="sm"
@@ -259,7 +323,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
         )}
         <StyledView className="h-1 bg-lightGrey" />
 
-        {booking.provider && (
+        {booking?.provider_id && (
           <StyledView className="my-5">
             <StyledView
               className="flex-row space-x-2 items-center"
@@ -280,7 +344,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                             {employee.User.photo !== null ? (
                               <StyledImage
                                 source={{
-                                  uri: `${SERVER_BASE}${booking.employee.User.photo}`,
+                                  uri: `${SERVER_BASE}${employee.User.photo}`,
                                 }}
                                 className="w-16 h-16"
                               />
@@ -395,7 +459,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
               <Icon name="clock" size={16} color={Colors.Primary} />
               <StyledView>
                 <StyledText className="text-base text-black font-PoppinsRegular">
-                  {new Date(booking.booking_date).toLocaleString('en-us', {
+                  {new Date(booking!.booking_date).toLocaleString('en-us', {
                     weekday: 'long',
                     month: 'short',
                     day: 'numeric',
@@ -404,13 +468,13 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                 </StyledText>
                 <StyledText className="text-base text-dark font-PoppinsRegular">
                   {'Started on '}
-                  {new Date(booking.booking_date).toLocaleString('en-us', {
+                  {new Date(booking!.booking_date).toLocaleString('en-us', {
                     weekday: 'short',
                   })}
                   {', '}
-                  {convertTo12HourFormat(booking.start_time)}
+                  {convertTo12HourFormat(booking!.start_time)}
                   {' . Ended  on '}
-                  {convertTo12HourFormat(booking.end_time)}
+                  {convertTo12HourFormat(booking!.end_time)}
                 </StyledText>
               </StyledView>
             </StyledView>
@@ -422,12 +486,12 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                 color={Colors.Primary}
               />
               <StyledText className="text-base text-black font-PoppinsRegular">
-                {booking.service_address}
+                {booking?.service_address}
               </StyledText>
             </StyledView>
 
-            {booking.customer_notes !== '' &&
-              booking.customer_notes !== null && (
+            {booking?.customer_notes !== '' &&
+              booking?.customer_notes !== null && (
                 <StyledView className="flex-row items-center space-x-2 flex-wrap">
                   <StyledView className="flex-row items-center space-x-2">
                     <AntDesign
@@ -440,7 +504,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                     </StyledText>
                   </StyledView>
                   <StyledText className="pl-5 text-base text-dark font-PoppinsRegular">
-                    {booking.customer_notes}
+                    {booking?.customer_notes}
                   </StyledText>
                 </StyledView>
               )}
@@ -460,7 +524,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
 
           <StyledView style={{paddingHorizontal: RPW(4)}}>
             <StyledView className="p-2 space-y-1">
-              {booking.BookingItems.map(
+              {booking?.BookingItems.map(
                 (bookingItem: BookingItem, index: number) =>
                   bookingItem.serviceItem ? (
                     <StyledView
@@ -511,7 +575,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
           </StyledView>
         </StyledView>
 
-        {booking.status !== 'cancelled' && (
+        {booking?.status !== 'cancelled' && (
           <>
             <StyledView className="h-1 bg-lightGrey" />
             <StyledView className="my-5">
@@ -535,7 +599,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                     </StyledText>
                     <StyledText className="text-base text-black font-PoppinsRegular">
                       {'₹'}
-                      {booking.BookingPayment.subtotal}
+                      {booking?.BookingPayment.subtotal}
                     </StyledText>
                   </StyledView>
                   <StyledView className="mb-1 flex-row justify-between items-center">
@@ -544,7 +608,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                     </StyledText>
                     <StyledText className="text-base text-black font-PoppinsRegular">
                       {'₹'}
-                      {booking.BookingPayment.tax_amount}
+                      {booking?.BookingPayment.tax_amount}
                     </StyledText>
                   </StyledView>
                   <StyledView className="mb-1 flex-row justify-between items-center">
@@ -553,7 +617,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                     </StyledText>
                     <StyledText className="text-base text-black font-PoppinsRegular">
                       {'₹'}
-                      {booking.BookingPayment.discount_amount}
+                      {booking?.BookingPayment.discount_amount}
                     </StyledText>
                   </StyledView>
                   <StyledView className="mb-1 flex-row justify-between">
@@ -564,7 +628,7 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                     </StyledView>
                     <StyledText className="text-base text-black font-PoppinsMedium">
                       {'₹'}
-                      {booking.BookingPayment.advance_payment}
+                      {booking?.BookingPayment.advance_payment}
                     </StyledText>
                   </StyledView>
                   <StyledView>
@@ -583,8 +647,8 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                     <StyledText className="text-base text-black font-PoppinsSemiBold">
                       {'₹'}
                       {(
-                        parseFloat(booking.BookingPayment.total_amount) -
-                        parseFloat(booking.BookingPayment.advance_payment)
+                        parseFloat(booking!.BookingPayment.total_amount) -
+                        parseFloat(booking!.BookingPayment.advance_payment)
                       ).toFixed(2)}
                     </StyledText>
                   </StyledView>
@@ -594,18 +658,31 @@ export const BookingDetailsScreen: Screen<'BookingDetails'> = ({route}) => {
                       Payment mode
                     </StyledText>
                     <StyledText className="text-base text-black font-PoppinsRegular first-letter:capitalize">
-                      {booking.BookingPayment.payment_method === 'net_banking'
+                      {booking?.BookingPayment.payment_method === 'net_banking'
                         ? 'Net Banking'
-                        : booking.BookingPayment.payment_method}
+                        : booking?.BookingPayment.payment_method}
                     </StyledText>
                   </StyledView>
                 </StyledView>
+
+                {booking?.status === 'in_progress' &&
+                  booking.BookingPayment.payment_status !== 'completed' && (
+                    <Button
+                      primary
+                      size="md"
+                      loading={loading}
+                      title={'Complete Payment'}
+                      onPress={() => {
+                        completePayment();
+                      }}
+                    />
+                  )}
               </StyledView>
             </StyledView>
           </>
         )}
 
-        {booking.status === 'cancelled' && <StyledView className="mb-10" />}
+        {booking?.status === 'cancelled' && <StyledView className="mb-10" />}
 
         {/* Booking Cancel Dialog */}
         <Dialog

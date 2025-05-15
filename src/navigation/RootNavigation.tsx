@@ -28,7 +28,7 @@ export type RootStackParamList = {
   Cart: undefined;
   Payment: {amount: string; bookingId: string};
   BookingScreen: undefined;
-  BookingDetails: {booking: any};
+  BookingDetails: {bookingId: string};
   BookingHistory: undefined;
   AboutUs: undefined;
   Terms: undefined;

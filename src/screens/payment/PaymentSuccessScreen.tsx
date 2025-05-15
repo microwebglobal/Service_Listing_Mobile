@@ -12,6 +12,8 @@ const StyledText = styled(Text);
 export const PaymentSuccessScreen: Screen<'PaymentSuccess'> = ({route}) => {
   const navigation = useNav();
   const {bookingId, merchantOrderId} = route.params;
+  const previousScreen =
+    navigation.getState().routes[navigation.getState().index - 2].name;
 
   useEffect(() => {
     instance
@@ -23,6 +25,11 @@ export const PaymentSuccessScreen: Screen<'PaymentSuccess'> = ({route}) => {
         navigation.navigate('TabNavigator' as any, {
           screen: 'Booking',
         });
+        if (previousScreen === 'BookingDetails') {
+          navigation.navigate('BookingDetails' as any, {
+            bookingId: bookingId,
+          });
+        }
       })
       .catch(err => {
         console.error(err);
@@ -31,7 +38,7 @@ export const PaymentSuccessScreen: Screen<'PaymentSuccess'> = ({route}) => {
           screen: 'Booking',
         });
       });
-  }, [bookingId, merchantOrderId, navigation]);
+  }, [bookingId, merchantOrderId, navigation, previousScreen]);
 
   const showToast = () => {
     Toast.show({
