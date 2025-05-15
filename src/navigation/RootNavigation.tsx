@@ -2,6 +2,7 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {FC, PropsWithChildren} from 'react';
 import {RouteProp, useNavigation} from '@react-navigation/native';
 import {Address} from '../screens/category/CategoryScreen';
+import { Booking } from '../screens/booking/types';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -18,7 +19,7 @@ export type RootStackParamList = {
   Category: undefined;
   SubCategory: {categoryId: string; category: string; imageUrl: string};
   ServiceType: {subCategoryId: string; subCategory: string};
-  EditProfile: {itemName: string};
+  EditProfile: {itemName: string; itemValue?: string};
   EditLocation: undefined;
   AddressDetails: {address: Address; isEdit: boolean};
   ChangeLocation: undefined;
@@ -36,6 +37,7 @@ export type RootStackParamList = {
   Wallet: {accBalance: string};
   PGScreen: {url: string; bookingId: string; orderId: string};
   PaymentSuccess: {bookingId: string; merchantOrderId: string};
+  Receipt: {booking: Booking};
 };
 
 export type NavigationHookType = NativeStackNavigationProp<RootStackParamList>;

@@ -49,6 +49,7 @@ export interface BookingPayment {
   refund_status: string;
   cash_collected_at: string;
   cash_collected_by: string;
+  updated_at: string;
 }
 
 export interface User {

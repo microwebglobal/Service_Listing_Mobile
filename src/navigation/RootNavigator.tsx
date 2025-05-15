@@ -36,6 +36,7 @@ import {AboutUsScreen} from '../screens/profile/AboutUsScreen';
 import {WalletScreen} from '../screens/profile/WalletScreen';
 import {PGScreen} from '../screens/payment/PGScreen';
 import {PaymentSuccessScreen} from '../screens/payment/PaymentSuccessScreen';
+import {ReceiptScreen} from '../screens/payment/ReceiptScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -124,6 +125,7 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="Wallet" component={WalletScreen} />
         <Stack.Screen name="PGScreen" component={PGScreen} />
         <Stack.Screen name="PaymentSuccess" component={PaymentSuccessScreen} />
+        <Stack.Screen name="Receipt" component={ReceiptScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

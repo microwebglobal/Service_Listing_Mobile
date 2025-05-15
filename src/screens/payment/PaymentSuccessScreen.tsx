@@ -5,7 +5,6 @@ import {instance} from '../../api/instance';
 import LottieView from 'lottie-react-native';
 import Toast from 'react-native-toast-message';
 import {Screen, useNav} from '../../navigation/RootNavigation';
-
 const StyledView = styled(View);
 const StyledText = styled(Text);
 
@@ -21,15 +20,17 @@ export const PaymentSuccessScreen: Screen<'PaymentSuccess'> = ({route}) => {
         bookingId: bookingId,
         merchantOrderId: merchantOrderId,
       })
-      .then(() => {
-        navigation.navigate('TabNavigator' as any, {
-          screen: 'Booking',
-        });
-        if (previousScreen === 'BookingDetails') {
-          navigation.navigate('BookingDetails' as any, {
-            bookingId: bookingId,
-          });
-        }
+      .then(response => {
+        console.log('Payment verification response:', response.data);
+        setTimeout(() => {
+          if (previousScreen === 'BookingDetails') {
+            navigation.navigate('BookingDetails' as any, {
+              bookingId: bookingId,
+            });
+          } else {
+            navigation.navigate('Receipt', {booking: response.data.booking});
+          }
+        }, 1000);
       })
       .catch(err => {
         console.error(err);
