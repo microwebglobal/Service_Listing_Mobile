@@ -3,7 +3,6 @@ import {StyleSheet} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Colors} from '../utils/Colors';
-import {TicketScreen} from '../screens/ticket/TicketScreen';
 import {
   BookingNavigator,
   CategoryNavigator,
@@ -37,8 +36,6 @@ export const TabNavigator = () => {
 
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Ticket') {
-            iconName = focused ? 'ticket' : 'ticket-outline';
           } else if (route.name === 'Service') {
             iconName = focused ? 'duplicate' : 'duplicate-outline';
           } else if (route.name === 'Account') {
@@ -61,7 +58,6 @@ export const TabNavigator = () => {
         },
       })}>
       <Tab.Screen name={'Home'} component={HomeNavigator} />
-      <Tab.Screen name={'Ticket'} component={TicketScreen} />
       <Tab.Screen
         name={'Service'}
         component={CategoryNavigator}

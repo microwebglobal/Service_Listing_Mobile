@@ -36,7 +36,6 @@ const config = {
             ServiceType: 'services/service-type',
           },
         },
-        Ticket: 'ticket',
         BookingTab: {
           screens: {
             Booking: 'booking',

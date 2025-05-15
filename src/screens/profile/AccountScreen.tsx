@@ -169,7 +169,7 @@ export const AccountScreen = () => {
         showsVerticalScrollIndicator={false}
         style={{marginBottom: tabBarHeight}}>
         <StyledView
-          className="pt-10 pb-5 bg-white"
+          className="mt-16 pb-5 bg-white"
           style={{paddingHorizontal: RPW(5)}}>
           <StyledView className="items-center justify-center">
             {imageURI && (
@@ -210,20 +210,7 @@ export const AccountScreen = () => {
             </StyledTouchableOpacity>
           </StyledView>
 
-          <StyledView className="my-5 items-center">
-            <Button
-              size="sm"
-              title="Premium Plus User"
-              onPress={() =>
-                navigation.navigate('Profile', {
-                  completedCount: count,
-                  totalCount: requiredFields.length + optionalFields.length,
-                })
-              }
-            />
-          </StyledView>
-
-          <StyledView className="p-3 bg-lightGrey rounded-lg">
+          <StyledView className="mt-5 p-3 bg-lightGrey rounded-lg">
             <StyledView className="flex-row justify-between">
               <StyledText className="text-black font-PoppinsRegular">
                 {count} of {requiredFields.length + optionalFields.length}{' '}
