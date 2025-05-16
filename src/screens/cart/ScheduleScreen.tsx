@@ -2,10 +2,10 @@ import {
   Text,
   View,
   Keyboard,
-  TextInput,
   Dimensions,
   ScrollView,
   SafeAreaView,
+  StyleSheet,
 } from 'react-native';
 import {useState} from 'react';
 import React from 'react';
@@ -24,6 +24,7 @@ import {StackActions} from '@react-navigation/native';
 import {useNav} from '../../navigation/RootNavigation';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/FontAwesome6';
+import DropDownPicker from 'react-native-dropdown-picker';
 import Arrow from 'react-native-vector-icons/MaterialIcons';
 import DateTimePicker from '../../components/DateTimePicker';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -52,7 +53,6 @@ const RPW = (percentage: number) => {
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledTextInput = styled(TextInput);
 const StyledScrollView = styled(ScrollView);
 const StyledSafeAreaView = styled(SafeAreaView);
 
@@ -66,6 +66,12 @@ export const ScheduleScreen = () => {
   const [timeValue, onChangeTimeValue] = useState<string>('');
   const [selectDate, setSelectDate] = useState<string>(todayDate);
   const primaryAddress: any = useAppSelector(state => state.address.address);
+  // DropDownPicker
+  const [open, setOpen] = useState(false);
+  const [address, setAddress] = useState(primaryAddress);
+  const [items, setItems] = useState([
+    {label: primaryAddress, value: primaryAddress},
+  ]);
 
   const {
     control,
@@ -209,7 +215,7 @@ export const ScheduleScreen = () => {
                   {'Please fill out this field.'}
                 </StyledText>
               )}
-              {error && (
+              {(error) && (
                 <StyledText className="font-PoppinsRegular text-error">
                   {'Please select a time between 11:00 AM and 8:30 PM.'}
                 </StyledText>
@@ -228,22 +234,18 @@ export const ScheduleScreen = () => {
                 </StyledText>
               </StyledView>
 
-              <Controller
-                name="address"
-                control={control}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <StyledView className="flex-row items-center justify-between border-[1.5px] border-gray rounded-md">
-                    <StyledTextInput
-                      placeholder="Select address"
-                      className="px-3 h-12 text-base text-black"
-                      value={value}
-                      inputMode="none"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                    />
-                  </StyledView>
-                )}
-                rules={{required: true}}
+              <DropDownPicker
+                flatListProps={{
+                  scrollEnabled: false,
+                }}
+                open={open}
+                value={address}
+                items={items}
+                setOpen={setOpen}
+                setValue={setAddress}
+                setItems={setItems}
+                style={styles.dropDown}
+                textStyle={styles.dropDownText}
               />
               {errors.address && (
                 <StyledText className="font-PoppinsRegular text-error">
@@ -296,3 +298,18 @@ export const ScheduleScreen = () => {
     </StyledSafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  dropDown: {
+    height: 48,
+    borderRadius: 6,
+    borderWidth: 1.5,
+    paddingHorizontal: 12,
+    borderColor: Colors.Gray,
+  },
+  dropDownText: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: Colors.Dark,
+  },
+});
