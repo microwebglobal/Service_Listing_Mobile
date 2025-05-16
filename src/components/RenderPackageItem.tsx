@@ -26,6 +26,16 @@ export const RenderPackageItem = ({
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const cityId = useAppSelector((state: any) => state.address.cityId);
 
+  const findCitySpecificPrice = (pkgItem: PackageItem) => {
+    const citySpecificPrice = pkgItem.CitySpecificPricings.find(
+      item => item.city_id === cityId,
+    )
+      ? pkgItem.CitySpecificPricings.find(item => item.city_id === cityId)
+          ?.price
+      : pkgItem.price;
+    return parseInt(citySpecificPrice!, 10);
+  };
+
   const handleAddToCart = (item: PackageItem) => {
     cartItems.current = cartItems.current.filter(
       cartItem => cartItem.sectionId !== item.section_id,
@@ -35,7 +45,7 @@ export const RenderPackageItem = ({
       sectionId: item.section_id,
       itemType: 'package_item',
       name: item.name,
-      price: parseInt(item.price, 10),
+      price: findCitySpecificPrice(item),
       quantity: 1,
       packageName: packageName,
       icon_url: item.icon_url,
@@ -76,13 +86,7 @@ export const RenderPackageItem = ({
           </StyledView>
           <StyledText className="text-base text-black font-PoppinsMedium">
             {'₹'}
-            {item.CitySpecificPricings.length > 0
-              ? item.CitySpecificPricings.map(element => {
-                  if (element.city_id === cityId) {
-                    return element.price;
-                  }
-                })
-              : item.price}
+            {findCitySpecificPrice(item)}
           </StyledText>
         </StyledView>
       ))}

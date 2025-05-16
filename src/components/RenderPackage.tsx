@@ -4,6 +4,7 @@ import {Button} from './rneui';
 import {styled} from 'nativewind';
 import {Colors} from '../utils/Colors';
 import {useDispatch} from 'react-redux';
+import {useAppSelector} from '../redux';
 import {instance} from '../api/instance';
 import Toast from 'react-native-toast-message';
 import {LoadingIndicator} from './LoadingIndicator';
@@ -23,6 +24,7 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
   const [packageData, setPackageData] = useState<Package[]>([]);
   const [isItemClicked, setIsItemClicked] = useState<boolean>(false);
   const [packagePrice, setPackagePrice] = useState<number>(0);
+  const cityId = useAppSelector((state: any) => state.address.cityId);
 
   useEffect(() => {
     try {
@@ -60,10 +62,20 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
     cartItems.current = tempCartItems;
   };
 
+  const findCitySpecificPrice = (pkgItem: PackageItem) => {
+    const citySpecificPrice = pkgItem.CitySpecificPricings.find(
+      item => item.city_id === cityId,
+    )
+      ? pkgItem.CitySpecificPricings.find(item => item.city_id === cityId)
+          ?.price
+      : pkgItem.price;
+    return parseInt(citySpecificPrice!, 10);
+  };
+
   const calculateDefaultPrice = (packageDetails: Package) => {
     let total = 0;
     packageDetails.PackageSections.forEach((section: PackageSections) => {
-      total += parseInt(section.PackageItems[0].price, 10);
+      total += findCitySpecificPrice(section.PackageItems[0]);
     });
     setTimeout(() => setPackagePrice(total), 0);
     return total;

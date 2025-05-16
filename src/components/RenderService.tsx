@@ -92,6 +92,16 @@ export const RenderService = ({service}: {service: Service}) => {
     });
   };
 
+  const findCitySpecificPrice = (serviceItem: ServiceItem) => {
+    const citySpecificPrice = serviceItem.CitySpecificPricings.find(
+      item => item.city_id === cityId,
+    )
+      ? serviceItem.CitySpecificPricings.find(item => item.city_id === cityId)
+          ?.price
+      : serviceItem.base_price;
+    return parseInt(citySpecificPrice!, 10);
+  };
+
   const _renderServiceItem = ({item}: {item: ServiceItem}) => {
     return (
       <StyledView className="p-1">
@@ -103,13 +113,7 @@ export const RenderService = ({service}: {service: Service}) => {
               </StyledText>
               <StyledText className="my-1 text-base text-black font-PoppinsSemiBold">
                 {'₹'}
-                {item.CitySpecificPricings.length > 0
-                  ? item.CitySpecificPricings.map(element => {
-                      if (element.city_id === cityId) {
-                        return element.price;
-                      }
-                    })
-                  : item.base_price}
+                {findCitySpecificPrice(item)}
               </StyledText>
               {parseInt(item.advance_percentage, 10) !== 0 && (
                 <StyledText className="my-1 text-xs font-PoppinsRegular text-primary">
