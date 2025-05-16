@@ -8,6 +8,7 @@ import {ItemEntity} from '../redux/cart/cart.entity';
 import {PackageItem} from '../screens/category/types';
 
 interface RenderPackageItemProps {
+  packageName: string;
   packageItems: Array<PackageItem>;
   cartItems: React.MutableRefObject<Array<ItemEntity>>;
   onPress: () => void;
@@ -17,6 +18,7 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 
 export const RenderPackageItem = ({
+  packageName,
   packageItems,
   cartItems,
   onPress,
@@ -35,6 +37,7 @@ export const RenderPackageItem = ({
       name: item.name,
       price: parseInt(item.price, 10),
       quantity: 1,
+      packageName: packageName,
       icon_url: item.icon_url,
       is_home_visit: false,
     });

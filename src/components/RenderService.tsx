@@ -44,20 +44,19 @@ export const RenderService = ({service}: {service: Service}) => {
         quantity: 1,
         name: item.name,
         price: parseInt(item.base_price, 10),
+        packageName: null,
         icon_url: item.icon_url,
         is_home_visit: item.is_home_visit,
       }),
     );
-    Toast.show({
-      type: 'success',
-      text1: 'Added to selection',
-      text2: `${item.name} has been added to your selection`,
-      visibilityTime: 2000,
-      autoHide: true,
-    });
+    showToast(
+      'success',
+      'Added to selection',
+      `${item.name} has been added to your selection`,
+    );
   }
 
-  const showToast = (item: ServiceItem) => {
+  const checkItem = (item: ServiceItem) => {
     if (LocalCart === null || LocalCart?.length === 0) {
       addItemToCart(item);
       return;
@@ -65,14 +64,11 @@ export const RenderService = ({service}: {service: Service}) => {
       for (let i = 0; i < 1; i++) {
         const cartItem = LocalCart[i];
         if (cartItem.is_home_visit !== item.is_home_visit) {
-          Toast.show({
-            type: 'error',
-            text1: 'Selection Restriction',
-            text2:
-              'You can only select either home visit or non-home visit items, not both.',
-            visibilityTime: 2000,
-            autoHide: true,
-          });
+          showToast(
+            'error',
+            'Selection Restriction',
+            'You can only select either home visit or non-home visit items, not both.',
+          );
           break;
         } else {
           addItemToCart(item);
@@ -80,6 +76,20 @@ export const RenderService = ({service}: {service: Service}) => {
         }
       }
     }
+  };
+
+  const showToast = (
+    type: 'error' | 'success',
+    title: string,
+    description: string,
+  ) => {
+    Toast.show({
+      type: type,
+      text1: title,
+      text2: description,
+      visibilityTime: 2000,
+      autoHide: true,
+    });
   };
 
   const _renderServiceItem = ({item}: {item: ServiceItem}) => {
@@ -98,7 +108,7 @@ export const RenderService = ({service}: {service: Service}) => {
                       if (element.city_id === cityId) {
                         return element.price;
                       }
-                  })
+                    })
                   : item.base_price}
               </StyledText>
               {parseInt(item.advance_percentage, 10) !== 0 && (
@@ -128,7 +138,7 @@ export const RenderService = ({service}: {service: Service}) => {
                   title="Add"
                   size="sm"
                   onPress={() => {
-                    showToast(item);
+                    checkItem(item);
                   }}
                 />
               </StyledView>

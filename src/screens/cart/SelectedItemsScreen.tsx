@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {SERVER_BASE} from '@env';
 import {styled} from 'nativewind';
 import {useDispatch} from 'react-redux';
@@ -19,7 +19,9 @@ import AppHeader from '../../components/AppHeader';
 import {useNav} from '../../navigation/RootNavigation';
 import {removeItem} from '../../redux/cart/cart.slice';
 import {ItemEntity} from '../../redux/cart/cart.entity';
+import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -40,7 +42,17 @@ export const SelectedItemsScreen = () => {
   const navigation = useNav();
   const dispatch = useDispatch();
   const LocalCart = useAppSelector((state: any) => state.cart.cart);
+  const [packages, setPackages] = useState<Array<string>>([]);
   let totalPrice = 0;
+
+  useEffect(() => {
+    const packageNames = LocalCart?.filter(
+      (item: ItemEntity) => item.itemType === 'package_item',
+    ).map((item: ItemEntity) => item.packageName);
+
+    const uniquePackages: string[] = Array.from(new Set(packageNames));
+    setPackages(uniquePackages);
+  }, [LocalCart]);
 
   const showToast = () => {
     Toast.show({
@@ -48,6 +60,54 @@ export const SelectedItemsScreen = () => {
       text1: 'Removed from selection',
       text2: 'Item has been removed from selection',
     });
+  };
+
+  const _renderItem = (item: ItemEntity, index: number) => {
+    return (
+      <StyledView
+        key={index}
+        className="flex-row justify-between items-center mb-7">
+        <StyledView className="flex-row flex-wrap basis-4/5 items-center space-x-4">
+          <StyledView className="ml-1 bg-lightGrey rounded-lg">
+            <StyledImage
+              resizeMode="cover"
+              className="w-14 h-14 rounded-md"
+              source={{uri: `${SERVER_BASE}${item.icon_url}`}}
+            />
+          </StyledView>
+          <StyledView>
+            <StyledText className="text-base text-black font-PoppinsRegular text-clip">
+              {item.name}
+            </StyledText>
+            <StyledView className="flex-row items-center space-x-2">
+              <StyledText className="text-base text-black font-PoppinsMedium">
+                {'₹'}
+                {item.price}
+                {'.00'}
+              </StyledText>
+              <StyledText className="text-sm text-gray font-PoppinsRegular">
+                {'(x'}
+                {item.quantity}
+                {')'}
+              </StyledText>
+            </StyledView>
+          </StyledView>
+        </StyledView>
+        <StyledView className="py-1 px-2 bg-lightGrey rounded-full">
+          <TouchableOpacity
+            onPress={() => {
+              showToast();
+              dispatch(removeItem(item.itemId));
+            }}>
+            <MaterialIcons
+              name="delete-outline"
+              size={20}
+              color={Colors.Dark}
+            />
+          </TouchableOpacity>
+        </StyledView>
+      </StyledView>
+    );
   };
 
   return (
@@ -85,52 +145,48 @@ export const SelectedItemsScreen = () => {
             </StyledView>
           )}
 
-          {/* Render local cart items */}
-          {LocalCart?.map((item: ItemEntity, index: number) => {
-            totalPrice += item.price * item.quantity;
+          {LocalCart?.filter(
+            (item: ItemEntity) => item.itemType === 'service_item',
+          ).length > 0 && (
+            <StyledView className="mb-2">
+              <StyledView className="flex-row items-center space-x-3 mb-5">
+                <SimpleLineIcons
+                  name={'wrench'}
+                  size={15}
+                  color={Colors.Black}
+                />
+                <StyledText className="text-base text-dark font-PoppinsRegular">
+                  Service Items
+                </StyledText>
+              </StyledView>
+
+              {LocalCart?.filter(
+                (item: ItemEntity) => item.itemType === 'service_item',
+              ).map((item: ItemEntity, index: number) => {
+                totalPrice += item.price * item.quantity;
+                return _renderItem(item, index);
+              })}
+            </StyledView>
+          )}
+
+          {packages.map((packageName: string, index: number) => {
             return (
-              <StyledView
-                key={index}
-                className="flex-row justify-between items-center mb-7">
-                <StyledView className="flex-row flex-wrap basis-4/5 items-center space-x-4">
-                  <StyledView className="ml-1 bg-lightGrey rounded-lg">
-                    <StyledImage
-                      resizeMode="cover"
-                      className="w-14 h-14 rounded-md"
-                      source={{uri: `${SERVER_BASE}${item.icon_url}`}}
-                    />
-                  </StyledView>
-                  <StyledView>
-                    <StyledText className="text-base text-black font-PoppinsRegular text-clip">
-                      {item.name}
-                    </StyledText>
-                    <StyledView className="flex-row items-center space-x-2">
-                      <StyledText className="text-base text-black font-PoppinsMedium">
-                        {'₹'}
-                        {item.price}
-                        {'.00'}
-                      </StyledText>
-                      <StyledText className="text-sm text-gray font-PoppinsRegular">
-                        {'(x'}
-                        {item.quantity}
-                        {')'}
-                      </StyledText>
-                    </StyledView>
-                  </StyledView>
+              <StyledView key={index} className="mb-2">
+                <StyledView className="flex-row items-center space-x-3 mb-5">
+                  <Feather name={'package'} size={15} color={Colors.Dark} />
+                  <StyledText className="text-base text-dark font-PoppinsRegular">
+                    {packageName}
+                  </StyledText>
                 </StyledView>
-                <StyledView className="py-1 px-2 bg-lightGrey rounded-full">
-                  <TouchableOpacity
-                    onPress={() => {
-                      showToast();
-                      dispatch(removeItem(item.itemId));
-                    }}>
-                    <MaterialIcons
-                      name="delete-outline"
-                      size={20}
-                      color={Colors.Dark}
-                    />
-                  </TouchableOpacity>
-                </StyledView>
+
+                {LocalCart?.filter(
+                  (item: ItemEntity) =>
+                    item.itemType === 'package_item' &&
+                    item.packageName === packageName,
+                ).map((item: ItemEntity, key: number) => {
+                  totalPrice += item.price * item.quantity;
+                  return _renderItem(item, key);
+                })}
               </StyledView>
             );
           })}

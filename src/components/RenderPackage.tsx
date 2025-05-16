@@ -49,6 +49,7 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
               name: packageItem.name,
               price: parseInt(packageItem.price, 10),
               quantity: 1,
+              packageName: item.name,
               icon_url: packageItem.icon_url,
               is_home_visit: packageItem.is_none_option,
             });
@@ -153,6 +154,7 @@ export const RenderPackage = ({typeId}: {typeId: string}) => {
                     </StyledView>
 
                     <RenderPackageItem
+                      packageName={item.name}
                       packageItems={section.PackageItems}
                       cartItems={cartItems}
                       onPress={() => calculatePackagePrice()}

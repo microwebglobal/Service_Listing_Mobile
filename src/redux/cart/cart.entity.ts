@@ -7,6 +7,7 @@ export interface ItemEntity {
   quantity: number;
   icon_url: string;
   is_home_visit: boolean;
+  packageName: string | null;
 }
 
 export interface CartState {
