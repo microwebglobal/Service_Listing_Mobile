@@ -104,10 +104,10 @@ export const SignInScreen = () => {
           <StyledView className="items-center justify-center">
             <StyledImage
               source={require('../../assets/app-images/logo.png')}
-              className="w-32 h-32 rounded-full"
+              className="w-40 h-40 rounded-full"
             />
           </StyledView>
-          <StyledView className="my-10 items-center">
+          <StyledView className="my-8 items-center">
             <StyledText className="text-xl font-PoppinsRegular text-black">
               {'Welcome! to'}
               <StyledText className="text-xl font-PoppinsSemiBold text-primary">
@@ -122,28 +122,35 @@ export const SignInScreen = () => {
                 Contact Number to Register or Login
               </StyledText>
             </StyledView>
-            <StyledView>
-              <Controller
-                name="phone"
-                control={control}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <InputField
-                    placeHolder={'Contact number'}
-                    value={value}
-                    secure={false}
-                    inputMode={'numeric'}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                  />
-                )}
-                rules={{required: true, minLength: 10, maxLength: 12}}
-              />
-              {errors.phone && (
-                <StyledText className="text-error">
-                  {'Please enter valid mobile number'}
+            <StyledView className="flex-row items-center space-x-1">
+              {/* <StyledView className="w-12 h-12 border-[1.5px] border-gray rounded-md justify-center items-center">
+                <StyledText className="text-base text-black font-PoppinsRegular">
+                  {'+91'}
                 </StyledText>
-              )}
+              </StyledView> */}
+              <StyledView className="flex-1">
+                <Controller
+                  name="phone"
+                  control={control}
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <InputField
+                      placeHolder={'Contact number'}
+                      value={value}
+                      secure={false}
+                      inputMode={'numeric'}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                    />
+                  )}
+                  rules={{required: true, minLength: 10, maxLength: 12}}
+                />
+              </StyledView>
             </StyledView>
+            {errors.phone && (
+              <StyledText className="text-error">
+                {'Please enter valid mobile number'}
+              </StyledText>
+            )}
           </StyledView>
 
           <StyledView className="mb-5 items-center">
